@@ -550,6 +550,41 @@ tr.excluded td{opacity:.3;text-decoration:line-through}
 
 @media(max-width:700px){.g2,.g3,.g12{grid-template-columns:1fr}}
 
+
+/* ── Delay Code Reference ── */
+.dcref-fab{position:fixed;bottom:24px;right:24px;z-index:8000;
+  height:40px;padding:0 16px;border-radius:999px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.06em;
+  cursor:pointer;border:1.5px solid rgba(20,13,138,.2);
+  background:rgba(255,255,255,.75);backdrop-filter:blur(12px);
+  color:rgba(20,13,138,.65);
+  display:inline-flex;align-items:center;gap:7px;
+  box-shadow:0 4px 20px -6px rgba(20,13,138,.25);
+  transition:all .2s}
+.dcref-fab:hover{background:rgba(255,255,255,.95);color:var(--navy);box-shadow:0 6px 24px -6px rgba(20,13,138,.35)}
+.dcref-fab svg{opacity:.6}
+.dcref-fab:hover svg{opacity:1}
+
+.dcref-overlay{display:none;position:fixed;inset:0;z-index:9100;background:rgba(20,13,138,.2);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);justify-content:flex-end}
+.dcref-overlay.open{display:flex;animation:fadeUp .2s ease both}
+.dcref-panel{background:rgba(255,255,255,.9);backdrop-filter:blur(28px) saturate(1.6);-webkit-backdrop-filter:blur(28px) saturate(1.6);border-radius:20px 0 0 20px;border-left:1px solid rgba(255,255,255,.9);border-top:1px solid rgba(255,255,255,.9);border-bottom:1px solid rgba(255,255,255,.9);box-shadow:-24px 0 80px -16px rgba(20,13,138,.22);width:min(420px,100%);height:100%;display:flex;flex-direction:column;overflow:hidden}
+.dcref-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px 14px;border-bottom:1px dashed rgba(20,13,138,.12);background:rgba(240,232,216,.55);flex-shrink:0}
+.dcref-head-title{font-family:'Manrope',system-ui,sans-serif;font-size:15px;font-weight:700;color:var(--navy);letter-spacing:-.02em}
+.dcref-head-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,13,138,.45);margin-top:2px;letter-spacing:.04em;text-transform:uppercase}
+.dcref-close{width:28px;height:28px;border-radius:8px;border:1px solid rgba(20,13,138,.15);background:rgba(255,255,255,.7);color:rgba(20,13,138,.5);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.dcref-close:hover{background:rgba(240,232,216,.9);color:var(--navy)}
+.dcref-search-wrap{padding:12px 16px 10px;flex-shrink:0;border-bottom:1px solid rgba(20,13,138,.08)}
+.dcref-search{width:100%;padding:8px 12px 8px 34px;border:1.5px solid rgba(20,13,138,.13);border-radius:10px;background:rgba(255,255,255,.8);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--navy);outline:none;transition:border-color .18s,box-shadow .18s}
+.dcref-search:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(0,171,97,.1)}
+.dcref-search::placeholder{color:rgba(20,13,138,.3)}
+.dcref-search-icon{position:absolute;left:28px;top:50%;transform:translateY(-50%);opacity:.35;pointer-events:none}
+.dcref-body{overflow-y:auto;flex:1;padding:10px 12px 16px}
+.dcref-row{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:9px;transition:background .12s;cursor:default}
+.dcref-row:hover{background:rgba(20,13,138,.04)}
+.dcref-code{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--navy);min-width:26px;flex-shrink:0;padding-top:1px;opacity:.75}
+.dcref-def{font-size:12px;color:rgba(11,10,42,.75);line-height:1.45}
+.dcref-empty{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(20,13,138,.3);text-align:center;padding:40px 0;letter-spacing:.04em}
+.dcref-count{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,13,138,.38);padding:0 4px 8px;letter-spacing:.04em}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1733,5 +1768,62 @@ function rRw(){
     <div class="anom-panel-body" id="anomBody"></div>
   </div>
 </div>
+
+<!-- Delay Code Reference FAB -->
+<button class="dcref-fab" onclick="openDCRef()" title="Delay code reference">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+  Codes
+</button>
+
+<div class="dcref-overlay" id="dcrefOverlay" onclick="if(event.target===this)closeDCRef()">
+  <div class="dcref-panel">
+    <div class="dcref-head">
+      <div>
+        <div class="dcref-head-title">Delay code reference</div>
+        <div class="dcref-head-sub">HV delay code definitions</div>
+      </div>
+      <button class="dcref-close" onclick="closeDCRef()">✕</button>
+    </div>
+    <div class="dcref-search-wrap" style="position:relative">
+      <svg class="dcref-search-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" width="14" height="14"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M15 15l-3-3" stroke-linecap="round"/></svg>
+      <input type="text" class="dcref-search" id="dcrefSearch" placeholder="Search code or description…" oninput="filterDCRef(this.value)">
+    </div>
+    <div class="dcref-count" id="dcrefCount" style="padding:8px 22px 2px"></div>
+    <div class="dcref-body" id="dcrefBody"></div>
+  </div>
+</div>
+
+<script>
+var DC=[[1,"ATC delay caused by own airline activity"],[2,"System generated code when initial code cannot be traced"],[3,"Missing checked-in passenger"],[4,"Priority clashes between KLM departments at Schiphol"],[5,"Pre-announced short turn around, not succeeded"],[6,"No gate/stand availability due to own airline activity"],[7,"Late release from maintenance due to late in maintenance"],[8,"Start-up delay caused by adverse weather conditions"],[9,"Scheduled movement control decreased scheduled ground time"],[10,"Collecting of excessive baggage at the gate"],[11,"Late check-in acceptance, acceptance after the deadline"],[12,"Late check-in, congestion in check-in area"],[13,"Check-in error, seating errors"],[14,"OVERSALES, booking errors"],[15,"BOARDING — discrepancies, paging, missing checked-in passenger"],[16,"Commercial publicity / passenger convenience, VIP, press, ground meals"],[17,"Catering order, not on board due to late or incorrect order"],[18,"BAGGAGE PROCESSING, sorting etc"],[19,"REDUCED MOBILITY — boarding/deboarding of passengers with reduced mobility"],[20,"Bass disturbances, breakdown or incorrect distribution"],[21,"DOCUMENTATION, errors etc. (cargo)"],[22,"Late positioning / late cargo delivery at loading area"],[24,"Inadequate packing"],[25,"OVERSALES, booking errors (cargo)"],[26,"Late preparation / lack of warehouse staff or sorting area"],[27,"Documentation/packing (mail)"],[28,"Late positioning / late mail delivery at loading area"],[29,"Late acceptance / acceptance of mail after the deadline"],[30,"Loading/unloading — lack of processing time due to special/bulky load"],[31,"Aircraft documentation / late or incorrect loadsheet, general dec"],[32,"LOADING/UNLOADING, bulky/special load, cabin load, lack of loading staff"],[33,"LOADING EQUIPMENT, lack of or breakdown, e.g. container pallet loader"],[34,"SERVICING EQUIPMENT, lack of or breakdown, e.g. steps, lack of staff"],[35,"AIRCRAFT CLEANING"],[36,"FUELING/DEFUELING, fuel supplier"],[37,"Catering, late delivery or loading"],[38,"ULD, Containers, pallets, lack of or breakdown"],[39,"Technical equipment, lack of or breakdown, e.g. pushback"],[41,"AIRCRAFT DEFECTS"],[42,"Scheduled maintenance, late release"],[43,"NON-SCHEDULED MAINTENANCE, special checks and/or additional works"],[44,"Spares and maintenance equipment, lack of or breakdown"],[45,"AOG Spares, to be carried to another station"],[46,"AIRCRAFT CHANGE, for technical reasons"],[47,"Standby aircraft, lack of planned standby aircraft for technical reasons"],[48,"Scheduled cabin configuration and version adjustment"],[51,"Damage during flight operations, bird/lightning strike, turbulence"],[52,"Damage during ground operations, collisions, loading/offloading damage"],[53,"Aircraft change or MX due to damage during flight operations"],[54,"Aircraft change or MX due to damage during ground operations"],[55,"Departure Control System, weight and balance, computer system error"],[56,"Cargo preparation/documentation system"],[57,"Flight plans"],[58,"Other computer systems"],[61,"Flight plan, late completion or change of flight documentation"],[62,"Operational requirements, fuel, load alteration"],[63,"LATE CREW BOARDING OR DEPARTURE PROCEDURES"],[64,"FLIGHT DECK CREW SHORTAGE, sickness, awaiting standby, FTL"],[65,"FLIGHT DECK CREW SPECIAL REQUEST, not within operational requirements"],[66,"LATE CABIN CREW BOARDING OR DEPARTURE PROCEDURES"],[67,"Cabin crew shortage"],[68,"CABIN CREW ERROR OR SPECIAL REQUEST, not within operational requirements"],[69,"Captain request for security check, extraordinary"],[71,"Weather — Departure station"],[72,"Weather — Destination station"],[73,"Weather — En route or Alternate"],[75,"Weather — De-icing of aircraft, removal of ice/snow/frost prevention"],[76,"Weather — Removal of snow/ice/water/sand from airport/runway"],[77,"Weather — Ground handling impaired by adverse weather conditions"],[81,"AIR TRAFFIC SERVICES, flow restrictions, slots, industrial action"],[82,"ATFM en-route"],[83,"ATFM due to restriction at destination"],[84,"ATFM due to weather at destination"],[85,"Mandatory security"],[86,"IMMIGRATION / CUSTOMS / HEALTH (and/or lack of staff)"],[87,"AIRPORT FACILITIES, parking stands, check-in and ramp congestion"],[88,"Restrictions at airport of destination, airport/runway closed"],[89,"Restrictions at airport of departure, airport/runway closed"],[91,"LOAD CONNECTION, awaiting load from another flight"],[92,"Through Check-in error, passenger and baggage"],[93,"AIRCRAFT ROTATION, late arrival of aircraft from another flight"],[94,"Cabin crew rotation"],[95,"CREW ROTATION, awaiting crew from another flight"],[96,"OPERATIONS CONTROL, re-routing, diversion, consolidation, aircraft change"],[97,"Industrial action within own airline"],[98,"Industrial action outside own airline, excluding ATS"],[99,"OTHER REASON, not matching any code above"]];
+
+function openDCRef(){
+  document.getElementById('dcrefOverlay').classList.add('open');
+  renderDCRef('');
+  setTimeout(function(){document.getElementById('dcrefSearch').focus();},200);
+}
+function closeDCRef(){
+  document.getElementById('dcrefOverlay').classList.remove('open');
+  document.getElementById('dcrefSearch').value='';
+}
+function filterDCRef(q){ renderDCRef(q); }
+function renderDCRef(q){
+  q=(q||'').toLowerCase().trim();
+  var body=document.getElementById('dcrefBody');
+  var cnt=document.getElementById('dcrefCount');
+  var rows=DC.filter(function(r){
+    if(!q)return true;
+    return String(r[0]).includes(q)||r[1].toLowerCase().includes(q);
+  });
+  cnt.textContent=rows.length+' of '+DC.length+' codes';
+  if(!rows.length){body.innerHTML='<div class="dcref-empty">No codes match</div>';return;}
+  var h='';
+  rows.forEach(function(r){
+    h+='<div class="dcref-row"><span class="dcref-code">'+r[0]+'</span><span class="dcref-def">'+r[1]+'</span></div>';
+  });
+  body.innerHTML=h;
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeDCRef();});
+</script>
+
 </body>
 </html>
