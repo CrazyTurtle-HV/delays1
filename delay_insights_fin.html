@@ -333,6 +333,63 @@ body::before{
 .sc-ruby{--sc-tint:#E20076}.sc-ruby::after{background:var(--ruby)}.sc-ruby .sc-val{color:var(--ruby)}
 .sc-pink{--sc-tint:#823CB4}.sc-pink::after{background:#823CB4}.sc-pink .sc-val{color:#5A1E8C}
 
+/* ── Punctuality strip (D0/D15/D30/OTP) ──
+   Narrower 4-up tiles with a mini progress fill behind the value. */
+.punc-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:640px){.punc-strip{grid-template-columns:1fr}}
+.punc-tile{position:relative;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.9);box-shadow:var(--shadow-sm);overflow:hidden}
+.punc-tile::before{content:'';position:absolute;inset:0 auto 0 0;width:var(--pw,0%);background:linear-gradient(90deg,var(--pcol1,rgba(0,171,97,.14)),var(--pcol2,rgba(0,171,97,.04)));transition:width .5s cubic-bezier(.22,1,.36,1)}
+.punc-tile > *{position:relative;z-index:1}
+.punc-lbl{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(20,13,138,.55);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.punc-lbl .punc-info{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;border-radius:50%;border:1px solid rgba(20,13,138,.3);font-family:'Manrope',system-ui,sans-serif;font-size:9px;font-weight:700;color:rgba(20,13,138,.5);cursor:help;text-transform:none;letter-spacing:0}
+.punc-val{font-family:'SohneBreit','Syne',system-ui,sans-serif;font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1;color:var(--navy)}
+.punc-val .punc-pct{font-size:14px;font-weight:600;margin-left:2px;opacity:.55}
+.punc-sub{font-size:10px;color:var(--ink-2);margin-top:4px;font-family:'JetBrains Mono',monospace;letter-spacing:.03em}
+.punc-tile.ptile-green{--pcol1:rgba(5,206,120,.18);--pcol2:rgba(5,206,120,.04)}
+.punc-tile.ptile-green .punc-val{color:#006B3E}
+.punc-tile.ptile-blue{--pcol1:rgba(43,91,232,.16);--pcol2:rgba(43,91,232,.04)}
+.punc-tile.ptile-blue .punc-val{color:var(--blue)}
+.punc-tile.ptile-peach{--pcol1:rgba(212,107,48,.18);--pcol2:rgba(212,107,48,.04)}
+.punc-tile.ptile-peach .punc-val{color:#9E4A18}
+.punc-tile.ptile-ruby{--pcol1:rgba(200,0,78,.18);--pcol2:rgba(200,0,78,.04)}
+.punc-tile.ptile-ruby .punc-val{color:var(--ruby)}
+
+/* ── Recurrence streak list ── */
+.streak-list{display:flex;flex-direction:column;gap:6px;margin-bottom:20px}
+.streak-row{display:grid;grid-template-columns:auto 72px minmax(0,1fr) auto;gap:14px;align-items:center;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.8);box-shadow:var(--shadow-sm);transition:transform .15s,box-shadow .15s}
+.streak-row:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(20,13,138,.08)}
+.streak-days{font-family:'SohneBreit','Syne',system-ui,sans-serif;font-size:22px;font-weight:800;color:var(--ruby);min-width:40px;line-height:1;letter-spacing:-.02em}
+.streak-days small{font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:500;color:rgba(20,13,138,.5);display:block;letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.streak-sta{font-weight:700;color:var(--navy);font-size:13px}
+.streak-code{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;background:rgba(20,13,138,.08);color:var(--navy);margin-left:8px}
+.streak-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,13,138,.55);letter-spacing:.02em}
+.streak-bar{width:90px;height:6px;background:rgba(20,13,138,.06);border-radius:3px;overflow:hidden}
+.streak-bar span{display:block;height:100%;background:linear-gradient(90deg,var(--peach),var(--ruby));border-radius:3px}
+.streak-ok{padding:14px;border-radius:10px;background:rgba(5,206,120,.06);border:1px dashed rgba(5,206,120,.3);font-size:12px;color:rgba(20,13,138,.7);text-align:center}
+
+/* ── Station responsibility mix bars ── */
+.resp-legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.8)}
+.resp-legend-item{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:var(--navy);font-weight:600}
+.resp-legend-sw{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.resp-mix-wrap{display:flex;flex-direction:column;gap:7px;margin-bottom:20px}
+.resp-row{display:grid;grid-template-columns:70px minmax(0,1fr) auto;gap:14px;align-items:center;padding:7px 12px;border-radius:8px;background:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.6)}
+.resp-row.is-network{background:rgba(20,13,138,.04);border:1px dashed rgba(20,13,138,.2);font-style:italic}
+.resp-sta{font-weight:700;color:var(--navy);font-size:12px;font-family:'JetBrains Mono',monospace}
+.resp-bar{display:flex;height:14px;border-radius:4px;overflow:hidden;background:rgba(20,13,138,.05)}
+.resp-seg{height:100%;transition:filter .15s;cursor:default}
+.resp-seg:hover{filter:brightness(1.15)}
+.resp-tot{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(20,13,138,.6);font-weight:600;white-space:nowrap}
+
+/* ── Hour × Weekday heatmap ── */
+.hw-wrap{overflow-x:auto;border-radius:var(--rad);background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.8);padding:12px;margin-bottom:20px}
+.hw-table{border-collapse:separate;border-spacing:2px;width:100%}
+.hw-th{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;color:rgba(20,13,138,.5);letter-spacing:.05em;padding:4px;text-align:center;min-width:24px}
+.hw-th-day{text-align:left;padding-right:8px;min-width:38px;font-weight:800;color:var(--navy);font-size:11px}
+.hw-cell{min-width:24px;height:22px;border-radius:4px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,13,138,.7);cursor:default;transition:transform .1s}
+.hw-cell:hover{transform:scale(1.15);z-index:1;position:relative}
+.hw-legend{display:flex;align-items:center;gap:8px;margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,13,138,.5)}
+.hw-legend-bar{width:140px;height:8px;border-radius:2px;background:linear-gradient(90deg,rgba(43,91,232,.08),rgba(200,0,78,.7))}
+
 /* ── Alert blocks ── */
 .alerts{display:flex;flex-direction:column;gap:8px;margin-bottom:28px}
 .alert{
@@ -545,6 +602,103 @@ tr.excluded td{opacity:.3;text-decoration:line-through}
 .conc-hi{color:var(--ruby);font-weight:700}.conc-mid{color:var(--peach);font-weight:700}
 .conc-pct{opacity:.6;font-size:10px;font-family:'JetBrains Mono',monospace}
 
+/* ── Heatmap toolbar (search + download) ── */
+.heat-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0 12px;padding:10px 12px;border-radius:var(--rad);background:rgba(255,255,255,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.8);box-shadow:var(--shadow-sm)}
+.heat-search-wrap{position:relative;flex:1 1 220px;min-width:200px;max-width:320px}
+.heat-search{width:100%;padding:8px 32px 8px 34px;border:1px solid rgba(20,13,138,.14);border-radius:8px;background:rgba(255,255,255,.85);font:500 12px/1.2 'Manrope',system-ui,sans-serif;color:var(--navy);outline:none;transition:border-color .15s,box-shadow .15s}
+.heat-search:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(43,91,232,.12)}
+.heat-search::placeholder{color:rgba(20,13,138,.4);font-weight:400}
+.heat-search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);pointer-events:none;color:rgba(20,13,138,.45);font-size:13px}
+.heat-search-clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:20px;height:20px;border:none;background:rgba(20,13,138,.08);border-radius:50%;color:var(--navy);cursor:pointer;font-size:11px;line-height:20px;padding:0;display:none;align-items:center;justify-content:center}
+.heat-search-clear:hover{background:rgba(200,0,78,.18);color:var(--ruby)}
+.heat-search-clear.on{display:flex}
+.heat-dl-btn{padding:8px 12px;border:1px solid rgba(20,13,138,.14);border-radius:8px;background:rgba(255,255,255,.85);font:600 11px/1 'Manrope',system-ui,sans-serif;color:var(--navy);cursor:pointer;letter-spacing:.02em;display:inline-flex;align-items:center;gap:6px;transition:all .15s}
+.heat-dl-btn:hover{background:var(--navy);color:#FEFCF8;border-color:var(--navy);transform:translateY(-1px);box-shadow:0 4px 12px rgba(20,13,138,.18)}
+.heat-dl-btn svg{width:13px;height:13px}
+.heat-dl-btn:disabled{cursor:wait;opacity:.85;transform:none !important;box-shadow:none !important}
+.heat-dl-btn:disabled:hover{background:rgba(255,255,255,.85);color:var(--navy);border-color:rgba(20,13,138,.14)}
+.heat-dl-btn.loading{background:linear-gradient(90deg,rgba(43,91,232,.08),rgba(200,0,78,.08),rgba(43,91,232,.08));background-size:200% 100%;animation:heatDlShimmer 1.8s ease-in-out infinite}
+@keyframes heatDlShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ── Organic loader: three morphing dots on a breathing ring ── */
+.heat-loader{display:inline-block;width:14px;height:14px;position:relative;flex-shrink:0}
+.heat-loader svg{width:100%;height:100%;overflow:visible}
+.heat-loader .hl-dot{fill:var(--navy);transform-origin:7px 7px;animation:heatLoaderPulse 1.4s cubic-bezier(.45,.05,.55,.95) infinite}
+.heat-loader .hl-dot:nth-child(1){animation-delay:0s}
+.heat-loader .hl-dot:nth-child(2){animation-delay:.18s}
+.heat-loader .hl-dot:nth-child(3){animation-delay:.36s}
+.heat-loader .hl-orbit{fill:none;stroke:var(--navy);stroke-width:1.2;opacity:.18;animation:heatLoaderOrbit 2.8s ease-in-out infinite}
+@keyframes heatLoaderPulse{
+  0%,100%{transform:scale(.55);opacity:.35}
+  45%{transform:scale(1.1);opacity:1}
+  70%{transform:scale(.7);opacity:.6}
+}
+@keyframes heatLoaderOrbit{
+  0%,100%{transform:rotate(0deg) scale(1)}
+  50%{transform:rotate(180deg) scale(1.12)}
+}
+.heat-loader-text{font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.heat-mode-banner{padding:10px 14px;border-radius:10px;background:linear-gradient(135deg,rgba(43,91,232,.08),rgba(200,0,78,.06));border:1px dashed rgba(43,91,232,.25);margin-bottom:12px;font-size:12px;color:var(--navy);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.heat-mode-banner strong{color:var(--ruby);font-family:'JetBrains Mono',monospace;font-size:13px}
+.heat-mode-banner .hm-meta{color:rgba(20,13,138,.6);font-size:11px;margin-left:auto}
+
+/* Highlight matching code column in search mode */
+.heat-th-code.heat-col-hit,.heat-td.heat-col-hit{background:rgba(200,0,78,.14) !important;box-shadow:inset 2px 0 0 var(--ruby),inset -2px 0 0 var(--ruby)}
+.heat-th-code.heat-col-hit{color:var(--ruby);background:rgba(200,0,78,.18) !important}
+
+/* Code-search result table styling */
+.heat-rank-td{padding:8px 10px;text-align:right;font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(20,13,138,.5);border-bottom:1px solid rgba(20,13,138,.04);width:42px}
+.heat-pct-bar-wrap{display:flex;align-items:center;gap:8px}
+.heat-pct-bar{flex:1;height:6px;background:rgba(20,13,138,.06);border-radius:3px;overflow:hidden;min-width:60px}
+.heat-pct-bar span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--ruby));border-radius:3px}
+.heat-pct-val{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;color:var(--navy);min-width:38px;text-align:right}
+
+/* Hide toolbar during PNG export for cleaner image */
+.heat-exporting .heat-tools{display:none !important}
+
+/* ── Global loader (floating pill, top-right) ──
+   Appears for slow operations: tab switches, filter apply, large renders.
+   Delayed-show (~120ms) so fast ops don't flicker it on/off. */
+#gLoader{
+  position:fixed;top:16px;right:16px;z-index:9500;
+  display:flex;align-items:center;gap:10px;
+  padding:9px 15px 9px 12px;border-radius:999px;
+  background:rgba(254,252,248,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(20,13,138,.1);
+  box-shadow:0 8px 24px -6px rgba(20,13,138,.18),0 2px 8px -2px rgba(20,13,138,.1);
+  font:600 12px/1 'Manrope',system-ui,sans-serif;color:var(--navy);
+  pointer-events:none;
+  opacity:0;transform:translateY(-6px) scale(.96);
+  transition:opacity .22s cubic-bezier(.22,1,.36,1),transform .22s cubic-bezier(.22,1,.36,1);
+}
+#gLoader.on{opacity:1;transform:translateY(0) scale(1)}
+#gLoader .gl-dots{display:inline-flex;width:16px;height:16px;flex-shrink:0}
+#gLoader .gl-dots svg{width:100%;height:100%;overflow:visible}
+#gLoader .gl-orbit{fill:none;stroke:var(--navy);stroke-width:1.2;opacity:.16;transform-origin:8px 8px;animation:gLoaderOrbit 2.6s ease-in-out infinite}
+#gLoader .gl-dot{fill:var(--navy);transform-origin:8px 8px;animation:gLoaderPulse 1.3s cubic-bezier(.45,.05,.55,.95) infinite}
+#gLoader .gl-dot:nth-child(2){animation-delay:0s}
+#gLoader .gl-dot:nth-child(3){animation-delay:.16s}
+#gLoader .gl-dot:nth-child(4){animation-delay:.32s}
+#gLoader .gl-label{letter-spacing:.01em;white-space:nowrap;max-width:280px;overflow:hidden;text-overflow:ellipsis}
+@keyframes gLoaderPulse{
+  0%,100%{transform:scale(.5);opacity:.3}
+  45%{transform:scale(1.05);opacity:1}
+  70%{transform:scale(.7);opacity:.55}
+}
+@keyframes gLoaderOrbit{
+  0%,100%{transform:rotate(0deg) scale(1)}
+  50%{transform:rotate(180deg) scale(1.14)}
+}
+@media(prefers-reduced-motion:reduce){
+  #gLoader{transition:opacity .12s linear}
+  #gLoader .gl-dot,#gLoader .gl-orbit{animation:none}
+  #gLoader .gl-dot{opacity:.7}
+}
+@media(max-width:500px){
+  #gLoader{top:10px;right:10px;padding:7px 12px 7px 10px;font-size:11px}
+  #gLoader .gl-label{max-width:180px}
+}
+
 /* ── Station trend select ── */
 #stTrendSel{font-family:'JetBrains Mono',monospace;font-size:11px;border:1px solid rgba(20,13,138,.18);border-radius:8px;padding:4px 10px;background:rgba(255,255,255,.7);color:var(--navy);outline:none;cursor:pointer;backdrop-filter:blur(8px)}
 
@@ -728,8 +882,22 @@ tr.excluded td{opacity:.3;text-decoration:line-through}
 </div><!-- /mainArea -->
 <div class="page-footer"><p>Transavia Ground Operations — Delay Insights</p></div>
 
+<!-- Global loader pill, shown for slow operations -->
+<div id="gLoader" role="status" aria-live="polite" aria-hidden="true">
+  <span class="gl-dots" aria-hidden="true">
+    <svg viewBox="0 0 16 16">
+      <circle class="gl-orbit" cx="8" cy="8" r="6"/>
+      <circle class="gl-dot" cx="2" cy="8" r="1.6"/>
+      <circle class="gl-dot" cx="8" cy="8" r="1.6"/>
+      <circle class="gl-dot" cx="14" cy="8" r="1.6"/>
+    </svg>
+  </span>
+  <span class="gl-label" id="gLoaderLabel">Working…</span>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
 /* SPLASH */
 var _splashDone=false;
@@ -789,6 +957,9 @@ var TABS=[
 ];
 var CUR='ov',CHARTS={},RAW=[],DATA=[],EXCLUDED=new Set();
 var PAL=['#00AB61','#0053FF','#E20076','#FF8867','#05CE78','#FF6B35','#0097A7','#7C5CE8','#D4A017','#140D8A'];
+/* Responsibility group labels (AHM 732: first character of delay code) */
+var RESP_LABELS={'A':'Airline','G':'Ground','W':'Weather','M':'Maintenance','C':'Crew','T':'ATC / ATFM','E':'Equipment','P':'Passenger','S':'Security','D':'Documentation'};
+var RESP_COLORS={'A':'#2B5BE8','G':'#00955A','W':'#0097A7','M':'#D46B30','C':'#7C5CE8','T':'#C8004E','E':'#D4A017','P':'#FF6B35','S':'#1E1660','D':'#05CE78'};
 
 (function(){
   var inner=document.getElementById('tabInner');
@@ -801,11 +972,54 @@ var PAL=['#00AB61','#0053FF','#E20076','#FF8867','#05CE78','#FF6B35','#0097A7','
   inner.addEventListener('click',function(e){var b=e.target.closest('[data-tid]');if(b)switchTab(b.getAttribute('data-tid'));});
 })();
 
+/* ── Global loader (see #gLoader in DOM) ──
+   __busy(label) shows the loader AFTER a short delay so fast actions don't flicker.
+   __idle() hides it and cancels a pending show. __run(label, fn) is a convenience
+   that wraps a sync function and yields two frames before running so the loader
+   has time to paint. */
+var _glShowTimer=null, _glDepth=0;
+function __busy(label){
+  _glDepth++;
+  var lbl=document.getElementById('gLoaderLabel');
+  if(lbl)lbl.textContent=label||'Working…';
+  if(_glShowTimer)return;
+  _glShowTimer=setTimeout(function(){
+    var el=document.getElementById('gLoader');
+    if(el){el.classList.add('on');el.setAttribute('aria-hidden','false');}
+    _glShowTimer=null;
+  },120);
+}
+function __idle(){
+  _glDepth=Math.max(0,_glDepth-1);
+  if(_glDepth>0)return;
+  if(_glShowTimer){clearTimeout(_glShowTimer);_glShowTimer=null;}
+  var el=document.getElementById('gLoader');
+  if(el){el.classList.remove('on');el.setAttribute('aria-hidden','true');}
+}
+/* Convenience wrapper: show loader, yield, run fn, hide loader.
+   Always hides even if fn throws. */
+function __run(label,fn){
+  __busy(label);
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      setTimeout(function(){
+        try{fn();}
+        catch(err){console.error(err);alert(err.message||String(err));}
+        finally{__idle();}
+      },16);
+    });
+  });
+}
+/* Map tab id → friendly label */
+var _TAB_LABELS={ov:'Overview',st:'Stations',tr:'Trends',cd:'Delay codes',ac:'Aircraft',rw:'Raw data'};
+
 function switchTab(id){
   CUR=id;
   document.querySelectorAll('.tab-btn').forEach(function(el){el.className='tab-btn'+(el.getAttribute('data-tid')===id?' on':'');});
   for(var i=0;i<TABS.length;i++){var pg=document.getElementById('p'+TABS[i].id);if(pg)pg.className='tab-page'+(TABS[i].id===id?' on':'');}
-  if(RAW.length)renderTab(id);
+  if(RAW.length){
+    __run('Loading '+(_TAB_LABELS[id]||'tab')+'…',function(){renderTab(id);});
+  }
 }
 
 /* COLUMNS */
@@ -1047,6 +1261,16 @@ function updateHeroStats(){
 }
 
 function applyF(){
+  __busy('Applying filters…');
+  /* Yield so the loader paints on large datasets */
+  requestAnimationFrame(function(){setTimeout(function(){
+    try{
+      _applyFImpl();
+    }catch(err){console.error(err);alert('Filter error: '+err.message);}
+    finally{__idle();}
+  },0);});
+}
+function _applyFImpl(){
   var cat=document.getElementById('fCa').value;
   var act=document.getElementById('fAc').value;
   var df=document.getElementById('fDf').value;
@@ -1105,6 +1329,138 @@ function durBar(dur,maxDur){
 }
 function rk(i){var cl=i===0?' rk1':i===1?' rk2':i===2?' rk3':'';return '<span class="rk'+cl+'">'+(i+1)+'</span>';}
 function pctBadge(p){var c=p>30?'br':p>10?'ba':'bg';return '<span class="badge '+c+'">'+p.toFixed(1)+'%</span>';}
+
+/* ── Shared analytics helpers ── */
+/* Parse a time value from a row into an integer hour 0..23, or -1 if unknown.
+   Handles:
+   - "HH:MM" or "HH.MM"   → 24h clock
+   - "0.4548611..."        → Excel time fraction (= 10.9 h)
+   - Numeric 0..1          → same
+   - Numeric >= 1 treated as already-parsed hour if < 24 */
+function parseHour(r){
+  var s=r.std||r.etd||'';
+  if(s===''||s==null)return -1;
+  /* If it looks like a bare number (no colon), try as Excel fraction/number */
+  if(typeof s==='number'||/^-?\d+(\.\d+)?$/.test(String(s).trim())){
+    var n=parseFloat(s);
+    if(!isFinite(n))return -1;
+    if(n>=0&&n<1){var h=Math.floor(n*24);return (h>=0&&h<24)?h:-1;}
+    if(n>=1&&n<24)return Math.floor(n);
+    return -1;
+  }
+  var mm=String(s).match(/(\d{1,2})[:\.](\d{2})/);
+  if(!mm)return -1;
+  var hh=parseInt(mm[1]);
+  return (hh>=0&&hh<24)?hh:-1;
+}
+/* Format any of those time representations as HH:MM for display. */
+function fmtTime(s){
+  if(s===''||s==null)return '';
+  if(typeof s==='number'||/^-?\d+(\.\d+)?$/.test(String(s).trim())){
+    var n=parseFloat(s);
+    if(!isFinite(n))return String(s);
+    if(n>=0&&n<1){
+      var total=n*24*60;
+      var hh=Math.floor(total/60), mm=Math.round(total-hh*60);
+      if(mm===60){hh++;mm=0;}
+      if(hh>=24)hh-=24;
+      return ('0'+hh).slice(-2)+':'+('0'+mm).slice(-2);
+    }
+    return String(s);
+  }
+  return String(s);
+}
+/* Compute D0/D15/D30/D60 + OTP(=D15) from current DATA.
+   If every row has dur>0, these describe "share of recorded delays ≤ N min"
+   (i.e. a severity mix). If the source file includes on-time rows (dur=0),
+   these are true on-time performance metrics. */
+function computePunctuality(rows){
+  var n=rows.length;
+  if(!n)return null;
+  var d0=0,d15=0,d30=0,d60=0;
+  for(var i=0;i<n;i++){
+    var d=rows[i].dur||0;
+    if(d<=0)d0++;
+    if(d<=15)d15++;
+    if(d<=30)d30++;
+    if(d<=60)d60++;
+  }
+  return{
+    n:n,
+    d0:(d0/n)*100, d15:(d15/n)*100, d30:(d30/n)*100, d60:(d60/n)*100,
+    hasOnTime:d0>0
+  };
+}
+/* Category breakdown: uses r.cat (the Category field from your source file).
+   Returns a mix object keyed by category string, plus total. */
+function computeRespMix(rows){
+  var out={}, tot=0;
+  for(var i=0;i<rows.length;i++){
+    var c=(rows[i].cat||'').trim();
+    if(!c)continue;
+    out[c]=(out[c]||0)+1;tot++;
+  }
+  return{mix:out,tot:tot};
+}
+/* Stable, attractive colour for any category string — hashed to a curated palette
+   so the same category always gets the same colour across tabs and sessions. */
+var CAT_PALETTE=['#2B5BE8','#00955A','#D46B30','#C8004E','#7C5CE8','#0097A7','#D4A017','#FF6B35','#05CE78','#823CB4','#1E1660','#E20076','#B8336A','#3A8F3A','#6B4423'];
+function catColor(cat){
+  if(!cat)return '#888';
+  var s=String(cat), h=0;
+  for(var i=0;i<s.length;i++){h=((h<<5)-h+s.charCodeAt(i))|0;}
+  return CAT_PALETTE[Math.abs(h)%CAT_PALETTE.length];
+}
+/* Recurrence streak detection: for each (station, code), find the longest
+   run of consecutive calendar days with ≥1 event, ending today or most
+   recently. Returns only streaks of ≥ minLen days. */
+function computeStreaks(rows,minLen){
+  minLen=minLen||3;
+  var groups={};
+  for(var i=0;i<rows.length;i++){
+    var r=rows[i];
+    if(!r.date||!r.frm||!r.dlc)continue;
+    var key=r.frm+'|'+r.dlc;
+    var day=r.date.getFullYear()+'-'+('0'+(r.date.getMonth()+1)).slice(-2)+'-'+('0'+r.date.getDate()).slice(-2);
+    if(!groups[key])groups[key]={st:r.frm,code:r.dlc,days:{},cnt:0};
+    groups[key].days[day]=(groups[key].days[day]||0)+1;
+    groups[key].cnt++;
+  }
+  var streaks=[];
+  Object.keys(groups).forEach(function(k){
+    var g=groups[k];
+    var sortedDays=Object.keys(g.days).sort();
+    if(sortedDays.length<minLen)return;
+    /* Find longest run of consecutive days */
+    var best=1,cur=1,bestEnd=sortedDays[0],curStart=sortedDays[0],bestStart=sortedDays[0];
+    for(var j=1;j<sortedDays.length;j++){
+      var prev=new Date(sortedDays[j-1]+'T00:00:00');
+      var now=new Date(sortedDays[j]+'T00:00:00');
+      var diff=Math.round((now-prev)/86400000);
+      if(diff===1){
+        cur++;
+        if(cur>best){best=cur;bestEnd=sortedDays[j];bestStart=curStart;}
+      }else{
+        cur=1;curStart=sortedDays[j];
+      }
+    }
+    if(best>=minLen){
+      var eventsInStreak=0;
+      var d=new Date(bestStart+'T00:00:00');
+      for(var k2=0;k2<best;k2++){
+        var dk=d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);
+        eventsInStreak+=g.days[dk]||0;
+        d.setDate(d.getDate()+1);
+      }
+      streaks.push({st:g.st,code:g.code,days:best,start:bestStart,end:bestEnd,events:eventsInStreak,totalEvents:g.cnt});
+    }
+  });
+  streaks.sort(function(a,b){
+    if(b.days!==a.days)return b.days-a.days;
+    return b.events-a.events;
+  });
+  return streaks;
+}
 function renderTab(t){if(!RAW.length)return;var fn={ov:rOv,st:rSt,tr:rTr,cd:rCd,ac:rAc,rw:rRw};if(fn[t])fn[t]();}
 
 /* ── OVERVIEW ── */
@@ -1143,6 +1499,34 @@ function rOv(){
     h+='<div class="sc '+c.cls+'" style="animation-delay:'+c.dl+'"><div class="sc-lbl">'+c.lbl+'</div><div class="sc-val">'+esc(String(c.val))+'</div><div class="sc-sub">'+c.sub+'</div></div>';
   }
   h+='</div>';
+
+  /* ── Punctuality tiles (D0/D15/D30/OTP) ── */
+  var punc=computePunctuality(DATA);
+  if(punc){
+    var tip=punc.hasOnTime
+      ?'Dataset includes on-time flights — these are true on-time performance metrics.'
+      :'Dataset contains only recorded delay events, so these show the severity mix: what share of recorded delays fell within each threshold.';
+    var puncHdr=sHd('Punctuality',(punc.hasOnTime?'true OTP':'severity mix')+' · '+N.toLocaleString()+' events');
+    h+=puncHdr;
+    var tiles=[
+      {lbl:'OTP15',val:punc.d15,sub:'≤ 15 min (on-time)',cls:'ptile-green',info:tip},
+      {lbl:'D30',val:punc.d30,sub:'≤ 30 min',cls:'ptile-peach',info:'Share of events resolved within 30 min.'},
+      {lbl:'D60',val:punc.d60,sub:'≤ 60 min',cls:'ptile-ruby',info:'Share of events resolved within 60 min.'}
+    ];
+    h+='<div class="punc-strip">';
+    tiles.forEach(function(t){
+      var pw=Math.max(0,Math.min(100,t.val));
+      h+='<div class="punc-tile '+t.cls+'" style="--pw:'+pw.toFixed(1)+'%">'+
+           '<div class="punc-lbl">'+t.lbl+'<span class="punc-info" title="'+esc(t.info)+'">?</span></div>'+
+           '<div class="punc-val">'+t.val.toFixed(1)+'<span class="punc-pct">%</span></div>'+
+           '<div class="punc-sub">'+t.sub+'</div>'+
+         '</div>';
+    });
+    h+='</div>';
+  }
+
+  /* ── Recurrence streaks removed ── */
+
   if(alerts.length){
     h+=sHd('Observations',alerts.length+' insights');
     h+='<div class="alerts">';
@@ -1199,6 +1583,73 @@ function rSt(){
   var h=sHd('Station Performance',Object.keys(stS).length+' stations',chips);
   h+='<div class="g2"><div class="cc" style="animation-delay:.05s"><div class="cc-hd"><div class="cc-title"><span class="cc-accent" style="background:var(--peach)"></span>Events by Station</div></div><div class="cw" style="height:'+ht+'px"><canvas id="st-ev"></canvas></div></div>';
   h+='<div class="cc" style="animation-delay:.12s"><div class="cc-hd"><div class="cc-title"><span class="cc-accent" style="background:var(--blue)"></span>Avg Duration</div></div><div class="cw" style="height:'+ht+'px"><canvas id="st-avg"></canvas></div></div></div>';
+
+  /* ── Category mix per station vs network — 100% stacked horizontal bar ── */
+  var netResp=computeRespMix(DATA);
+  var respOrder=Object.keys(netResp.mix).sort(function(a,b){return netResp.mix[b]-netResp.mix[a];});
+  var catChartCfg=null;
+  if(respOrder.length){
+    /* Cap at top 10 categories; bucket the rest as "Other". */
+    var LEGEND_MAX=10;
+    var mainCats=respOrder.slice(0,LEGEND_MAX);
+    var hasOther=respOrder.length>LEGEND_MAX;
+
+    h+=sHd('Category mix','network + top '+Math.min(sorted.length,15)+' stations · '+respOrder.length+' categor'+(respOrder.length===1?'y':'ies'));
+
+    /* Build chart rows: Network first, then top stations (reuse `sorted` order but cap at 15) */
+    var catStations=sorted.slice(0,15);
+    var labels=['NETWORK'].concat(catStations.map(function(e){return e[0];}));
+
+    /* Compute % per (row, category) — rows sum to 100 */
+    function rowPcts(rows){
+      var mix=computeRespMix(rows);
+      if(!mix.tot)return{pcts:[],tot:0,otherPct:0};
+      var pcts=mainCats.map(function(c){return ((mix.mix[c]||0)/mix.tot)*100;});
+      var otherCnt=0;
+      if(hasOther)respOrder.slice(LEGEND_MAX).forEach(function(c){otherCnt+=(mix.mix[c]||0);});
+      return{pcts:pcts,tot:mix.tot,otherPct:hasOther?(otherCnt/mix.tot)*100:0};
+    }
+    var rows=[rowPcts(DATA)];
+    catStations.forEach(function(e){
+      var stR=DATA.filter(function(r){return r.frm===e[0];});
+      rows.push(rowPcts(stR));
+    });
+
+    /* Chart.js datasets: one per category */
+    var datasets=mainCats.map(function(cat,ci){
+      return{
+        label:cat,
+        data:rows.map(function(r){return r.pcts[ci]||0;}),
+        backgroundColor:catColor(cat),
+        borderColor:'rgba(255,255,255,.8)',
+        borderWidth:1,
+        stack:'mix'
+      };
+    });
+    if(hasOther){
+      datasets.push({
+        label:'Other ('+(respOrder.length-LEGEND_MAX)+')',
+        data:rows.map(function(r){return r.otherPct;}),
+        backgroundColor:'#B0B0B0',
+        borderColor:'rgba(255,255,255,.8)',
+        borderWidth:1,
+        stack:'mix'
+      });
+    }
+
+    /* Chart height scales with row count, 32px per row + overhead */
+    var catHt=Math.max(220,Math.min(labels.length*34+80,640));
+    h+='<div class="cc"><div class="cc-hd"><div class="cc-title"><span class="cc-accent" style="background:var(--blue)"></span>Share of delays by category</div></div>';
+    h+='<div class="cw" style="height:'+catHt+'px"><canvas id="st-catmix"></canvas></div></div>';
+
+    /* Stash config for later mkC call inside rAF */
+    catChartCfg={
+      labels:labels,
+      datasets:datasets,
+      rows:rows
+    };
+  }
+
   h+=sHd('Delay Trend at Station');
   h+='<div class="cc" style="margin-bottom:14px"><div class="cc-hd" style="justify-content:space-between;flex-wrap:wrap;gap:8px"><div class="cc-title"><span class="cc-accent" style="background:#2B5BE8"></span>Monthly delays at station</div><select id="stTrendSel" onchange="renderStTrend()" style="font-family:var(--mono);font-size:11px;border:1px solid rgba(30,22,96,.12);border-radius:6px;padding:4px 10px;background:var(--w);color:var(--n);outline:none;cursor:pointer">';
   sorted.forEach(function(e){h+='<option value="'+esc(e[0])+'">'+esc(e[0])+' ('+e[1].cnt+' events)</option>';});
@@ -1240,6 +1691,61 @@ function rSt(){
     function hb(lbl,data){return{type:'bar',data:{labels:labels,datasets:[{label:lbl,data:data,backgroundColor:bgC,borderColor:bdC,borderWidth:2,borderRadius:8}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{color:'rgba(20,13,138,.05)'}},y:{grid:{display:false},ticks:{font:{size:11,weight:'700'}}}}}};}
     mkC('st-ev',hb('Events',sorted.map(function(e){return e[1].cnt;})));
     mkC('st-avg',hb('Avg min',sorted.map(function(e){return e[1].avg;})));
+
+    /* Category mix 100% stacked bar */
+    if(catChartCfg){
+      mkC('st-catmix',{
+        type:'bar',
+        data:{labels:catChartCfg.labels,datasets:catChartCfg.datasets},
+        options:{
+          indexAxis:'y',
+          responsive:true,
+          maintainAspectRatio:false,
+          plugins:{
+            legend:{
+              position:'bottom',
+              labels:{font:{size:11},boxWidth:12,padding:10,usePointStyle:true,pointStyle:'rect'}
+            },
+            tooltip:{
+              callbacks:{
+                label:function(ctx){
+                  var pct=ctx.parsed.x;
+                  var row=catChartCfg.rows[ctx.dataIndex];
+                  var evtTot=row?row.tot:0;
+                  var evt=Math.round((pct/100)*evtTot);
+                  return ctx.dataset.label+': '+pct.toFixed(1)+'% · '+evt.toLocaleString()+' event'+(evt===1?'':'s');
+                },
+                footer:function(items){
+                  if(!items.length)return '';
+                  var i=items[0].dataIndex;
+                  var row=catChartCfg.rows[i];
+                  return row?('Total: '+row.tot.toLocaleString()+' events'):'';
+                }
+              }
+            }
+          },
+          scales:{
+            x:{
+              stacked:true,
+              min:0,max:100,
+              grid:{color:'rgba(20,13,138,.05)'},
+              ticks:{font:{size:10},callback:function(v){return v+'%';}}
+            },
+            y:{
+              stacked:true,
+              grid:{display:false},
+              ticks:{
+                font:function(ctx){
+                  /* Network row (index 0) bolder */
+                  return{size:11,weight:ctx.index===0?'800':'600'};
+                },
+                color:function(ctx){return ctx.index===0?'#C8004E':'#140D8A';}
+              }
+            }
+          }
+        }
+      });
+    }
   });
 }
 
@@ -1309,6 +1815,535 @@ function exportChartData(chartId,title){
   XLSX.writeFile(wb,'Chart_'+title.replace(/[^a-z0-9]/gi,'_')+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
 }
 
+/* ── Heatmap download: shared loading-state helpers ──
+   Swaps a button into an "organic" loading state and back again. Yields two
+   animation frames before the heavy work so the loader actually paints first. */
+function _heatBtnBusy(btnId,label){
+  var btn=document.getElementById(btnId);
+  if(!btn)return null;
+  btn.disabled=true;
+  btn.classList.add('loading');
+  /* Remember original children to restore later */
+  btn._origHTML=btn.innerHTML;
+  btn.innerHTML=
+    '<span class="heat-loader" aria-hidden="true">'+
+      '<svg viewBox="0 0 14 14">'+
+        '<circle class="hl-orbit" cx="7" cy="7" r="5.5"/>'+
+        '<circle class="hl-dot" cx="1.5" cy="7" r="1.5"/>'+
+        '<circle class="hl-dot" cx="7" cy="7" r="1.5"/>'+
+        '<circle class="hl-dot" cx="12.5" cy="7" r="1.5"/>'+
+      '</svg>'+
+    '</span>'+
+    '<span class="heat-loader-text">'+(label||'Working…')+'</span>';
+  return btn;
+}
+function _heatBtnIdle(btn){
+  if(!btn)return;
+  btn.disabled=false;
+  btn.classList.remove('loading');
+  if(btn._origHTML){btn.innerHTML=btn._origHTML;delete btn._origHTML;}
+}
+/* Yield to browser so the loader paints, then run the work. */
+function _heatYieldThen(fn){
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){
+      /* Small extra delay so the second frame actually commits on slower devices */
+      setTimeout(fn,16);
+    });
+  });
+}
+
+/* ── Heatmap download: Excel ──
+   Exports whichever mode is currently active (default grid, or code-search result). */
+function dlHeatXlsx(){
+  if(!DATA.length){alert('No data to export.');return;}
+  var btn=_heatBtnBusy('heatDlXlsx','Building…');
+  _heatYieldThen(function(){
+    try{
+      _dlHeatXlsxImpl();
+    }catch(err){
+      console.error(err);alert('Excel export failed: '+err.message);
+    }finally{
+      _heatBtnIdle(btn);
+    }
+  });
+}
+function _dlHeatXlsxImpl(){
+  try{
+    var N=DATA.length;
+    var cM={};DATA.forEach(function(r){if(r.dlc)cM[r.dlc]=(cM[r.dlc]||0)+1;});
+    var stM2={};DATA.forEach(function(r){if(r.frm)stM2[r.frm]=(stM2[r.frm]||0)+1;});
+    var allSt=Object.keys(stM2).filter(function(k){return stM2[k]>=3;}).sort(function(a,b){return stM2[b]-stM2[a];});
+
+    var wb=XLSX.utils.book_new();
+    var stamp=new Date().toISOString().slice(0,10);
+    var fname;
+
+    var filterActive=heatCodeFilter.length>0;
+    var filteredCode=null;
+    if(filterActive){
+      if(cM[heatCodeFilter]!=null)filteredCode=heatCodeFilter;
+      else{
+        var sorted=Object.keys(cM).sort();
+        var hit=sorted.filter(function(c){return c.indexOf(heatCodeFilter)===0;});
+        if(hit.length)filteredCode=hit[0];
+      }
+    }
+
+    if(filteredCode){
+      /* Single-code search export */
+      var codeRows=DATA.filter(function(r){return r.dlc===filteredCode;});
+      var codeTotal=codeRows.length;
+      var byStation={};
+      codeRows.forEach(function(r){
+        if(!r.frm)return;
+        if(!byStation[r.frm])byStation[r.frm]={cnt:0,durs:[],tot:0};
+        byStation[r.frm].cnt++;byStation[r.frm].durs.push(r.dur||0);byStation[r.frm].tot+=(r.dur||0);
+      });
+      var rows=[['Rank','Station','Events of '+filteredCode,'% of code network-wide','Station total delays','% of station','Avg duration (min)','P90 duration (min)','Total minutes']];
+      var list=Object.keys(byStation).map(function(st){
+        var b=byStation[st];
+        var durs=b.durs.slice().sort(function(a,b){return a-b;});
+        return{st:st,cnt:b.cnt,tot:b.tot,avg:b.tot/b.cnt,p90:durs[Math.floor(durs.length*0.9)]||0,stTotal:stM2[st]||b.cnt};
+      }).sort(function(a,b){return b.cnt-a.cnt;});
+      list.forEach(function(r,i){
+        rows.push([i+1,r.st,r.cnt,
+          +((r.cnt/codeTotal)*100).toFixed(2),
+          r.stTotal,
+          +((r.cnt/r.stTotal)*100).toFixed(2),
+          +r.avg.toFixed(1),+r.p90.toFixed(1),r.tot]);
+      });
+      /* Summary row */
+      rows.push([]);
+      rows.push(['Summary','Code',filteredCode,'Total events',codeTotal,'Stations affected',list.length,'Network share %',+((codeTotal/N)*100).toFixed(2)]);
+      var ws=XLSX.utils.aoa_to_sheet(rows);
+      ws['!cols']=[{wch:6},{wch:12},{wch:18},{wch:22},{wch:20},{wch:14},{wch:18},{wch:18},{wch:14}];
+      XLSX.utils.book_append_sheet(wb,ws,('Code '+filteredCode).slice(0,31));
+      fname='Heatmap_Code_'+filteredCode.replace(/[^a-z0-9]/gi,'_')+'_'+stamp+'.xlsx';
+    } else {
+      /* Full heatmap export: station × code counts + concentration */
+      var top12=Object.keys(cM).map(function(k){return[k,cM[k]];})
+                .sort(function(a,b){return b[1]-a[1];}).slice(0,12).map(function(e){return e[0];});
+      var hdr=['Station','Events (total)','Top code','Top-code share %'].concat(top12);
+      var rows=[hdr];
+      /* add totals row */
+      var codeTotals=top12.map(function(c){return cM[c]||0;});
+      allSt.forEach(function(st){
+        var stRows=DATA.filter(function(r){return r.frm===st;});
+        var stTot=stRows.length;
+        var stCM={};stRows.forEach(function(r){stCM[r.dlc]=(stCM[r.dlc]||0)+1;});
+        var topE=Object.keys(stCM).map(function(k){return[k,stCM[k]];}).sort(function(a,b){return b[1]-a[1];})[0];
+        var topCode=topE?topE[0]:'—';
+        var topShare=topE?+((topE[1]/stTot)*100).toFixed(1):0;
+        var row=[st,stTot,topCode,topShare];
+        top12.forEach(function(c){row.push(stCM[c]||0);});
+        rows.push(row);
+      });
+      rows.push([]);
+      rows.push(['NETWORK TOTAL',N,'','',].concat(codeTotals));
+      var ws=XLSX.utils.aoa_to_sheet(rows);
+      ws['!cols']=[{wch:14},{wch:14},{wch:12},{wch:18}].concat(top12.map(function(){return{wch:10};}));
+      XLSX.utils.book_append_sheet(wb,ws,'Heatmap');
+
+      /* Sheet 2: full station × code pivot (all codes) */
+      var allCodes=Object.keys(cM).sort();
+      var hdr2=['Station','Events'].concat(allCodes);
+      var rows2=[hdr2];
+      allSt.forEach(function(st){
+        var stRows=DATA.filter(function(r){return r.frm===st;});
+        var stCM={};stRows.forEach(function(r){stCM[r.dlc]=(stCM[r.dlc]||0)+1;});
+        var row=[st,stRows.length];
+        allCodes.forEach(function(c){row.push(stCM[c]||0);});
+        rows2.push(row);
+      });
+      var ws2=XLSX.utils.aoa_to_sheet(rows2);
+      ws2['!cols']=[{wch:14},{wch:12}].concat(allCodes.map(function(){return{wch:8};}));
+      XLSX.utils.book_append_sheet(wb,ws2,'Full pivot (all codes)');
+      fname='Heatmap_Full_'+stamp+'.xlsx';
+    }
+    XLSX.writeFile(wb,fname);
+  }catch(err){
+    console.error(err);alert('Excel export failed: '+err.message);
+  }
+}
+
+/* ── Heatmap download: PNG (high-resolution) ──
+   Renders heatmap directly to canvas at 2–3× device pixel ratio. */
+function dlHeatPng(){
+  if(!DATA.length){alert('No data to export.');return;}
+  var btn=_heatBtnBusy('heatDlPng','Rendering…');
+  _heatYieldThen(function(){
+    try{
+      var canvas=renderHeatmapToCanvas();
+      var stamp=new Date().toISOString().slice(0,10);
+      var fname='Heatmap'+(heatCodeFilter?'_Code_'+heatCodeFilter.replace(/[^a-z0-9]/gi,'_'):'_Full')+'_'+stamp+'.png';
+      canvas.toBlob(function(blob){
+        if(!blob){alert('PNG export failed (toBlob returned null).');_heatBtnIdle(btn);return;}
+        var url=URL.createObjectURL(blob);
+        var a=document.createElement('a');
+        a.href=url;a.download=fname;
+        document.body.appendChild(a);a.click();
+        setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},0);
+        _heatBtnIdle(btn);
+      },'image/png');
+    }catch(err){
+      console.error('PNG render failed:',err);
+      alert('PNG export failed: '+err.message);
+      _heatBtnIdle(btn);
+    }
+  });
+}
+
+/* Canvas renderer that rebuilds the heatmap from the underlying data (not the DOM).
+   Produces a pixel-crisp PNG at 2x device pixel ratio. */
+function renderHeatmapToCanvas(){
+  var N=DATA.length;
+  if(!N)throw new Error('No data');
+
+  /* ── Same data prep as rCd() heatmap section ── */
+  var cM={};DATA.forEach(function(r){if(r.dlc)cM[r.dlc]=(cM[r.dlc]||0)+1;});
+  var stM2={};DATA.forEach(function(r){if(r.frm)stM2[r.frm]=(stM2[r.frm]||0)+1;});
+  var allStations=Object.keys(stM2).filter(function(k){return stM2[k]>=3;})
+                   .sort(function(a,b){return stM2[b]-stM2[a];});
+
+  var filterActive=heatCodeFilter.length>0;
+  var filteredCode=null;
+  if(filterActive){
+    if(cM[heatCodeFilter]!=null)filteredCode=heatCodeFilter;
+    else{
+      var sorted=Object.keys(cM).sort();
+      var hit=sorted.filter(function(c){return c.indexOf(heatCodeFilter)===0;});
+      if(hit.length)filteredCode=hit[0];
+    }
+  }
+
+  /* ── Common canvas setup ── */
+  var dpr=Math.max(2,Math.min(3,(window.devicePixelRatio||1)*2));
+  var bg='#FEFCF8', ink='#140D8A', inkMuted='rgba(20,13,138,.55)';
+  var padL=28,padR=28,padT=24,padB=24;
+
+  function setFont(ctx,weight,size,family){
+    ctx.font=weight+' '+size+'px '+(family||'Manrope,system-ui,sans-serif');
+  }
+  function measureText(ctx,t){return ctx.measureText(t).width;}
+  function createCanvas(W,H){
+    var c=document.createElement('canvas');
+    c.width=Math.ceil(W*dpr);c.height=Math.ceil(H*dpr);
+    c.style.width=W+'px';c.style.height=H+'px';
+    var ctx=c.getContext('2d');
+    ctx.scale(dpr,dpr);
+    ctx.textBaseline='middle';
+    return {c:c,ctx:ctx};
+  }
+  function truncate(ctx,text,maxW){
+    if(measureText(ctx,text)<=maxW)return text;
+    var t=text;
+    while(t.length>1 && measureText(ctx,t+'…')>maxW)t=t.slice(0,-1);
+    return t+'…';
+  }
+
+  /* Header / title strings */
+  var filteredLabel=filteredCode?(' — Code '+filteredCode):'';
+  var title='Code × Station Heatmap'+filteredLabel;
+  var subtitle=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+
+  if(filteredCode){
+    /* ═══════════════════ CODE-SEARCH MODE ═══════════════════ */
+    var codeRows=DATA.filter(function(r){return r.dlc===filteredCode;});
+    var codeTotal=codeRows.length;
+    var catLbl='';
+    var catFound=codeRows.find(function(r){return r.cat;});
+    if(catFound)catLbl=catFound.cat;
+    var codeGlobalPct=(codeTotal/N)*100;
+    var byStation={};
+    codeRows.forEach(function(r){
+      if(!r.frm)return;
+      if(!byStation[r.frm])byStation[r.frm]={cnt:0,durs:[],tot:0};
+      byStation[r.frm].cnt++;byStation[r.frm].durs.push(r.dur||0);byStation[r.frm].tot+=(r.dur||0);
+    });
+    var rows=Object.keys(byStation).map(function(st){
+      var b=byStation[st];
+      var durs=b.durs.slice().sort(function(a,b){return a-b;});
+      var stTotal=stM2[st]||b.cnt;
+      return{
+        st:st,cnt:b.cnt,avg:b.tot/b.cnt,
+        p90:durs[Math.floor(durs.length*0.9)]||0,
+        stTotal:stTotal,
+        localPct:(b.cnt/stTotal)*100,
+        shareOfCode:(b.cnt/codeTotal)*100
+      };
+    }).sort(function(a,b){return b.cnt-a.cnt;});
+
+    /* Column layout */
+    var cols=[
+      {k:'rank',w:42,a:'right',label:'#'},
+      {k:'st',w:90,a:'left',label:'Station'},
+      {k:'cnt',w:90,a:'right',label:'Events'},
+      {k:'shareOfCode',w:130,a:'right',label:'% of code'},
+      {k:'localPct',w:120,a:'right',label:'% of station'},
+      {k:'stTotal',w:110,a:'right',label:'Station total'},
+      {k:'avg',w:100,a:'right',label:'Avg (min)'},
+      {k:'p90',w:100,a:'right',label:'P90 (min)'}
+    ];
+    var tableW=cols.reduce(function(s,c){return s+c.w;},0);
+    var W=padL+padR+tableW;
+    var titleH=28, subH=20, bannerH=56, gap=12;
+    var headerH=36, rowH=28;
+    var H=padT+titleH+6+subH+gap+bannerH+gap+headerH+rowH*rows.length+padB;
+
+    var obj=createCanvas(W,H), ctx=obj.ctx;
+    ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+    var y=padT;
+    /* Title */
+    ctx.fillStyle=ink;setFont(ctx,'800',20);
+    ctx.textAlign='left';ctx.fillText(title,padL,y+titleH/2);
+    y+=titleH+6;
+    /* Subtitle */
+    ctx.fillStyle=inkMuted;setFont(ctx,'500',11,'JetBrains Mono,monospace');
+    ctx.fillText(subtitle,padL,y+subH/2);
+    y+=subH+gap;
+    /* Banner */
+    ctx.fillStyle='#F2EFFB';
+    roundRect(ctx,padL,y,tableW,bannerH,10);ctx.fill();
+    ctx.strokeStyle='rgba(43,91,232,.25)';ctx.lineWidth=1;ctx.setLineDash([4,3]);
+    roundRect(ctx,padL,y,tableW,bannerH,10);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle=ink;setFont(ctx,'600',13);ctx.textAlign='left';
+    ctx.fillText('Showing stations by occurrence of ',padL+14,y+18);
+    var prefixW=measureText(ctx,'Showing stations by occurrence of ');
+    ctx.fillStyle='#C8004E';setFont(ctx,'700',14,'JetBrains Mono,monospace');
+    ctx.fillText(filteredCode,padL+14+prefixW,y+18);
+    if(catLbl){
+      ctx.fillStyle=inkMuted;setFont(ctx,'400',11);
+      ctx.fillText(truncate(ctx,catLbl,tableW-28),padL+14,y+38);
+    }
+    var statLine=codeTotal.toLocaleString()+' events · '+codeGlobalPct.toFixed(1)+'% of all delays · '+rows.length+' stations affected';
+    ctx.fillStyle=inkMuted;setFont(ctx,'500',10,'JetBrains Mono,monospace');
+    ctx.textAlign='right';ctx.fillText(statLine,padL+tableW-14,y+38);
+    y+=bannerH+gap;
+
+    /* Header */
+    ctx.fillStyle='#F0E8D8';ctx.fillRect(padL,y,tableW,headerH);
+    ctx.strokeStyle='rgba(20,13,138,.14)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+    ctx.beginPath();ctx.moveTo(padL,y+headerH-.5);ctx.lineTo(padL+tableW,y+headerH-.5);ctx.stroke();ctx.setLineDash([]);
+    ctx.fillStyle='rgba(20,13,138,.55)';setFont(ctx,'700',10,'JetBrains Mono,monospace');
+    var cx=padL;
+    cols.forEach(function(col){
+      ctx.textAlign=col.a;
+      var tx=col.a==='left'?cx+12:col.a==='right'?cx+col.w-12:cx+col.w/2;
+      ctx.fillText(col.label.toUpperCase(),tx,y+headerH/2);
+      cx+=col.w;
+    });
+    y+=headerH;
+
+    /* Rows */
+    var maxCnt=rows.length?rows[0].cnt:1;
+    rows.forEach(function(r,i){
+      /* Row bg from event intensity on the Events column */
+      var intensity=r.cnt/maxCnt;
+      cx=padL;
+      cols.forEach(function(col){
+        var val, text, color=ink, weight='500', fam='Manrope,system-ui,sans-serif', size=12;
+        if(col.k==='rank'){text=String(i+1);color='rgba(20,13,138,.5)';size=11;fam='JetBrains Mono,monospace';}
+        else if(col.k==='st'){text=r.st;weight='700';color=ink;}
+        else if(col.k==='cnt'){
+          text=String(r.cnt);weight='700';color=ink;size=12;fam='JetBrains Mono,monospace';
+          /* cell background */
+          ctx.fillStyle='rgba(200,0,78,'+(.06+intensity*.35).toFixed(3)+')';
+          ctx.fillRect(cx,y,col.w,rowH);
+        }
+        else if(col.k==='shareOfCode'){
+          text=r.shareOfCode.toFixed(1)+'%';weight='700';color=ink;fam='JetBrains Mono,monospace';size=11;
+          /* mini bar inside cell */
+          var barW=Math.min(70,col.w-60);
+          var barX=cx+8, barY=y+rowH/2-3;
+          ctx.fillStyle='rgba(20,13,138,.08)';
+          roundRect(ctx,barX,barY,barW,6,3);ctx.fill();
+          var fillW=Math.max(2,(r.shareOfCode/100)*barW);
+          var grad=ctx.createLinearGradient(barX,0,barX+barW,0);
+          grad.addColorStop(0,'#2B5BE8');grad.addColorStop(1,'#C8004E');
+          ctx.fillStyle=grad;
+          roundRect(ctx,barX,barY,fillW,6,3);ctx.fill();
+          /* value to right of bar */
+          ctx.fillStyle=ink;setFont(ctx,'700',11,'JetBrains Mono,monospace');
+          ctx.textAlign='right';
+          ctx.fillText(text,cx+col.w-10,y+rowH/2);
+          cx+=col.w;
+          return; /* skip normal text draw */
+        }
+        else if(col.k==='localPct'){
+          var isOver=r.localPct>codeGlobalPct*1.5 && r.localPct>5;
+          text=r.localPct.toFixed(1)+'%'+(isOver?' ▲':'');
+          color=isOver?'#C8004E':ink;weight=isOver?'700':'500';
+          fam='JetBrains Mono,monospace';size=11;
+        }
+        else if(col.k==='stTotal'){text=r.stTotal.toLocaleString();color=inkMuted;size=11;fam='JetBrains Mono,monospace';}
+        else if(col.k==='avg'){text=r.avg.toFixed(0);color=ink;size=11;fam='JetBrains Mono,monospace';}
+        else if(col.k==='p90'){text=r.p90.toFixed(0);color='#C8004E';weight='700';size=11;fam='JetBrains Mono,monospace';}
+
+        ctx.fillStyle=color;setFont(ctx,weight,size,fam);
+        ctx.textAlign=col.a;
+        var tx=col.a==='left'?cx+12:col.a==='right'?cx+col.w-12:cx+col.w/2;
+        ctx.fillText(text,tx,y+rowH/2);
+        cx+=col.w;
+      });
+      /* Row separator */
+      ctx.strokeStyle='rgba(20,13,138,.06)';ctx.lineWidth=1;
+      ctx.beginPath();ctx.moveTo(padL,y+rowH-.5);ctx.lineTo(padL+tableW,y+rowH-.5);ctx.stroke();
+      y+=rowH;
+    });
+
+    /* Table border */
+    ctx.strokeStyle='rgba(20,13,138,.12)';ctx.lineWidth=1;
+    ctx.strokeRect(padL+.5, padT+titleH+6+subH+gap+bannerH+gap+.5, tableW-1, headerH+rowH*rows.length-1);
+
+    return obj.c;
+  }
+
+  /* ═══════════════════ DEFAULT MODE: top-12 codes × stations grid ═══════════════════ */
+  var top12codes=Object.keys(cM).map(function(k){return[k,cM[k]];})
+                  .sort(function(a,b){return b[1]-a[1];}).slice(0,12).map(function(e){return e[0];});
+  var heatData=allStations.map(function(st){
+    return top12codes.map(function(code){
+      return DATA.filter(function(r){return r.dlc===code&&r.frm===st;}).length;
+    });
+  });
+  var stConc={};
+  allStations.forEach(function(st){
+    var stRows=DATA.filter(function(r){return r.frm===st;});
+    if(!stRows.length)return;
+    var stCM={};stRows.forEach(function(r){stCM[r.dlc]=(stCM[r.dlc]||0)+1;});
+    var top=Object.keys(stCM).map(function(k){return[k,stCM[k]];}).sort(function(a,b){return b[1]-a[1];})[0];
+    stConc[st]=top?{code:top[0],share:(top[1]/stRows.length)*100,total:stRows.length}:{code:'—',share:0,total:0};
+  });
+  var heatMax=heatData.reduce(function(m,row){return Math.max(m,Math.max.apply(null,row));},0);
+
+  var stCol=72, evCol=70, concCol=110, codeCol=56;
+  var tableW=stCol+evCol+concCol+codeCol*top12codes.length;
+  var W=padL+padR+tableW;
+  var titleH=28, subH=20, gap=12;
+  var headerH=38, rowH=26;
+  var H=padT+titleH+6+subH+gap+headerH+rowH*allStations.length+padB;
+
+  var obj=createCanvas(W,H), ctx=obj.ctx;
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  var y=padT;
+  ctx.fillStyle=ink;setFont(ctx,'800',20);
+  ctx.textAlign='left';ctx.fillText(title,padL,y+titleH/2);
+  y+=titleH+6;
+  ctx.fillStyle=inkMuted;setFont(ctx,'500',11,'JetBrains Mono,monospace');
+  ctx.fillText(subtitle,padL,y+subH/2);
+  var metaRight=top12codes.length+' codes × '+allStations.length+' stations · '+N.toLocaleString()+' events';
+  ctx.textAlign='right';ctx.fillText(metaRight,padL+tableW,y+subH/2);
+  y+=subH+gap;
+
+  /* Header */
+  ctx.fillStyle='#F0E8D8';ctx.fillRect(padL,y,tableW,headerH);
+  ctx.strokeStyle='rgba(20,13,138,.14)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(padL,y+headerH-.5);ctx.lineTo(padL+tableW,y+headerH-.5);ctx.stroke();ctx.setLineDash([]);
+
+  ctx.fillStyle='rgba(20,13,138,.55)';setFont(ctx,'700',10,'JetBrains Mono,monospace');
+  ctx.textAlign='left';
+  ctx.fillText('STATION',padL+12,y+headerH/2);
+  ctx.textAlign='right';
+  ctx.fillText('EVENTS',padL+stCol+evCol-12,y+headerH/2);
+  ctx.textAlign='left';
+  ctx.fillText('CONCENTRATION',padL+stCol+evCol+12,y+headerH/2);
+  ctx.textAlign='center';
+  var cx=padL+stCol+evCol+concCol;
+  top12codes.forEach(function(c){
+    ctx.fillText(c,cx+codeCol/2,y+headerH/2);
+    cx+=codeCol;
+  });
+  y+=headerH;
+
+  /* Rows */
+  allStations.forEach(function(st,si){
+    var conc=stConc[st]||{code:'—',share:0,total:0};
+    /* Zebra */
+    if(si%2===1){ctx.fillStyle='rgba(20,13,138,.015)';ctx.fillRect(padL,y,tableW,rowH);}
+    /* Station */
+    ctx.fillStyle=ink;setFont(ctx,'700',12);ctx.textAlign='left';
+    ctx.fillText(st,padL+12,y+rowH/2);
+    /* Events */
+    ctx.fillStyle='rgba(20,13,138,.55)';setFont(ctx,'500',11,'JetBrains Mono,monospace');
+    ctx.textAlign='right';
+    ctx.fillText(String(conc.total),padL+stCol+evCol-12,y+rowH/2);
+    /* Concentration */
+    var cColor=conc.share>50?'#C8004E':conc.share>30?'#D46B30':ink;
+    var cWeight=conc.share>30?'700':'500';
+    ctx.fillStyle=cColor;setFont(ctx,cWeight,11,'JetBrains Mono,monospace');
+    ctx.textAlign='left';
+    var concText=conc.code+' '+conc.share.toFixed(0)+'%';
+    ctx.fillText(truncate(ctx,concText,concCol-24),padL+stCol+evCol+12,y+rowH/2);
+
+    /* Code cells */
+    cx=padL+stCol+evCol+concCol;
+    top12codes.forEach(function(code,ci){
+      var v=heatData[si][ci];
+      var stTot=conc.total||1;
+      var localPct=v/stTot;
+      var globalPct=(cM[code]||0)/N;
+      var isHot=v>0 && localPct>globalPct*1.5 && localPct>0.15;
+      var intensity=heatMax>0?v/heatMax:0;
+      if(v>0){
+        if(isHot){
+          ctx.fillStyle='rgba(200,0,78,'+(.1+intensity*.6).toFixed(3)+')';
+        }else{
+          ctx.fillStyle='rgba(43,91,232,'+(.06+intensity*.45).toFixed(3)+')';
+        }
+        ctx.fillRect(cx,y,codeCol,rowH);
+      }
+      if(v>0){
+        ctx.fillStyle=ink;setFont(ctx,'700',11);
+      }else{
+        ctx.fillStyle='rgba(30,22,96,.2)';setFont(ctx,'400',11);
+      }
+      ctx.textAlign='center';
+      ctx.fillText(v>0?String(v):'—',cx+codeCol/2,y+rowH/2);
+      cx+=codeCol;
+    });
+
+    /* Row separator */
+    ctx.strokeStyle='rgba(20,13,138,.04)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(padL,y+rowH-.5);ctx.lineTo(padL+tableW,y+rowH-.5);ctx.stroke();
+    y+=rowH;
+  });
+
+  /* Table outline */
+  ctx.strokeStyle='rgba(20,13,138,.12)';ctx.lineWidth=1;
+  ctx.strokeRect(padL+.5, padT+titleH+6+subH+gap+.5, tableW-1, headerH+rowH*allStations.length-1);
+  /* Vertical separators between code columns */
+  ctx.strokeStyle='rgba(20,13,138,.04)';ctx.lineWidth=1;
+  cx=padL+stCol+evCol+concCol;
+  for(var k=0;k<=top12codes.length;k++){
+    ctx.beginPath();
+    ctx.moveTo(cx+.5, padT+titleH+6+subH+gap);
+    ctx.lineTo(cx+.5, padT+titleH+6+subH+gap+headerH+rowH*allStations.length);
+    ctx.stroke();
+    cx+=codeCol;
+  }
+  /* Bolder separator before code columns */
+  ctx.strokeStyle='rgba(20,13,138,.12)';ctx.lineWidth=1;
+  ctx.beginPath();
+  var divX=padL+stCol+evCol+concCol+.5;
+  ctx.moveTo(divX, padT+titleH+6+subH+gap);
+  ctx.lineTo(divX, padT+titleH+6+subH+gap+headerH+rowH*allStations.length);
+  ctx.stroke();
+
+  return obj.c;
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
+
 /* Excel export */
 function exportToExcel(){
   if(!DATA.length){alert('No data to export.');return;}
@@ -1317,7 +2352,7 @@ function exportToExcel(){
   /* Sheet 1: Raw filtered data */
   var fd=DATA.map(function(r){return{
     Date:r.date?r.date.toISOString().slice(0,10):'',
-    Flight:r.fln, Aircraft:r.act, STD:r.std, ETD:r.etd,
+    Flight:r.fln, Aircraft:r.act, STD:fmtTime(r.std), ETD:fmtTime(r.etd),
     From:r.frm, To:r.to, Category:r.cat,
     'DL Code':r.dlc, 'Duration (min)':r.dur
   };});
@@ -1356,7 +2391,7 @@ function rTr(){
   var mM={};DATA.forEach(function(r){if(!r.date)return;var k=r.date.getFullYear()+'-'+('0'+(r.date.getMonth()+1)).slice(-2);if(!mM[k])mM[k]={c:0,d:0};mM[k].c++;mM[k].d+=r.dur;});
   var mA=Object.keys(mM).sort().map(function(k){return[k,mM[k]];});
   var dow=[0,0,0,0,0,0,0];DATA.forEach(function(r){if(r.date)dow[r.date.getDay()]++;});
-  var hourM={};DATA.forEach(function(r){var s=r.std||r.etd||'';var m=s.match(/(\d{1,2})[:\.](\d{2})/);if(m){var hh=parseInt(m[1]);if(hh>=0&&hh<24)hourM[hh]=(hourM[hh]||0)+1;}});
+  var hourM={};DATA.forEach(function(r){var hh=parseHour(r);if(hh>=0)hourM[hh]=(hourM[hh]||0)+1;});
   var t5cats=topN(cntBy(DATA,function(r){return r.cat;}),5).map(function(e){return e[0];});
   var catMM={};DATA.forEach(function(r){if(!r.date||!r.cat)return;var k=r.date.getFullYear()+'-'+('0'+(r.date.getMonth()+1)).slice(-2);if(!catMM[k])catMM[k]={};catMM[k][r.cat]=(catMM[k][r.cat]||0)+1;});
   var cmA=Object.keys(catMM).sort().map(function(k){return[k,catMM[k]];});
@@ -1395,6 +2430,53 @@ function rTr(){
   h+='<div class="cc"><div class="cc-hd"><div class="cc-title"><span class="cc-accent" style="background:var(--peach)"></span>Hour of Day (STD)</div></div><div class="cw" style="height:240px"><canvas id="tr-hr"></canvas></div></div>';
   h+='<div class="cc"><div class="cc-hd"><div class="cc-title"><span class="cc-accent" style="background:var(--blue)"></span>Category Mix</div></div><div class="cw" style="height:240px"><canvas id="tr-cs"></canvas></div></div>';
   h+='</div>';
+
+  /* ── Hour × Weekday heatmap ── */
+  /* Compute 7×24 grid of delay event counts (and running avg dur) using STD (fallback ETD) */
+  var hwGrid=[];var hwDur=[];
+  for(var dow_i=0;dow_i<7;dow_i++){
+    var row=[],durRow=[];
+    for(var hh=0;hh<24;hh++){row.push(0);durRow.push(0);}
+    hwGrid.push(row);hwDur.push(durRow);
+  }
+  var hwParsed=0;
+  DATA.forEach(function(r){
+    if(!r.date)return;
+    var hh=parseHour(r);
+    if(hh<0)return;
+    var d=r.date.getDay();
+    /* JS: Sun=0..Sat=6 → convert to Mon=0..Sun=6 for display */
+    var dIdx=(d===0)?6:d-1;
+    hwGrid[dIdx][hh]++;
+    hwDur[dIdx][hh]+=(r.dur||0);
+    hwParsed++;
+  });
+  if(hwParsed>0){
+    var hwMax=0;
+    for(var i=0;i<7;i++)for(var j=0;j<24;j++)if(hwGrid[i][j]>hwMax)hwMax=hwGrid[i][j];
+    h+=sHd('Hour × Weekday pattern',hwParsed.toLocaleString()+' events mapped');
+    h+='<div class="hw-wrap"><table class="hw-table"><thead><tr><th class="hw-th hw-th-day"></th>';
+    for(var hh=0;hh<24;hh++)h+='<th class="hw-th">'+(hh<10?'0'+hh:hh)+'</th>';
+    h+='</tr></thead><tbody>';
+    var DAY_LABELS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    for(var i=0;i<7;i++){
+      h+='<tr><td class="hw-th hw-th-day">'+DAY_LABELS[i]+'</td>';
+      for(var hh=0;hh<24;hh++){
+        var v=hwGrid[i][hh];
+        var intensity=hwMax>0?v/hwMax:0;
+        var avgD=v?hwDur[i][hh]/v:0;
+        var bg=v===0?'':'background:rgba(200,0,78,'+(.06+intensity*.7).toFixed(3)+')';
+        var color=v===0?'color:rgba(20,13,138,.15)':(intensity>.55?'color:#fff;font-weight:700':'');
+        var titl=v?'title="'+DAY_LABELS[i]+' '+(hh<10?'0'+hh:hh)+':00 — '+v+' event'+(v===1?'':'s')+', avg '+avgD.toFixed(0)+'m"':'';
+        h+='<td class="hw-cell" '+titl+' style="'+bg+';'+color+'">'+(v||'·')+'</td>';
+      }
+      h+='</tr>';
+    }
+    h+='</tbody></table>';
+    h+='<div class="hw-legend"><span>Low</span><span class="hw-legend-bar"></span><span>High · peak '+hwMax+' events</span></div>';
+    h+='</div>';
+  }
+
   h+=sHd('Month-over-Month');
   h+='<div class="tw"><table><thead><tr><th>Month</th><th>Events</th><th>MoM</th><th class="thr">Total min</th><th class="thr">Avg min</th></tr></thead><tbody>';
   for(var i=0;i<mom.length;i++){var r=mom[i];var chgH='—';if(r.chg!==null){var ar=r.chg>=0?'↑':'↓';chgH='<span class="'+(r.chg>=0?'t-up':'t-dn')+'">'+ar+' '+Math.abs(r.chg).toFixed(1)+'%</span>';}h+='<tr><td class="tm"><strong>'+esc(r.m)+'</strong></td><td class="tm">'+r.c+'</td><td>'+chgH+'</td><td class="tm tdr">'+r.d.toLocaleString()+'</td><td class="tm tdr">'+r.avg.toFixed(0)+'</td></tr>';}
@@ -1460,7 +2542,29 @@ function closeAnomDialog(){
 
 /* ── DL CODES ── */
 var cdSort='count',cdDir='desc';
+var heatCodeFilter='';
 function setSortCd(v){if(cdSort===v)cdDir=cdDir==='desc'?'asc':'desc';else{cdSort=v;cdDir='desc';}rCd();}
+var _heatSearchTimer=null;
+function onHeatSearchInput(v){
+  heatCodeFilter=(v||'').trim().toUpperCase();
+  /* Debounce so rapid typing doesn't trigger a render per keystroke */
+  if(_heatSearchTimer)clearTimeout(_heatSearchTimer);
+  _heatSearchTimer=setTimeout(function(){
+    _heatSearchTimer=null;
+    __run('Searching codes…',function(){rCd();});
+    /* Re-focus & restore caret to end — after render settles */
+    setTimeout(function(){
+      var inp=document.getElementById('heatSearch');
+      if(inp){inp.focus();var L=inp.value.length;try{inp.setSelectionRange(L,L);}catch(e){}}
+    },60);
+  },180);
+}
+function clearHeatSearch(){
+  heatCodeFilter='';
+  if(_heatSearchTimer){clearTimeout(_heatSearchTimer);_heatSearchTimer=null;}
+  __run('Resetting heatmap…',function(){rCd();});
+  setTimeout(function(){var inp=document.getElementById('heatSearch');if(inp)inp.focus();},60);
+}
 function rCd(){
   var el=document.getElementById('pcd');
   if(!DATA.length){el.innerHTML=emptyH();return;}
@@ -1497,7 +2601,6 @@ function rCd(){
     if(!respM[r])respM[r]={cnt:0,tot:0};
     respM[r].cnt+=cS[code].cnt;respM[r].tot+=cS[code].tot;
   });
-  var RESP_LABELS={'A':'Airline','G':'Ground','W':'Weather','M':'Maintenance','C':'Crew','T':'ATC / ATFM','E':'Equipment','P':'Passenger','S':'Security','D':'Documentation'};
 
   /* Code-station heat data: top 12 codes × all stations with ≥3 events */
   var top12codes=topN(cM,12).map(function(e){return e[0];});
@@ -1546,35 +2649,137 @@ function rCd(){
   h+='</div>';
 
   /* Row 4: Code × Station heat matrix */
-  h+=sHd('Code × Station Heatmap',top12codes.length+' codes × '+allStations.length+' stations');
-  h+='<div class="heat-wrap"><table class="heat-table"><thead><tr>';
-  h+='<th class="heat-th-st">Station</th><th class="heat-th-n">Events</th><th class="heat-th-n">Concentration</th>';
-  top12codes.forEach(function(c){h+='<th class="heat-th-code">'+esc(c)+'</th>';});
-  h+='</tr></thead><tbody>';
-  var heatMax=heatData.reduce(function(m,row){return Math.max(m,Math.max.apply(null,row));},0);
-  allStations.forEach(function(st,si){
-    var conc=stConcentration[st]||{code:'—',share:0,total:0};
-    var concCls=conc.share>50?'conc-hi':conc.share>30?'conc-mid':'';
-    h+='<tr><td class="heat-td-st"><strong>'+esc(st)+'</strong></td>';
-    h+='<td class="heat-td-n">'+conc.total+'</td>';
-    h+='<td class="heat-td-conc '+concCls+'">'+esc(conc.code)+' <span class="conc-pct">'+conc.share.toFixed(0)+'%</span></td>';
-    top12codes.forEach(function(code,ci){
-      var v=heatData[si][ci];
-      var stTot=conc.total||1;
-      var localPct=v/stTot;
-      var globalPct=(cM[code]||0)/N;
-      var isHot=v>0&&localPct>globalPct*1.5&&localPct>0.15;
-      var intensity=heatMax>0?v/heatMax:0;
-      var bg=v===0?'':(isHot
-        ?'background:rgba(200,0,78,'+(.1+intensity*.6).toFixed(2)+')'
-        :'background:rgba(43,91,232,'+(.06+intensity*.45).toFixed(2)+')');
-      var fw=v>0?'font-weight:700':'color:rgba(30,22,96,.2)';
-      var title=v>0?'title="'+esc(code)+' at '+esc(st)+': '+v+' events ('+((localPct*100).toFixed(0))+'% of station delays, global: '+((globalPct*100).toFixed(0))+'%)"':'';
-      h+='<td class="heat-td" '+title+' style="'+bg+';'+fw+'">'+(v||'')+'</td>';
-    });
-    h+='</tr>';
+  /* ---- Heatmap data available for filter / export ---- */
+  var allCodesSorted=Object.keys(cM).sort();
+  var filterActive=heatCodeFilter.length>0;
+  var filteredCode=null;
+  if(filterActive){
+    /* Exact match first, else first startsWith */
+    if(cM[heatCodeFilter]!=null)filteredCode=heatCodeFilter;
+    else{
+      var hit=allCodesSorted.filter(function(c){return c.indexOf(heatCodeFilter)===0;});
+      if(hit.length)filteredCode=hit[0];
+    }
+  }
+
+  var hdSub=filterActive
+    ? (filteredCode?('search: '+filteredCode+' — '+(cM[filteredCode]||0)+' events across network'):('no match for "'+esc(heatCodeFilter)+'"'))
+    : (top12codes.length+' codes × '+allStations.length+' stations');
+  h+=sHd('Code × Station Heatmap',hdSub);
+
+  /* Toolbar: search + download */
+  /* Build datalist of known codes with labels */
+  var dlOpts='';
+  allCodesSorted.forEach(function(c){
+    var lbl=cS[c]&&cS[c].cat?(' — '+cS[c].cat):'';
+    dlOpts+='<option value="'+esc(c)+'">'+esc(c+lbl)+'</option>';
   });
-  h+='</tbody></table></div>';
+  h+='<div class="heat-tools" id="heatTools">';
+  h+=  '<div class="heat-search-wrap">';
+  h+=    '<span class="heat-search-icon">⌕</span>';
+  h+=    '<input id="heatSearch" class="heat-search" type="text" autocomplete="off" spellcheck="false" list="heatCodeList" placeholder="Search delay code (e.g. 89, AHM, WO)…" value="'+esc(heatCodeFilter)+'" oninput="onHeatSearchInput(this.value)">';
+  h+=    '<button class="heat-search-clear'+(filterActive?' on':'')+'" onclick="clearHeatSearch()" title="Clear search">✕</button>';
+  h+=    '<datalist id="heatCodeList">'+dlOpts+'</datalist>';
+  h+=  '</div>';
+  h+=  '<button id="heatDlXlsx" class="heat-dl-btn" onclick="dlHeatXlsx()" title="Download heatmap as Excel"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9m0 0l-3-3m3 3l3-3M3 13h10"/></svg><span class="heat-dl-label">Excel</span></button>';
+  h+=  '<button id="heatDlPng" class="heat-dl-btn" onclick="dlHeatPng()" title="Download heatmap as high-resolution PNG"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="12" height="10" rx="1.5"/><circle cx="6" cy="7" r="1.2"/><path d="M2 11l3-3 3 3 3-4 3 3"/></svg><span class="heat-dl-label">PNG</span></button>';
+  h+='</div>';
+
+  if(filterActive && !filteredCode){
+    /* No match state */
+    h+='<div class="heat-mode-banner" id="heatMode"><span>No delay code matches <strong>'+esc(heatCodeFilter)+'</strong>.</span><span class="hm-meta">Clear the search to return to the default view.</span></div>';
+    h+='<div class="heat-wrap" id="heatWrap"><table class="heat-table"><thead><tr><th class="heat-th-st">Station</th><th class="heat-th-n">—</th></tr></thead><tbody><tr><td class="heat-td-st" colspan="2" style="text-align:center;padding:24px;color:rgba(20,13,138,.4)">Try a different code. Tip: type the numeric/alphanumeric code like 89, WO, or a prefix.</td></tr></tbody></table></div>';
+  } else if(filteredCode){
+    /* ── CODE SEARCH MODE: stations ranked by occurrences of the searched code ── */
+    var codeRows=DATA.filter(function(r){return r.dlc===filteredCode;});
+    var codeTotal=codeRows.length;
+    var codeCat=(cS[filteredCode]&&cS[filteredCode].cat)||'—';
+    var byStation={};
+    codeRows.forEach(function(r){
+      if(!r.frm)return;
+      if(!byStation[r.frm])byStation[r.frm]={cnt:0,durs:[],tot:0};
+      byStation[r.frm].cnt++;byStation[r.frm].durs.push(r.dur||0);byStation[r.frm].tot+=(r.dur||0);
+    });
+    var codeStRows=Object.keys(byStation).map(function(st){
+      var b=byStation[st];
+      var durs=b.durs.slice().sort(function(a,b){return a-b;});
+      var stTotal=(stConcentration[st]&&stConcentration[st].total)||b.cnt;
+      return{
+        st:st,cnt:b.cnt,tot:b.tot,
+        avg:b.tot/b.cnt,
+        p90:durs[Math.floor(durs.length*0.9)]||0,
+        stTotal:stTotal,
+        localPct:(b.cnt/stTotal)*100,
+        shareOfCode:(b.cnt/codeTotal)*100
+      };
+    }).sort(function(a,b){return b.cnt-a.cnt;});
+    var codeGlobalPct=(codeTotal/N)*100;
+
+    h+='<div class="heat-mode-banner" id="heatMode">';
+    h+=  '<span>Showing stations by occurrence of <strong>'+esc(filteredCode)+'</strong></span>';
+    h+=  '<span style="color:rgba(20,13,138,.55)">· '+esc(codeCat)+'</span>';
+    h+=  '<span class="hm-meta">'+codeTotal.toLocaleString()+' events · '+codeGlobalPct.toFixed(1)+'% of all delays · '+codeStRows.length+' stations affected</span>';
+    h+='</div>';
+
+    h+='<div class="heat-wrap" id="heatWrap"><table class="heat-table"><thead><tr>';
+    h+='<th class="heat-th-n" style="text-align:right;width:42px">#</th>';
+    h+='<th class="heat-th-st">Station</th>';
+    h+='<th class="heat-th-n" title="Events of this code at this station">Events</th>';
+    h+='<th class="heat-th-n" title="Share of this code across the network">% of code</th>';
+    h+='<th class="heat-th-n" title="% of this station\u2019s total delays that are this code">% of station</th>';
+    h+='<th class="heat-th-n" title="Total station delays (all codes)">Station total</th>';
+    h+='<th class="heat-th-n" title="Average duration in minutes">Avg (min)</th>';
+    h+='<th class="heat-th-n" title="P90 duration in minutes">P90 (min)</th>';
+    h+='</tr></thead><tbody>';
+    var maxCnt=codeStRows.length?codeStRows[0].cnt:1;
+    codeStRows.forEach(function(r,i){
+      var intensity=r.cnt/maxCnt;
+      var bg='background:rgba(200,0,78,'+(.06+intensity*.35).toFixed(2)+')';
+      var isOver=r.localPct>codeGlobalPct*1.5 && r.localPct>5;
+      var localCls=isOver?'color:var(--ruby);font-weight:700':'';
+      h+='<tr>';
+      h+='<td class="heat-rank-td">'+(i+1)+'</td>';
+      h+='<td class="heat-td-st"><strong>'+esc(r.st)+'</strong></td>';
+      h+='<td class="heat-td-n" style="'+bg+';font-weight:700;color:var(--navy)">'+r.cnt+'</td>';
+      h+='<td class="heat-td-n"><div class="heat-pct-bar-wrap"><div class="heat-pct-bar"><span style="width:'+Math.min(100,r.shareOfCode).toFixed(1)+'%"></span></div><div class="heat-pct-val">'+r.shareOfCode.toFixed(1)+'%</div></div></td>';
+      h+='<td class="heat-td-n" style="'+localCls+'">'+r.localPct.toFixed(1)+'%'+(isOver?' ▲':'')+'</td>';
+      h+='<td class="heat-td-n">'+r.stTotal.toLocaleString()+'</td>';
+      h+='<td class="heat-td-n">'+r.avg.toFixed(0)+'</td>';
+      h+='<td class="heat-td-n" style="color:var(--ruby);font-weight:700">'+r.p90.toFixed(0)+'</td>';
+      h+='</tr>';
+    });
+    h+='</tbody></table></div>';
+  } else {
+    /* ── DEFAULT MODE: original 12 × stations grid ── */
+    h+='<div class="heat-wrap" id="heatWrap"><table class="heat-table"><thead><tr>';
+    h+='<th class="heat-th-st">Station</th><th class="heat-th-n">Events</th><th class="heat-th-n">Concentration</th>';
+    top12codes.forEach(function(c){h+='<th class="heat-th-code">'+esc(c)+'</th>';});
+    h+='</tr></thead><tbody>';
+    var heatMax=heatData.reduce(function(m,row){return Math.max(m,Math.max.apply(null,row));},0);
+    allStations.forEach(function(st,si){
+      var conc=stConcentration[st]||{code:'—',share:0,total:0};
+      var concCls=conc.share>50?'conc-hi':conc.share>30?'conc-mid':'';
+      h+='<tr><td class="heat-td-st"><strong>'+esc(st)+'</strong></td>';
+      h+='<td class="heat-td-n">'+conc.total+'</td>';
+      h+='<td class="heat-td-conc '+concCls+'">'+esc(conc.code)+' <span class="conc-pct">'+conc.share.toFixed(0)+'%</span></td>';
+      top12codes.forEach(function(code,ci){
+        var v=heatData[si][ci];
+        var stTot=conc.total||1;
+        var localPct=v/stTot;
+        var globalPct=(cM[code]||0)/N;
+        var isHot=v>0&&localPct>globalPct*1.5&&localPct>0.15;
+        var intensity=heatMax>0?v/heatMax:0;
+        var bg=v===0?'':(isHot
+          ?'background:rgba(200,0,78,'+(.1+intensity*.6).toFixed(2)+')'
+          :'background:rgba(43,91,232,'+(.06+intensity*.45).toFixed(2)+')');
+        var fw=v>0?'font-weight:700':'color:rgba(30,22,96,.2)';
+        var title=v>0?'title="'+esc(code)+' at '+esc(st)+': '+v+' events ('+((localPct*100).toFixed(0))+'% of station delays, global: '+((globalPct*100).toFixed(0))+'%)"':'';
+        h+='<td class="heat-td" '+title+' style="'+bg+';'+fw+'">'+(v||'')+'</td>';
+      });
+      h+='</tr>';
+    });
+    h+='</tbody></table></div>';
+  }
 
   /* Code spread chart: how many stations carry each code */
   h+=sHd('Code Network Spread','stations per code vs avg duration');
@@ -1732,7 +2937,7 @@ function rRw(){
     h+='<td class="tm">'+esc(fmtD(r.date))+'</td>';
     h+='<td class="tm"><strong>'+esc(r.fln)+'</strong></td>';
     h+='<td class="tm">'+esc(r.act)+'</td>';
-    h+='<td class="tm">'+esc(r.std)+'</td>';
+    h+='<td class="tm">'+esc(fmtTime(r.std))+'</td>';
     h+='<td><strong>'+esc(r.frm)+'</strong></td>';
     h+='<td><strong>'+esc(r.to)+'</strong></td>';
     h+='<td style="max-width:130px;overflow:hidden;text-overflow:ellipsis;font-size:11px">'+esc(r.cat)+'</td>';
