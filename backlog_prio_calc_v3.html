@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#00AB61">
+<title>Backlog Prio Calculator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#00AB61;--g-dark:#009953;
+  --n:#140D8A;
+  --w:#fff;
+  --pink:#E20076;
+  --peach:#FF8867;
+  --blue:#0053FF;
+  --champ:#F9F0E9;
+  --bg:#F7F6F2;
+  --sans:'Sohne','DM Sans',system-ui,sans-serif;
+  --display:'SohneBreit','Syne',sans-serif;
+  --mono:'DM Mono','JetBrains Mono',monospace;
+}
+html{font-family:var(--sans);background:var(--bg);color:var(--n);-webkit-tap-highlight-color:transparent;overflow-x:hidden;max-width:100vw}
+body{min-height:100svh;overflow-x:hidden;max-width:100vw}
+
+/* PAGE HEADER */
+.page-head{background:var(--g);padding:44px 5% 40px;position:relative}
+.ph-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:32px}
+.ph-text{flex:1;min-width:0}
+.ph-kicker{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--w);opacity:.65;margin-bottom:12px}
+.ph-kicker-dot{width:5px;height:5px;border-radius:50%;background:var(--w);opacity:.6}
+.ph-title{font-family:var(--display);font-size:clamp(30px,5vw,46px);font-weight:700;color:var(--n);line-height:1.05;letter-spacing:-.02em}
+.ph-title em{font-style:normal;color:var(--w)}
+.ph-sub{margin-top:10px;font-size:14px;color:var(--w);opacity:.85;line-height:1.55;max-width:520px}
+.ph-formula{margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--w);opacity:.9}
+.ph-formula b{background:var(--n);padding:3px 7px;border-radius:4px;font-weight:600;letter-spacing:.05em;margin:0 2px}
+.ph-badge{position:absolute;top:18px;right:5%;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--w);opacity:.45;text-transform:uppercase}
+.ph-keyhint{position:absolute;bottom:14px;right:5%;font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--w);opacity:.55}
+.ph-keyhint kbd{background:rgba(20,13,138,.4);border:1px solid rgba(255,255,255,.2);border-radius:4px;padding:1px 5px;font-family:var(--mono);font-size:9px;margin:0 1px}
+
+/* MAIN */
+.main{max-width:1300px;margin:0 auto;padding:28px 5% 80px}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:440px 1fr;gap:20px;align-items:start}
+@media(max-width:980px){.grid{grid-template-columns:1fr}}
+
+/* CARDS */
+.card{background:var(--w);border-radius:16px;border:1px solid rgba(20,13,138,.1);overflow:hidden;box-shadow:0 2px 8px rgba(20,13,138,.04);box-sizing:border-box;width:100%;transition:border-color .25s, box-shadow .25s}
+.card.edit-mode{border-color:var(--peach);box-shadow:0 4px 24px rgba(255,136,103,.2)}
+.card-hdr{padding:18px 22px 14px;border-bottom:1px solid rgba(20,13,138,.07);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.card-hdr-l{display:flex;flex-direction:column;gap:3px}
+.card-eyebrow{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--n);opacity:.5;transition:color .2s}
+.card.edit-mode .card-eyebrow{color:var(--peach);opacity:1}
+.card-title{font-family:var(--display);font-size:18px;font-weight:700;color:var(--n);letter-spacing:-.01em}
+.card-counter{font-family:var(--mono);font-size:10px;background:rgba(20,13,138,.06);color:var(--n);border-radius:99px;padding:4px 10px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;transition:all .2s}
+.card.edit-mode .card-counter{background:var(--peach);color:#fff}
+.card-body{padding:18px 22px 22px}
+
+/* FIELD GROUP */
+.field-group{margin-bottom:18px}
+.field-group:last-child{margin-bottom:0}
+.field-label{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
+.field-name{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--n)}
+.field-letter{font-family:var(--mono);font-size:9px;font-weight:700;background:var(--n);color:#fff;border-radius:4px;padding:2px 6px;letter-spacing:.05em}
+.field-val{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--g);background:rgba(0,171,97,.1);border-radius:99px;padding:3px 9px;letter-spacing:.02em}
+
+/* MULTIPLIER BUTTONS */
+.mult-row{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;position:relative}
+.mult-row.kb-focus::before{content:'';position:absolute;inset:-4px;border:1.5px dashed var(--g);border-radius:12px;pointer-events:none}
+.mult-btn{padding:10px 4px;background:var(--w);border:1.5px solid rgba(20,13,138,.12);border-radius:10px;font-family:var(--mono);font-size:12px;font-weight:700;color:rgba(20,13,138,.5);cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px;-webkit-tap-highlight-color:transparent;position:relative}
+.mult-btn:hover{border-color:rgba(20,13,138,.3);color:var(--n);background:var(--champ)}
+.mult-btn.active{background:var(--n);border-color:var(--n);color:#fff}
+.mult-btn .lbl{font-size:8.5px;font-weight:600;opacity:.65;letter-spacing:.04em;text-transform:uppercase}
+.mult-btn.active .lbl{opacity:.85}
+.mult-btn .kb-num{position:absolute;top:2px;right:4px;font-size:8px;opacity:0;transition:opacity .15s;color:var(--g);font-weight:700}
+.mult-row.kb-focus .mult-btn .kb-num{opacity:.7}
+
+/* INPUT */
+.input-text,.input-textarea,.input-select{width:100%;padding:12px 14px;border:1.5px solid rgba(20,13,138,.12);background:var(--w);border-radius:10px;font-family:var(--sans);font-size:14px;color:var(--n);font-weight:500;transition:border-color .15s}
+.input-text:focus,.input-textarea:focus,.input-select:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,171,97,.12)}
+.input-text::placeholder,.input-textarea::placeholder{color:rgba(20,13,138,.3)}
+.input-textarea{resize:vertical;min-height:60px;line-height:1.5;font-size:13px}
+
+/* CATEGORY PICKER */
+.cat-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.cat-chip{padding:6px 11px;border-radius:99px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid;font-family:var(--sans);transition:all .12s;-webkit-tap-highlight-color:transparent;letter-spacing:.01em;display:inline-flex;align-items:center;gap:5px}
+.cat-chip:hover{transform:translateY(-1px)}
+.cat-chip-add{background:transparent;border-color:rgba(20,13,138,.2);color:rgba(20,13,138,.6);border-style:dashed}
+.cat-chip-add:hover{color:var(--n);border-color:var(--n)}
+.cat-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+
+/* IMPACT BLOCK */
+.impact-block{background:var(--champ);border-radius:14px;padding:16px;border:1px solid rgba(255,136,103,.18)}
+.impact-block-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(20,13,138,.08)}
+.impact-block-hdr-l{display:flex;align-items:center;gap:8px}
+.ib-letter{font-family:var(--mono);font-size:9px;font-weight:700;background:var(--peach);color:#fff;border-radius:4px;padding:2px 6px;letter-spacing:.05em}
+.ib-title{font-family:var(--display);font-size:13px;font-weight:700;color:var(--n);letter-spacing:.02em;text-transform:uppercase}
+.ib-result{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--peach);background:#fff;border-radius:99px;padding:4px 11px;letter-spacing:.02em;border:1px solid rgba(255,136,103,.3)}
+
+.impact-field{margin-bottom:10px}
+.impact-field:last-child{margin-bottom:0}
+.impact-field-label{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:12px;font-weight:600;color:var(--n)}
+.impact-field-val{font-family:var(--mono);font-size:11px;color:var(--peach);font-weight:700;background:#fff;padding:2px 7px;border-radius:99px;border:1px solid rgba(255,136,103,.25)}
+
+.impact-mult-row{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.impact-mult-row .mult-btn{padding:7px 2px;font-size:11px;background:#fff;border:1.5px solid rgba(20,13,138,.1)}
+.impact-mult-row .mult-btn.active{background:var(--peach);border-color:var(--peach);color:#fff}
+
+.weights-toggle{margin-top:14px;border-top:1px dashed rgba(20,13,138,.15);padding-top:12px}
+.weights-toggle summary{cursor:pointer;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--n);opacity:.55;list-style:none;display:flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent}
+.weights-toggle summary::-webkit-details-marker{display:none}
+.weights-toggle summary::before{content:'+';font-family:var(--display);font-size:14px;font-weight:700;width:18px;height:18px;border-radius:50%;background:rgba(20,13,138,.08);display:flex;align-items:center;justify-content:center;line-height:1;transition:transform .2s}
+.weights-toggle[open] summary::before{content:'−'}
+.weights-toggle summary:hover{opacity:.8}
+.weights-inner{margin-top:12px;display:flex;flex-direction:column;gap:9px}
+.w-row{display:grid;grid-template-columns:1fr 50px;gap:10px;align-items:center}
+.w-row label{font-size:12px;font-weight:500;color:var(--n)}
+.w-row input[type="range"]{-webkit-appearance:none;appearance:none;width:100%;height:4px;background:rgba(20,13,138,.15);border-radius:2px;outline:none;margin-top:4px}
+.w-row input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--peach);border-radius:50%;cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(255,136,103,.4)}
+.w-row input[type="range"]::-moz-range-thumb{width:14px;height:14px;background:var(--peach);border-radius:50%;cursor:pointer;border:2px solid #fff;box-shadow:0 1px 4px rgba(255,136,103,.4)}
+.w-pct{font-family:var(--mono);font-size:11px;font-weight:600;text-align:right;color:var(--n);opacity:.6}
+.w-sum-row{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.w-reset{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--n);opacity:.5;background:none;border:none;cursor:pointer;letter-spacing:.05em;text-transform:uppercase;text-decoration:underline;-webkit-tap-highlight-color:transparent}
+.w-reset:hover{opacity:.9;color:var(--peach)}
+.w-sum{font-family:var(--mono);font-size:10px;color:var(--n);opacity:.5;letter-spacing:.05em}
+.w-sum.warn{color:var(--pink);opacity:1;font-weight:700}
+
+/* NOTES */
+.notes-toggle{margin-top:14px;border-top:1px dashed rgba(20,13,138,.15);padding-top:12px}
+.notes-toggle summary{cursor:pointer;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--n);opacity:.55;list-style:none;display:flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent}
+.notes-toggle summary::-webkit-details-marker{display:none}
+.notes-toggle summary::before{content:'+';font-family:var(--display);font-size:14px;font-weight:700;width:18px;height:18px;border-radius:50%;background:rgba(20,13,138,.08);display:flex;align-items:center;justify-content:center;line-height:1;transition:transform .2s}
+.notes-toggle[open] summary::before{content:'−'}
+.notes-toggle summary:hover{opacity:.8}
+.notes-toggle[data-has-content="true"] summary::after{content:'•';color:var(--g);font-size:18px;margin-left:2px;line-height:0}
+.notes-inner{margin-top:10px}
+.notes-hint{font-family:var(--mono);font-size:9px;color:var(--n);opacity:.4;margin-top:6px;letter-spacing:.04em}
+
+/* SCORE PREVIEW */
+.score-preview{background:var(--n);border-radius:14px;padding:20px;margin-top:18px;text-align:center;position:relative;overflow:hidden}
+.score-preview::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;background:radial-gradient(circle,rgba(0,171,97,.25),transparent 70%)}
+.sp-label{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:8px;position:relative}
+.sp-value{font-family:var(--display);font-size:48px;font-weight:800;color:var(--g);letter-spacing:-.02em;line-height:1;position:relative;transition:color .2s}
+.sp-value.tier-high{color:var(--g)}
+.sp-value.tier-mid{color:var(--peach)}
+.sp-value.tier-low{color:var(--pink)}
+.sp-formula{margin-top:8px;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.02em;position:relative}
+.sp-tier{display:inline-block;margin-top:6px;font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:99px;position:relative}
+.sp-tier.tier-high{background:rgba(0,171,97,.2);color:var(--g)}
+.sp-tier.tier-mid{background:rgba(255,136,103,.2);color:var(--peach)}
+.sp-tier.tier-low{background:rgba(226,0,118,.2);color:var(--pink)}
+
+/* ACTION BUTTONS */
+.action-row{display:flex;gap:8px;margin-top:14px}
+.btn{flex:1;padding:13px 18px;border-radius:99px;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;border:none;letter-spacing:.01em;-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn-primary{background:var(--g);color:#fff;box-shadow:0 4px 14px rgba(0,171,97,.3)}
+.btn-primary:hover{background:var(--g-dark);box-shadow:0 6px 18px rgba(0,171,97,.4)}
+.btn-primary:active{transform:scale(.97)}
+.btn-ghost{background:var(--w);color:var(--n);border:1.5px solid rgba(20,13,138,.15)}
+.btn-ghost:hover{background:var(--champ);border-color:rgba(20,13,138,.25)}
+.btn-update{background:var(--peach);color:#fff;box-shadow:0 4px 14px rgba(255,136,103,.3)}
+.btn-update:hover{background:#ff7050;box-shadow:0 6px 18px rgba(255,136,103,.4)}
+.btn-update:active{transform:scale(.97)}
+
+/* TABLE TOOLBAR */
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.tb-count{font-family:var(--mono);font-size:11px;color:var(--n);opacity:.5;letter-spacing:.05em;text-transform:uppercase;font-weight:600;margin-right:auto}
+.tb-btn{background:var(--w);border:1.5px solid rgba(20,13,138,.12);padding:9px 16px;border-radius:99px;font-family:var(--sans);font-size:12px;font-weight:700;color:var(--n);cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;letter-spacing:.01em}
+.tb-btn:hover{background:var(--champ);border-color:rgba(20,13,138,.25)}
+.tb-btn-danger{color:var(--pink);border-color:rgba(226,0,118,.25)}
+.tb-btn-danger:hover{background:rgba(226,0,118,.05);border-color:var(--pink)}
+.tb-btn-export{background:var(--n);color:#fff;border-color:var(--n);box-shadow:0 4px 14px rgba(20,13,138,.2)}
+.tb-btn-export:hover{background:#1d14a8;border-color:#1d14a8;box-shadow:0 6px 18px rgba(20,13,138,.3)}
+.tb-btn-settings{background:transparent;border-color:rgba(20,13,138,.12);font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;padding:9px 14px}
+
+/* FILTER CHIPS */
+.filter-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding:8px 12px;background:var(--w);border-radius:99px;border:1px solid rgba(20,13,138,.08)}
+.filter-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--n);opacity:.5;margin-right:4px}
+.filter-chip{padding:5px 11px;border-radius:99px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid rgba(20,13,138,.12);color:rgba(20,13,138,.6);background:transparent;font-family:var(--sans);transition:all .12s;-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;gap:5px}
+.filter-chip:hover{border-color:rgba(20,13,138,.3);color:var(--n)}
+.filter-chip.active{background:var(--n);border-color:var(--n);color:#fff}
+.filter-chip .count{font-family:var(--mono);font-size:9px;opacity:.6}
+
+/* TABLE */
+.table-wrap{background:var(--w);border-radius:16px;border:1px solid rgba(20,13,138,.1);overflow:hidden;box-shadow:0 2px 8px rgba(20,13,138,.04)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{background:var(--n)}
+thead th{padding:13px 12px;text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:rgba(255,255,255,.75);cursor:pointer;user-select:none;white-space:nowrap;transition:color .15s;-webkit-tap-highlight-color:transparent}
+thead th:hover{color:#fff}
+thead th.sort-active{color:var(--g)}
+thead th.sort-active::after{content:attr(data-arrow);margin-left:5px;font-size:9px}
+thead th.no-sort{cursor:default}
+tbody td{padding:11px 12px;border-bottom:1px solid rgba(20,13,138,.06);color:var(--n);vertical-align:middle}
+tbody tr{transition:background .12s;cursor:pointer}
+tbody tr:hover{background:var(--champ)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr.editing{background:rgba(255,136,103,.1) !important;box-shadow:inset 3px 0 0 var(--peach)}
+tbody tr.top-row{background:rgba(0,171,97,.04)}
+tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
+
+.t-rank{font-family:var(--display);font-size:14px;font-weight:700;color:var(--n);text-align:center;width:38px}
+.t-rank-1{color:var(--g);font-size:16px}
+.t-name{font-weight:600;max-width:240px;font-size:13px;display:flex;align-items:center;gap:6px}
+.t-cat{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:99px;font-size:10px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
+.t-mono{font-family:var(--mono);font-size:12px;color:var(--n);opacity:.7}
+.t-score-cell{font-family:var(--display);font-size:16px;font-weight:700;letter-spacing:-.01em;padding-left:14px !important;border-left:3px solid transparent}
+.t-score-cell.tier-high{color:var(--g);border-left-color:var(--g)}
+.t-score-cell.tier-mid{color:var(--peach);border-left-color:var(--peach)}
+.t-score-cell.tier-low{color:var(--pink);border-left-color:var(--pink)}
+.t-actions{display:flex;gap:4px;justify-content:flex-end}
+.t-action-btn{background:transparent;border:1px solid rgba(20,13,138,.1);width:26px;height:26px;border-radius:6px;cursor:pointer;color:rgba(20,13,138,.4);font-size:13px;line-height:1;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;font-weight:700;-webkit-tap-highlight-color:transparent}
+.t-action-btn:hover{color:var(--n);border-color:rgba(20,13,138,.3);background:rgba(20,13,138,.04)}
+.t-action-btn.t-del:hover{border-color:var(--pink);color:var(--pink);background:rgba(226,0,118,.05)}
+.t-note-icon{display:inline-flex;width:14px;height:14px;align-items:center;justify-content:center;color:var(--g);font-size:11px;cursor:help}
+
+/* EMPTY STATE */
+.empty-state{background:var(--w);border-radius:16px;border:1px solid rgba(20,13,138,.08);padding:60px 24px;text-align:center;box-shadow:0 2px 8px rgba(20,13,138,.04)}
+.es-icon{width:56px;height:56px;border-radius:14px;background:var(--g);display:inline-flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:14px;color:#fff;font-family:var(--display);font-weight:700}
+.es-title{font-family:var(--display);font-size:16px;font-weight:700;color:var(--n);margin-bottom:6px;letter-spacing:-.01em}
+.es-sub{font-size:13px;color:var(--n);opacity:.5;line-height:1.5}
+
+/* SETTINGS MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(20,13,138,.4);backdrop-filter:blur(6px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s}
+.modal-overlay.open{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:var(--w);border-radius:18px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(20,13,138,.3);animation:slideUp .25s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.modal-hdr{padding:22px 24px 16px;border-bottom:1px solid rgba(20,13,138,.07);display:flex;align-items:center;justify-content:space-between}
+.modal-hdr-l{display:flex;flex-direction:column;gap:3px}
+.modal-eyebrow{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--n);opacity:.5}
+.modal-title{font-family:var(--display);font-size:18px;font-weight:700;color:var(--n)}
+.modal-close{background:rgba(20,13,138,.06);border:none;width:32px;height:32px;border-radius:99px;font-size:18px;color:var(--n);cursor:pointer;line-height:1;display:inline-flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;transition:background .15s}
+.modal-close:hover{background:rgba(20,13,138,.12)}
+.modal-body{padding:18px 24px 24px}
+.modal-section{margin-bottom:22px}
+.modal-section:last-child{margin-bottom:0}
+.modal-section-title{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--n);opacity:.6;margin-bottom:10px}
+.modal-radio-row{display:flex;gap:6px;margin-bottom:12px}
+.modal-radio{flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid rgba(20,13,138,.12);background:var(--w);cursor:pointer;font-size:12px;font-weight:600;text-align:center;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.modal-radio:hover{border-color:rgba(20,13,138,.25);background:var(--champ)}
+.modal-radio.active{background:var(--n);border-color:var(--n);color:#fff}
+.threshold-row{display:grid;grid-template-columns:90px 1fr 70px;gap:10px;align-items:center;margin-bottom:8px;padding:10px 12px;background:var(--champ);border-radius:10px}
+.threshold-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px}
+.threshold-label.tier-high{color:var(--g)}
+.threshold-label.tier-mid{color:var(--peach)}
+.threshold-label.tier-low{color:var(--pink)}
+.threshold-label .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.threshold-label.tier-high .dot{background:var(--g)}
+.threshold-label.tier-mid .dot{background:var(--peach)}
+.threshold-label.tier-low .dot{background:var(--pink)}
+.threshold-row .desc{font-size:11px;color:var(--n);opacity:.6}
+.threshold-row input[type="number"]{padding:6px 8px;border:1.5px solid rgba(20,13,138,.12);background:#fff;border-radius:7px;font-family:var(--mono);font-size:12px;color:var(--n);font-weight:600;width:100%}
+.threshold-row input[type="number"]:focus{outline:none;border-color:var(--g)}
+.auto-info{padding:14px;background:var(--champ);border-radius:10px;font-size:12px;color:var(--n);line-height:1.5}
+.auto-info b{color:var(--n)}
+
+/* CATEGORIES MANAGER */
+.cat-mgr-row{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--champ);border-radius:10px;margin-bottom:6px}
+.cat-mgr-row .swatch{width:14px;height:14px;border-radius:50%;flex-shrink:0;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px rgba(20,13,138,.15)}
+.cat-mgr-row .name{flex:1;font-size:13px;font-weight:600;color:var(--n)}
+.cat-mgr-row .del{background:transparent;border:none;color:rgba(20,13,138,.4);cursor:pointer;font-size:16px;line-height:1;padding:4px;border-radius:4px;-webkit-tap-highlight-color:transparent}
+.cat-mgr-row .del:hover{color:var(--pink)}
+.cat-mgr-add{display:flex;gap:6px;margin-top:8px}
+.cat-mgr-add input{flex:1;padding:9px 12px;border:1.5px solid rgba(20,13,138,.12);border-radius:10px;font-family:var(--sans);font-size:13px;color:var(--n)}
+.cat-mgr-add input:focus{outline:none;border-color:var(--g)}
+.cat-mgr-add button{padding:9px 14px;background:var(--g);color:#fff;border:none;border-radius:10px;font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.02em}
+.cat-mgr-add button:hover{background:var(--g-dark)}
+
+/* COLOR PICKER POPOVER */
+.color-pop{position:absolute;background:#fff;border-radius:10px;box-shadow:0 8px 24px rgba(20,13,138,.2);padding:8px;display:none;grid-template-columns:repeat(6,1fr);gap:5px;z-index:1100}
+.color-pop.open{display:grid}
+.color-pop .swatch-opt{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px rgba(20,13,138,.15);transition:transform .1s}
+.color-pop .swatch-opt:hover{transform:scale(1.2)}
+
+/* RICE LETTER ACCENTS */
+.acc-r{background:var(--n)}
+.acc-i{background:var(--peach)}
+.acc-c{background:var(--pink)}
+.acc-e{background:var(--blue)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--n);color:#fff;border-radius:99px;padding:10px 22px;font-size:13px;font-weight:600;box-shadow:0 8px 32px rgba(20,13,138,.25);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s cubic-bezier(.34,1.56,.64,1);z-index:9000;font-family:var(--sans)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+</style>
+</head>
+<body>
+
+<div class="page-head">
+  <div class="ph-badge">v1.3 · weighted impact</div>
+  <div class="ph-inner">
+    <div class="ph-text">
+      <div class="ph-kicker">
+        <span>Backlog</span>
+        <span class="ph-kicker-dot"></span>
+        <span>Prioritization Tool</span>
+      </div>
+      <div class="ph-title">Score every<br><em>backlog item.</em></div>
+      <div class="ph-sub">Weighted RICE prioritization across six operational impact dimensions — built for ground ops decision-making.</div>
+      <div class="ph-formula">prio = ( <b>R</b> × <b>I</b> × <b>C</b> ) ÷ <b>E</b></div>
+    </div>
+  </div>
+  <div class="ph-keyhint">
+    <kbd>1</kbd>–<kbd>5</kbd> multipliers · <kbd>↵</kbd> add · <kbd>esc</kbd> cancel
+  </div>
+</div>
+
+<div class="main">
+<div class="grid">
+
+  <!-- INPUT CARD -->
+  <div>
+    <div class="card" id="inputCard">
+      <div class="card-hdr">
+        <div class="card-hdr-l">
+          <div class="card-eyebrow" id="cardEyebrow">New item</div>
+          <div class="card-title" id="cardTitle">New backlog item</div>
+        </div>
+        <div class="card-counter" id="counter">item 001</div>
+      </div>
+
+      <div class="card-body">
+
+        <div class="field-group">
+          <div class="field-label">
+            <div class="field-name">Item name</div>
+          </div>
+          <input type="text" class="input-text" id="itemName" placeholder="e.g. Auto-rebook on cancellation">
+        </div>
+
+        <div class="field-group">
+          <div class="field-label">
+            <div class="field-name">Category</div>
+          </div>
+          <div class="cat-row" id="catRow"></div>
+        </div>
+
+        <!-- REACH -->
+        <div class="field-group">
+          <div class="field-label">
+            <div class="field-name">
+              <span class="field-letter acc-r">R</span>
+              <span>Reach</span>
+            </div>
+            <div class="field-val" id="reachVal">1×</div>
+          </div>
+          <div class="mult-row" data-input="reach" data-kbidx="0">
+            <button class="mult-btn" data-val="0.25">0.25<span class="lbl">minimal</span><span class="kb-num">1</span></button>
+            <button class="mult-btn" data-val="0.5">0.5<span class="lbl">low</span><span class="kb-num">2</span></button>
+            <button class="mult-btn active" data-val="1">1<span class="lbl">medium</span><span class="kb-num">3</span></button>
+            <button class="mult-btn" data-val="2">2<span class="lbl">high</span><span class="kb-num">4</span></button>
+            <button class="mult-btn" data-val="3">3<span class="lbl">massive</span><span class="kb-num">5</span></button>
+          </div>
+        </div>
+
+        <!-- IMPACT BLOCK -->
+        <div class="field-group">
+          <div class="impact-block">
+            <div class="impact-block-hdr">
+              <div class="impact-block-hdr-l">
+                <span class="ib-letter">I</span>
+                <span class="ib-title">Impact · weighted</span>
+              </div>
+              <span class="ib-result" id="impactComputed">1.00×</span>
+            </div>
+
+            <div id="impactInputs"></div>
+
+            <details class="weights-toggle">
+              <summary>Configure weights</summary>
+              <div class="weights-inner" id="weightInputs"></div>
+              <div class="w-sum-row">
+                <button class="w-reset" id="btnResetWeights">↺ Reset to equal</button>
+                <div class="w-sum" id="weightSum">total: 100%</div>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <!-- CONFIDENCE -->
+        <div class="field-group">
+          <div class="field-label">
+            <div class="field-name">
+              <span class="field-letter acc-c">C</span>
+              <span>Confidence</span>
+            </div>
+            <div class="field-val" id="confidenceVal">1×</div>
+          </div>
+          <div class="mult-row" data-input="confidence" data-kbidx="1">
+            <button class="mult-btn" data-val="0.25">0.25<span class="lbl">guess</span><span class="kb-num">1</span></button>
+            <button class="mult-btn" data-val="0.5">0.5<span class="lbl">low</span><span class="kb-num">2</span></button>
+            <button class="mult-btn active" data-val="1">1<span class="lbl">medium</span><span class="kb-num">3</span></button>
+            <button class="mult-btn" data-val="2">2<span class="lbl">high</span><span class="kb-num">4</span></button>
+            <button class="mult-btn" data-val="3">3<span class="lbl">certain</span><span class="kb-num">5</span></button>
+          </div>
+        </div>
+
+        <!-- EFFORT -->
+        <div class="field-group">
+          <div class="field-label">
+            <div class="field-name">
+              <span class="field-letter acc-e">E</span>
+              <span>Effort</span>
+            </div>
+            <div class="field-val" id="effortVal">1×</div>
+          </div>
+          <div class="mult-row" data-input="effort" data-kbidx="2">
+            <button class="mult-btn" data-val="0.25">0.25<span class="lbl">trivial</span><span class="kb-num">1</span></button>
+            <button class="mult-btn" data-val="0.5">0.5<span class="lbl">small</span><span class="kb-num">2</span></button>
+            <button class="mult-btn active" data-val="1">1<span class="lbl">medium</span><span class="kb-num">3</span></button>
+            <button class="mult-btn" data-val="2">2<span class="lbl">large</span><span class="kb-num">4</span></button>
+            <button class="mult-btn" data-val="3">3<span class="lbl">huge</span><span class="kb-num">5</span></button>
+          </div>
+        </div>
+
+        <!-- NOTES -->
+        <details class="notes-toggle" id="notesToggle">
+          <summary>Notes &amp; rationale</summary>
+          <div class="notes-inner">
+            <textarea class="input-textarea" id="itemNotes" placeholder="Why these scores? Context, assumptions, links to tickets..."></textarea>
+            <div class="notes-hint">Optional. Useful for defending the score later or for handover.</div>
+          </div>
+        </details>
+
+        <!-- SCORE PREVIEW -->
+        <div class="score-preview">
+          <div class="sp-label">Prio Score</div>
+          <div class="sp-value" id="previewScore">1.00</div>
+          <div class="sp-formula" id="previewFormula">1.00 × 1.00 × 1.00 ÷ 1.00</div>
+          <span class="sp-tier" id="previewTier" style="display:none">—</span>
+        </div>
+
+        <div class="action-row">
+          <button class="btn btn-ghost" id="btnReset">Reset</button>
+          <button class="btn btn-primary" id="btnAdd">+ Add to backlog</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div>
+    <div class="toolbar">
+      <span class="tb-count" id="itemCount">0 items</span>
+      <button class="tb-btn tb-btn-settings" id="btnSettings">⚙ Settings</button>
+      <button class="tb-btn tb-btn-danger" id="btnClear">Clear all</button>
+      <button class="tb-btn tb-btn-export" id="btnExport">↓ Export Excel</button>
+    </div>
+
+    <div id="filterRow" style="display:none"></div>
+    <div id="tableWrap"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-hdr-l">
+        <div class="modal-eyebrow">Configuration</div>
+        <div class="modal-title">Settings</div>
+      </div>
+      <button class="modal-close" id="closeSettings">×</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Threshold mode -->
+      <div class="modal-section">
+        <div class="modal-section-title">Score thresholds</div>
+        <div class="modal-radio-row">
+          <button class="modal-radio" data-thresh-mode="manual">Manual</button>
+          <button class="modal-radio" data-thresh-mode="auto">Auto (quartiles)</button>
+        </div>
+
+        <div id="manualThresh">
+          <div class="threshold-row">
+            <span class="threshold-label tier-high"><span class="dot"></span>HIGH</span>
+            <span class="desc">Score ≥</span>
+            <input type="number" step="0.1" id="thHigh" value="3">
+          </div>
+          <div class="threshold-row">
+            <span class="threshold-label tier-mid"><span class="dot"></span>MID</span>
+            <span class="desc">Score ≥</span>
+            <input type="number" step="0.1" id="thMid" value="1">
+          </div>
+          <div class="threshold-row">
+            <span class="threshold-label tier-low"><span class="dot"></span>LOW</span>
+            <span class="desc">below MID</span>
+            <span style="font-family:var(--mono);font-size:11px;color:var(--n);opacity:.4;text-align:right">auto</span>
+          </div>
+        </div>
+
+        <div id="autoThresh" style="display:none">
+          <div class="auto-info">
+            Thresholds are calculated from your current items: <b>top 25%</b> = high, <b>middle 50%</b> = mid, <b>bottom 25%</b> = low. Updates automatically as you add items.
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories -->
+      <div class="modal-section">
+        <div class="modal-section-title">Categories</div>
+        <div id="catMgrList"></div>
+        <div class="cat-mgr-add">
+          <input type="text" id="newCatName" placeholder="New category name" maxlength="20">
+          <button id="addCatBtn">+ Add</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- COLOR PICKER -->
+<div class="color-pop" id="colorPop"></div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Saved</div>
+
+<script>
+// ── Config ────────────────────────────────────────────────
+const IMPACT_KEYS = [
+  { id:'otp',   name:'Impact on OTP' },
+  { id:'nps',   name:'NPS' },
+  { id:'costs', name:'Costs' },
+  { id:'rev',   name:'Revenue' },
+  { id:'sust',  name:'Sustainability' },
+  { id:'tc',    name:'Time Criticality' },
+];
+
+const MULTS = [0.25, 0.5, 1, 2, 3];
+
+const STORAGE_KEY  = 'backlogPrioCalcV3';
+const WEIGHTS_KEY  = 'backlogPrioWeightsV3';
+const CATS_KEY     = 'backlogPrioCatsV3';
+const SETTINGS_KEY = 'backlogPrioSettingsV3';
+const FILTER_KEY   = 'backlogPrioFilterV3';
+
+const COLOR_PALETTE = [
+  '#00AB61','#FF8867','#E20076','#0053FF','#140D8A','#F9A826',
+  '#7B61FF','#00B8D4','#FF5C8A','#5BB85B','#C12E2E','#666'
+];
+
+const DEFAULT_CATS = [
+  { id:'boarding',  name:'Boarding',  color:'#00AB61' },
+  { id:'baggage',   name:'Baggage',   color:'#FF8867' },
+  { id:'crew',      name:'Crew',      color:'#E20076' },
+  { id:'aircraft',  name:'Aircraft',  color:'#0053FF' },
+  { id:'it',        name:'IT',        color:'#7B61FF' },
+  { id:'process',   name:'Process',   color:'#F9A826' },
+  { id:'other',     name:'Other',     color:'#666'    },
+];
+
+// ── State ─────────────────────────────────────────────────
+let state = {
+  reach:1, confidence:1, effort:1,
+  impact: Object.fromEntries(IMPACT_KEYS.map(k => [k.id, 1])),
+  category: null,
+  notes: '',
+};
+
+let weights = JSON.parse(localStorage.getItem(WEIGHTS_KEY)) ||
+  Object.fromEntries(IMPACT_KEYS.map(k => [k.id, 100/IMPACT_KEYS.length]));
+
+let cats = JSON.parse(localStorage.getItem(CATS_KEY)) || DEFAULT_CATS;
+
+let items = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+// migrate older items: ensure all fields exist
+items.forEach(it => {
+  if(it.category === undefined) it.category = null;
+  if(it.notes === undefined) it.notes = '';
+});
+
+let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {
+  threshMode: 'manual',
+  thHigh: 3,
+  thMid: 1,
+};
+
+let currentFilter = JSON.parse(localStorage.getItem(FILTER_KEY)) || null;
+
+let sort = { col:'score', dir:'desc' };
+let editingId = null;
+let kbFocusRowIdx = null;
+
+// ── Toast ─────────────────────────────────────────────────
+let toastTimer;
+function toast(msg){
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>el.classList.remove('show'), 1800);
+}
+
+// ── Categories ────────────────────────────────────────────
+function buildCatRow(){
+  const wrap = document.getElementById('catRow');
+  wrap.innerHTML = cats.map(c => `
+    <button class="cat-chip" data-cat="${c.id}" style="border-color:${c.color};color:${state.category===c.id?'#fff':c.color};background:${state.category===c.id?c.color:'transparent'}">
+      <span class="cat-dot" style="background:${state.category===c.id?'#fff':c.color}"></span>
+      ${escapeHtml(c.name)}
+    </button>
+  `).join('') + `
+    <button class="cat-chip cat-chip-add" id="openCatMgr">+ Manage</button>
+  `;
+
+  wrap.querySelectorAll('[data-cat]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.category = (state.category === btn.dataset.cat) ? null : btn.dataset.cat;
+      buildCatRow();
+    });
+  });
+  document.getElementById('openCatMgr').addEventListener('click', () => openSettings());
+}
+
+function getCat(id){ return cats.find(c => c.id === id); }
+
+// ── Impact inputs ─────────────────────────────────────────
+function buildImpactInputs(){
+  const wrap = document.getElementById('impactInputs');
+  wrap.innerHTML = IMPACT_KEYS.map((k,i) => `
+    <div class="impact-field">
+      <div class="impact-field-label">
+        <span>${k.name}</span>
+        <span class="impact-field-val" id="${k.id}Val">1×</span>
+      </div>
+      <div class="mult-row impact-mult-row" data-impact="${k.id}" data-kbidx="${i+3}">
+        ${MULTS.map((m,mi) => `<button class="mult-btn ${m===1?'active':''}" data-val="${m}">${m}<span class="kb-num">${mi+1}</span></button>`).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  wrap.querySelectorAll('.mult-row').forEach(row => {
+    row.addEventListener('click', e => {
+      const btn = e.target.closest('.mult-btn'); if(!btn) return;
+      const key = row.dataset.impact;
+      const val = parseFloat(btn.dataset.val);
+      row.querySelectorAll('.mult-btn').forEach(b => b.classList.toggle('active', b===btn));
+      state.impact[key] = val;
+      document.getElementById(key+'Val').textContent = val+'×';
+      recalc();
+    });
+  });
+}
+
+// ── Weights ───────────────────────────────────────────────
+function buildWeightInputs(){
+  const wrap = document.getElementById('weightInputs');
+  wrap.innerHTML = IMPACT_KEYS.map(k => `
+    <div class="w-row">
+      <div>
+        <label>${k.name}</label>
+        <input type="range" min="0" max="100" step="1" value="${weights[k.id]}" data-w="${k.id}">
+      </div>
+      <div class="w-pct" id="w_${k.id}">${weights[k.id].toFixed(0)}%</div>
+    </div>
+  `).join('');
+  wrap.querySelectorAll('input[type="range"]').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const key = e.target.dataset.w;
+      weights[key] = parseFloat(e.target.value);
+      document.getElementById('w_'+key).textContent = weights[key].toFixed(0)+'%';
+      localStorage.setItem(WEIGHTS_KEY, JSON.stringify(weights));
+      updateWeightSummary();
+      recalc();
+    });
+  });
+  updateWeightSummary();
+}
+
+function updateWeightSummary(){
+  const total = Object.values(weights).reduce((a,b)=>a+b,0);
+  const el = document.getElementById('weightSum');
+  el.textContent = `total: ${total.toFixed(0)}%${total===0?' — set at least one':''}`;
+  el.classList.toggle('warn', total===0);
+}
+
+document.getElementById('btnResetWeights').addEventListener('click', () => {
+  weights = Object.fromEntries(IMPACT_KEYS.map(k => [k.id, 100/IMPACT_KEYS.length]));
+  localStorage.setItem(WEIGHTS_KEY, JSON.stringify(weights));
+  buildWeightInputs();
+  recalc();
+  toast('Weights reset');
+});
+
+// ── Multiplier buttons ────────────────────────────────────
+document.querySelectorAll('.mult-row[data-input]').forEach(row => {
+  row.addEventListener('click', e => {
+    const btn = e.target.closest('.mult-btn'); if(!btn) return;
+    const key = row.dataset.input;
+    const val = parseFloat(btn.dataset.val);
+    row.querySelectorAll('.mult-btn').forEach(b => b.classList.toggle('active', b===btn));
+    state[key] = val;
+    document.getElementById(key+'Val').textContent = val+'×';
+    recalc();
+  });
+});
+
+// ── Compute ───────────────────────────────────────────────
+function computeImpact(impactVals, w){
+  const totalW = Object.values(w).reduce((a,b)=>a+b,0);
+  if(totalW===0) return 0;
+  let sum = 0;
+  IMPACT_KEYS.forEach(k => { sum += impactVals[k.id] * w[k.id]; });
+  return sum / totalW;
+}
+
+function computeScore(r,i,c,e){
+  if(e===0) return 0;
+  return (r*i*c)/e;
+}
+
+function getThresholds(){
+  if(settings.threshMode === 'manual'){
+    return { high: settings.thHigh, mid: settings.thMid };
+  }
+  // auto: quartiles
+  if(items.length < 3) return { high: 3, mid: 1 };
+  const scores = items.map(i => i.score).sort((a,b) => a-b);
+  const p25 = scores[Math.floor(scores.length * 0.25)];
+  const p75 = scores[Math.floor(scores.length * 0.75)];
+  return { high: p75, mid: p25 };
+}
+
+function tierOf(score){
+  const { high, mid } = getThresholds();
+  if(score >= high) return 'high';
+  if(score >= mid)  return 'mid';
+  return 'low';
+}
+
+function recalc(){
+  const impact = computeImpact(state.impact, weights);
+  document.getElementById('impactComputed').textContent = impact.toFixed(2)+'×';
+  const score = computeScore(state.reach, impact, state.confidence, state.effort);
+  document.getElementById('previewScore').textContent = score.toFixed(2);
+  document.getElementById('previewFormula').textContent =
+    `${state.reach} × ${impact.toFixed(2)} × ${state.confidence} ÷ ${state.effort}`;
+
+  // tier indicator
+  const tier = tierOf(score);
+  const tierEl = document.getElementById('previewTier');
+  const valEl = document.getElementById('previewScore');
+  valEl.classList.remove('tier-high','tier-mid','tier-low');
+  valEl.classList.add('tier-'+tier);
+  tierEl.classList.remove('tier-high','tier-mid','tier-low');
+  tierEl.classList.add('tier-'+tier);
+  tierEl.textContent = tier === 'high' ? 'DO NOW' : tier === 'mid' ? 'NEXT' : 'BACKLOG';
+  tierEl.style.display = 'inline-block';
+}
+
+// ── Add / Update ──────────────────────────────────────────
+function getFormPayload(){
+  const impact = computeImpact(state.impact, weights);
+  const score = computeScore(state.reach, impact, state.confidence, state.effort);
+  return {
+    name: document.getElementById('itemName').value.trim() || `Untitled #${items.length+1}`,
+    reach: state.reach,
+    impact,
+    confidence: state.confidence,
+    effort: state.effort,
+    impactBreakdown: { ...state.impact },
+    category: state.category,
+    notes: document.getElementById('itemNotes').value.trim(),
+    score,
+  };
+}
+
+document.getElementById('btnAdd').addEventListener('click', () => {
+  const payload = getFormPayload();
+  if(editingId !== null){
+    const idx = items.findIndex(i => i.id === editingId);
+    if(idx !== -1) items[idx] = { ...items[idx], ...payload };
+    exitEditMode();
+    toast('Item updated');
+  } else {
+    items.push({ id: Date.now(), ...payload });
+    toast('Item added');
+  }
+  persist();
+  renderTable();
+  resetForm(true);
+});
+
+document.getElementById('btnReset').addEventListener('click', () => {
+  if(editingId !== null) exitEditMode();
+  resetForm(true);
+});
+
+function resetForm(clearName){
+  if(clearName){
+    document.getElementById('itemName').value = '';
+    document.getElementById('itemNotes').value = '';
+    state.category = null;
+    buildCatRow();
+  }
+  state.reach = 1; state.confidence = 1; state.effort = 1;
+  state.impact = Object.fromEntries(IMPACT_KEYS.map(k => [k.id, 1]));
+
+  ['reach','confidence','effort'].forEach(k => {
+    document.getElementById(k+'Val').textContent = '1×';
+    document.querySelectorAll(`.mult-row[data-input="${k}"] .mult-btn`).forEach(b => {
+      b.classList.toggle('active', parseFloat(b.dataset.val)===1);
+    });
+  });
+
+  IMPACT_KEYS.forEach(k => {
+    document.getElementById(k.id+'Val').textContent = '1×';
+    document.querySelectorAll(`.mult-row[data-impact="${k.id}"] .mult-btn`).forEach(b => {
+      b.classList.toggle('active', parseFloat(b.dataset.val)===1);
+    });
+  });
+
+  recalc();
+  updateCounter();
+}
+
+function updateCounter(){
+  if(editingId !== null){
+    const idx = items.findIndex(i => i.id === editingId);
+    document.getElementById('counter').textContent = `editing #${String(idx+1).padStart(3,'0')}`;
+  } else {
+    document.getElementById('counter').textContent = `item ${String(items.length+1).padStart(3,'0')}`;
+  }
+}
+
+function persist(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+}
+
+// ── Edit / Duplicate ──────────────────────────────────────
+function enterEditMode(item){
+  editingId = item.id;
+  document.getElementById('inputCard').classList.add('edit-mode');
+  document.getElementById('cardEyebrow').textContent = 'Editing';
+  document.getElementById('cardTitle').textContent = item.name;
+
+  document.getElementById('btnAdd').textContent = '✓ Update item';
+  document.getElementById('btnAdd').classList.remove('btn-primary');
+  document.getElementById('btnAdd').classList.add('btn-update');
+
+  document.getElementById('itemName').value = item.name;
+  document.getElementById('itemNotes').value = item.notes || '';
+  if(item.notes){
+    document.getElementById('notesToggle').open = true;
+  }
+
+  state.reach = item.reach;
+  state.confidence = item.confidence;
+  state.effort = item.effort;
+  state.impact = { ...item.impactBreakdown };
+  state.category = item.category;
+
+  ['reach','confidence','effort'].forEach(k => {
+    document.getElementById(k+'Val').textContent = state[k]+'×';
+    document.querySelectorAll(`.mult-row[data-input="${k}"] .mult-btn`).forEach(b => {
+      b.classList.toggle('active', parseFloat(b.dataset.val)===state[k]);
+    });
+  });
+
+  IMPACT_KEYS.forEach(k => {
+    document.getElementById(k.id+'Val').textContent = state.impact[k.id]+'×';
+    document.querySelectorAll(`.mult-row[data-impact="${k.id}"] .mult-btn`).forEach(b => {
+      b.classList.toggle('active', parseFloat(b.dataset.val)===state.impact[k.id]);
+    });
+  });
+
+  buildCatRow();
+  recalc();
+  updateCounter();
+
+  // scroll to form on small screens
+  if(window.innerWidth < 980){
+    document.getElementById('inputCard').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+  renderTable();
+}
+
+function exitEditMode(){
+  editingId = null;
+  document.getElementById('inputCard').classList.remove('edit-mode');
+  document.getElementById('cardEyebrow').textContent = 'New item';
+  document.getElementById('cardTitle').textContent = 'New backlog item';
+  document.getElementById('btnAdd').textContent = '+ Add to backlog';
+  document.getElementById('btnAdd').classList.remove('btn-update');
+  document.getElementById('btnAdd').classList.add('btn-primary');
+  updateCounter();
+  renderTable();
+}
+
+function duplicateItem(item){
+  const copy = {
+    ...JSON.parse(JSON.stringify(item)),
+    id: Date.now(),
+    name: item.name + ' (copy)',
+  };
+  items.push(copy);
+  persist();
+  renderTable();
+  toast('Item duplicated');
+}
+
+// ── Table render ──────────────────────────────────────────
+function renderFilterRow(){
+  const wrap = document.getElementById('filterRow');
+  if(!items.length){ wrap.style.display = 'none'; return; }
+
+  const counts = {};
+  items.forEach(i => {
+    const k = i.category || '__none';
+    counts[k] = (counts[k]||0) + 1;
+  });
+  const activeCats = cats.filter(c => counts[c.id]);
+  const hasNone = counts['__none'] > 0;
+
+  if(activeCats.length === 0 && !hasNone){ wrap.style.display = 'none'; return; }
+
+  wrap.style.display = 'flex';
+  wrap.className = 'filter-row';
+  wrap.innerHTML = `
+    <span class="filter-label">Filter</span>
+    <button class="filter-chip ${currentFilter===null?'active':''}" data-f="">All <span class="count">${items.length}</span></button>
+    ${activeCats.map(c => `
+      <button class="filter-chip ${currentFilter===c.id?'active':''}" data-f="${c.id}" style="${currentFilter===c.id?`background:${c.color};border-color:${c.color}`:`border-color:${c.color}33;color:${c.color}`}">
+        <span class="cat-dot" style="background:${currentFilter===c.id?'#fff':c.color}"></span>
+        ${escapeHtml(c.name)} <span class="count">${counts[c.id]}</span>
+      </button>
+    `).join('')}
+    ${hasNone ? `
+      <button class="filter-chip ${currentFilter==='__none'?'active':''}" data-f="__none">Uncategorized <span class="count">${counts['__none']}</span></button>
+    ` : ''}
+  `;
+
+  wrap.querySelectorAll('[data-f]').forEach(b => {
+    b.addEventListener('click', () => {
+      const v = b.dataset.f;
+      currentFilter = v === '' ? null : v;
+      localStorage.setItem(FILTER_KEY, JSON.stringify(currentFilter));
+      renderFilterRow();
+      renderTable();
+    });
+  });
+}
+
+function renderTable(){
+  const wrap = document.getElementById('tableWrap');
+  document.getElementById('itemCount').textContent =
+    `${items.length} item${items.length===1?'':'s'}`;
+  updateCounter();
+  renderFilterRow();
+
+  if(!items.length){
+    wrap.innerHTML = `
+      <div class="empty-state">
+        <div class="es-icon">✓</div>
+        <div class="es-title">No backlog items yet</div>
+        <div class="es-sub">Score your first item on the left to start building the priority list.</div>
+      </div>`;
+    return;
+  }
+
+  // filter
+  let view = items;
+  if(currentFilter === '__none'){
+    view = items.filter(i => !i.category);
+  } else if(currentFilter){
+    view = items.filter(i => i.category === currentFilter);
+  }
+
+  if(!view.length){
+    wrap.innerHTML = `
+      <div class="empty-state">
+        <div class="es-title">No items in this filter</div>
+        <div class="es-sub">Switch filter or clear it to see other items.</div>
+      </div>`;
+    return;
+  }
+
+  // sort
+  const sorted = [...view].sort((a,b) => {
+    const av = a[sort.col], bv = b[sort.col];
+    if(typeof av === 'string') return sort.dir==='asc' ? av.localeCompare(bv) : bv.localeCompare(av);
+    return sort.dir==='asc' ? av-bv : bv-av;
+  });
+
+  const arrow = c => sort.col===c ? (sort.dir==='asc' ? '▲' : '▼') : '';
+  const cls = c => sort.col===c ? 'sort-active' : '';
+
+  wrap.innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="no-sort">#</th>
+            <th data-col="name"       class="${cls('name')}"       data-arrow="${arrow('name')}">Item</th>
+            <th data-col="reach"      class="${cls('reach')}"      data-arrow="${arrow('reach')}">R</th>
+            <th data-col="impact"     class="${cls('impact')}"     data-arrow="${arrow('impact')}">Impact</th>
+            <th data-col="confidence" class="${cls('confidence')}" data-arrow="${arrow('confidence')}">C</th>
+            <th data-col="effort"     class="${cls('effort')}"     data-arrow="${arrow('effort')}">E</th>
+            <th data-col="score"      class="${cls('score')}"      data-arrow="${arrow('score')}">Score</th>
+            <th class="no-sort" style="text-align:right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${sorted.map((it,idx) => {
+            const tier = tierOf(it.score);
+            const cat = getCat(it.category);
+            const isEditing = editingId === it.id;
+            return `
+              <tr data-id="${it.id}" class="${idx===0 && sort.col==='score' && sort.dir==='desc' && !isEditing ? 'top-row' : ''} ${isEditing?'editing':''}">
+                <td class="t-rank ${idx===0 && sort.col==='score' && sort.dir==='desc' ?'t-rank-1':''}">${idx+1}</td>
+                <td class="t-name">
+                  ${escapeHtml(it.name)}
+                  ${it.notes ? `<span class="t-note-icon" title="${escapeHtml(it.notes)}">📝</span>` : ''}
+                  ${cat ? `<span class="t-cat" style="background:${cat.color}1a;color:${cat.color}"><span class="cat-dot" style="background:${cat.color}"></span>${escapeHtml(cat.name)}</span>` : ''}
+                </td>
+                <td class="t-mono">${it.reach}</td>
+                <td class="t-mono">${it.impact.toFixed(2)}</td>
+                <td class="t-mono">${it.confidence}</td>
+                <td class="t-mono">${it.effort}</td>
+                <td class="t-score-cell tier-${tier}">${it.score.toFixed(2)}</td>
+                <td>
+                  <div class="t-actions">
+                    <button class="t-action-btn" data-act="edit"  data-id="${it.id}" title="Edit">✎</button>
+                    <button class="t-action-btn" data-act="dup"   data-id="${it.id}" title="Duplicate">⎘</button>
+                    <button class="t-action-btn t-del" data-act="del" data-id="${it.id}" title="Remove">×</button>
+                  </div>
+                </td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  // sort handlers
+  wrap.querySelectorAll('thead th[data-col]').forEach(th => {
+    th.addEventListener('click', () => {
+      const col = th.dataset.col;
+      if(sort.col===col) sort.dir = sort.dir==='asc' ? 'desc' : 'asc';
+      else { sort.col = col; sort.dir = col==='name' ? 'asc' : 'desc'; }
+      renderTable();
+    });
+  });
+
+  // row click (anywhere except actions) → edit
+  wrap.querySelectorAll('tbody tr').forEach(tr => {
+    tr.addEventListener('click', e => {
+      if(e.target.closest('.t-action-btn')) return;
+      const id = parseInt(tr.dataset.id);
+      const item = items.find(i => i.id === id);
+      if(item) enterEditMode(item);
+    });
+  });
+
+  // action buttons
+  wrap.querySelectorAll('.t-action-btn').forEach(b => {
+    b.addEventListener('click', e => {
+      e.stopPropagation();
+      const id = parseInt(b.dataset.id);
+      const item = items.find(i => i.id === id);
+      if(!item) return;
+      const act = b.dataset.act;
+      if(act === 'edit') enterEditMode(item);
+      else if(act === 'dup') duplicateItem(item);
+      else if(act === 'del'){
+        if(editingId === id) exitEditMode();
+        items = items.filter(i => i.id !== id);
+        persist();
+        renderTable();
+        toast('Item removed');
+      }
+    });
+  });
+}
+
+function escapeHtml(s){
+  if(s == null) return '';
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+// ── Clear all ─────────────────────────────────────────────
+document.getElementById('btnClear').addEventListener('click', () => {
+  if(!items.length) return;
+  if(confirm(`Remove all ${items.length} items?`)){
+    items = [];
+    if(editingId !== null) exitEditMode();
+    persist();
+    renderTable();
+    toast('Backlog cleared');
+  }
+});
+
+// ── Excel export ──────────────────────────────────────────
+document.getElementById('btnExport').addEventListener('click', () => {
+  if(!items.length){ alert('No items to export.'); return; }
+  const sorted = [...items].sort((a,b) => b.score - a.score);
+
+  const rows = sorted.map((it,idx) => {
+    const cat = getCat(it.category);
+    return {
+      Rank: idx+1,
+      Item: it.name,
+      Category: cat ? cat.name : '',
+      Tier: tierOf(it.score).toUpperCase(),
+      Reach: it.reach,
+      'Impact (weighted)': parseFloat(it.impact.toFixed(3)),
+      'Impact: OTP': it.impactBreakdown.otp,
+      'Impact: NPS': it.impactBreakdown.nps,
+      'Impact: Costs': it.impactBreakdown.costs,
+      'Impact: Revenue': it.impactBreakdown.rev,
+      'Impact: Sustainability': it.impactBreakdown.sust,
+      'Impact: TimeCriticality': it.impactBreakdown.tc,
+      Confidence: it.confidence,
+      Effort: it.effort,
+      'Prio Score': parseFloat(it.score.toFixed(3)),
+      Notes: it.notes || '',
+    };
+  });
+
+  const weightsRow = IMPACT_KEYS.map(k => ({
+    Category: k.name,
+    Weight: weights[k.id].toFixed(1)+'%',
+  }));
+
+  const th = getThresholds();
+  const settingsRows = [
+    { Setting:'Threshold mode', Value: settings.threshMode },
+    { Setting:'High tier (score ≥)', Value: th.high.toFixed(2) },
+    { Setting:'Mid tier (score ≥)',  Value: th.mid.toFixed(2) },
+  ];
+
+  const wb = XLSX.utils.book_new();
+  const ws1 = XLSX.utils.json_to_sheet(rows);
+  ws1['!cols'] = [
+    { wch:5 },{ wch:32 },{ wch:14 },{ wch:8 },
+    { wch:7 },{ wch:18 },{ wch:12 },{ wch:12 },{ wch:12 },{ wch:14 },{ wch:18 },{ wch:18 },
+    { wch:11 },{ wch:8 },{ wch:12 },{ wch:40 }
+  ];
+  XLSX.utils.book_append_sheet(wb, ws1, 'Backlog');
+
+  const ws2 = XLSX.utils.json_to_sheet(weightsRow);
+  ws2['!cols'] = [{ wch:22 },{ wch:10 }];
+  XLSX.utils.book_append_sheet(wb, ws2, 'Impact weights');
+
+  const ws3 = XLSX.utils.json_to_sheet(settingsRows);
+  ws3['!cols'] = [{ wch:24 },{ wch:14 }];
+  XLSX.utils.book_append_sheet(wb, ws3, 'Settings');
+
+  const date = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, `backlog_prio_${date}.xlsx`);
+  toast('Excel exported');
+});
+
+// ── Settings modal ────────────────────────────────────────
+const settingsModal = document.getElementById('settingsModal');
+
+function openSettings(){
+  settingsModal.classList.add('open');
+  syncSettingsUI();
+  buildCatMgr();
+}
+function closeSettings(){ settingsModal.classList.remove('open'); }
+
+document.getElementById('btnSettings').addEventListener('click', openSettings);
+document.getElementById('closeSettings').addEventListener('click', closeSettings);
+settingsModal.addEventListener('click', e => { if(e.target === settingsModal) closeSettings(); });
+
+function syncSettingsUI(){
+  document.querySelectorAll('[data-thresh-mode]').forEach(b => {
+    b.classList.toggle('active', b.dataset.threshMode === settings.threshMode);
+  });
+  document.getElementById('manualThresh').style.display = settings.threshMode === 'manual' ? 'block' : 'none';
+  document.getElementById('autoThresh').style.display = settings.threshMode === 'auto' ? 'block' : 'none';
+  document.getElementById('thHigh').value = settings.thHigh;
+  document.getElementById('thMid').value = settings.thMid;
+}
+
+document.querySelectorAll('[data-thresh-mode]').forEach(b => {
+  b.addEventListener('click', () => {
+    settings.threshMode = b.dataset.threshMode;
+    saveSettings();
+    syncSettingsUI();
+    renderTable();
+    recalc();
+  });
+});
+
+['thHigh','thMid'].forEach(id => {
+  document.getElementById(id).addEventListener('input', e => {
+    settings[id] = parseFloat(e.target.value) || 0;
+    saveSettings();
+    renderTable();
+    recalc();
+  });
+});
+
+function saveSettings(){
+  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+}
+
+// ── Category manager ──────────────────────────────────────
+function buildCatMgr(){
+  const wrap = document.getElementById('catMgrList');
+  wrap.innerHTML = cats.map(c => `
+    <div class="cat-mgr-row" data-cid="${c.id}">
+      <span class="swatch" data-swatch="${c.id}" style="background:${c.color}"></span>
+      <span class="name">${escapeHtml(c.name)}</span>
+      <button class="del" data-delcat="${c.id}" title="Remove">×</button>
+    </div>
+  `).join('');
+
+  wrap.querySelectorAll('[data-swatch]').forEach(s => {
+    s.addEventListener('click', e => {
+      e.stopPropagation();
+      openColorPop(s, s.dataset.swatch);
+    });
+  });
+
+  wrap.querySelectorAll('[data-delcat]').forEach(b => {
+    b.addEventListener('click', () => {
+      const id = b.dataset.delcat;
+      // unset on items
+      items.forEach(i => { if(i.category === id) i.category = null; });
+      cats = cats.filter(c => c.id !== id);
+      if(currentFilter === id){ currentFilter = null; localStorage.setItem(FILTER_KEY, JSON.stringify(currentFilter)); }
+      persistCats();
+      persist();
+      buildCatMgr();
+      buildCatRow();
+      renderTable();
+    });
+  });
+}
+
+document.getElementById('addCatBtn').addEventListener('click', () => {
+  const input = document.getElementById('newCatName');
+  const name = input.value.trim();
+  if(!name) return;
+  const id = 'c_' + Date.now();
+  const used = cats.map(c => c.color);
+  const color = COLOR_PALETTE.find(c => !used.includes(c)) || COLOR_PALETTE[Math.floor(Math.random()*COLOR_PALETTE.length)];
+  cats.push({ id, name, color });
+  persistCats();
+  buildCatMgr();
+  buildCatRow();
+  input.value = '';
+  toast('Category added');
+});
+
+document.getElementById('newCatName').addEventListener('keydown', e => {
+  if(e.key === 'Enter') document.getElementById('addCatBtn').click();
+});
+
+function persistCats(){
+  localStorage.setItem(CATS_KEY, JSON.stringify(cats));
+}
+
+// ── Color picker popover ──────────────────────────────────
+const colorPop = document.getElementById('colorPop');
+let activeSwatchId = null;
+function openColorPop(anchor, catId){
+  activeSwatchId = catId;
+  colorPop.innerHTML = COLOR_PALETTE.map(c => `
+    <div class="swatch-opt" data-color="${c}" style="background:${c}"></div>
+  `).join('');
+  colorPop.querySelectorAll('[data-color]').forEach(s => {
+    s.addEventListener('click', () => {
+      const cat = cats.find(c => c.id === activeSwatchId);
+      if(cat){ cat.color = s.dataset.color; persistCats(); buildCatMgr(); buildCatRow(); renderTable(); renderFilterRow(); }
+      colorPop.classList.remove('open');
+    });
+  });
+  const r = anchor.getBoundingClientRect();
+  colorPop.style.left = (r.left + window.scrollX) + 'px';
+  colorPop.style.top = (r.bottom + window.scrollY + 6) + 'px';
+  colorPop.classList.add('open');
+}
+document.addEventListener('click', e => {
+  if(!e.target.closest('.color-pop') && !e.target.closest('[data-swatch]')){
+    colorPop.classList.remove('open');
+  }
+});
+
+// ── Keyboard shortcuts ────────────────────────────────────
+const KB_ROWS = ['reach','confidence','effort'].concat(IMPACT_KEYS.map(k => k.id));
+
+function setKbFocus(idx){
+  document.querySelectorAll('.mult-row').forEach(r => r.classList.remove('kb-focus'));
+  kbFocusRowIdx = idx;
+  if(idx === null) return;
+  const target = idx < 3 ? KB_ROWS[idx] : KB_ROWS[idx];
+  let sel;
+  if(idx < 3) sel = `.mult-row[data-input="${target}"]`;
+  else sel = `.mult-row[data-impact="${target}"]`;
+  const row = document.querySelector(sel);
+  if(row) row.classList.add('kb-focus');
+}
+
+document.addEventListener('keydown', e => {
+  // ignore if typing in input/textarea
+  const tag = e.target.tagName;
+  const inField = tag === 'INPUT' || tag === 'TEXTAREA';
+
+  // Esc → exit edit mode / close modal / clear kb focus
+  if(e.key === 'Escape'){
+    if(settingsModal.classList.contains('open')){ closeSettings(); return; }
+    if(colorPop.classList.contains('open')){ colorPop.classList.remove('open'); return; }
+    if(editingId !== null){ exitEditMode(); resetForm(true); return; }
+    if(kbFocusRowIdx !== null){ setKbFocus(null); return; }
+  }
+
+  // Enter on form (outside textarea) → add/update
+  if(e.key === 'Enter' && !inField && !settingsModal.classList.contains('open')){
+    e.preventDefault();
+    document.getElementById('btnAdd').click();
+    return;
+  }
+
+  if(inField) return;
+  if(settingsModal.classList.contains('open')) return;
+
+  // 1-5 → set multiplier of focused row
+  if(['1','2','3','4','5'].includes(e.key)){
+    if(kbFocusRowIdx === null) setKbFocus(0);
+    const idx = parseInt(e.key)-1;
+    const rowName = KB_ROWS[kbFocusRowIdx];
+    let row;
+    if(kbFocusRowIdx < 3) row = document.querySelector(`.mult-row[data-input="${rowName}"]`);
+    else row = document.querySelector(`.mult-row[data-impact="${rowName}"]`);
+    if(row){
+      const btn = row.querySelectorAll('.mult-btn')[idx];
+      if(btn) btn.click();
+    }
+    return;
+  }
+
+  // Tab in form area handled natively; arrows move kb focus
+  if(e.key === 'ArrowDown'){
+    e.preventDefault();
+    setKbFocus(kbFocusRowIdx === null ? 0 : Math.min(KB_ROWS.length-1, kbFocusRowIdx+1));
+  }
+  if(e.key === 'ArrowUp'){
+    e.preventDefault();
+    setKbFocus(kbFocusRowIdx === null ? 0 : Math.max(0, kbFocusRowIdx-1));
+  }
+});
+
+// click on a mult-row also sets kb focus
+document.addEventListener('click', e => {
+  const row = e.target.closest('.mult-row[data-input], .mult-row[data-impact]');
+  if(!row) return;
+  const id = row.dataset.input || row.dataset.impact;
+  const idx = KB_ROWS.indexOf(id);
+  if(idx !== -1) setKbFocus(idx);
+});
+
+// ── Notes indicator ───────────────────────────────────────
+document.getElementById('itemNotes').addEventListener('input', e => {
+  document.getElementById('notesToggle').setAttribute('data-has-content', e.target.value.trim() ? 'true':'false');
+});
+
+// ── Init ──────────────────────────────────────────────────
+buildImpactInputs();
+buildWeightInputs();
+buildCatRow();
+recalc();
+renderTable();
+</script>
+
+</body>
+</html>
