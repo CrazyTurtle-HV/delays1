@@ -24,7 +24,6 @@
 html{font-family:var(--sans);background:var(--bg);color:var(--n);-webkit-tap-highlight-color:transparent;overflow-x:hidden;max-width:100vw}
 body{min-height:100svh;overflow-x:hidden;max-width:100vw}
 
-/* PAGE HEADER */
 .page-head{background:var(--g);padding:44px 5% 40px;position:relative}
 .ph-inner{max-width:1300px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:32px}
 .ph-text{flex:1;min-width:0}
@@ -32,21 +31,18 @@ body{min-height:100svh;overflow-x:hidden;max-width:100vw}
 .ph-kicker-dot{width:5px;height:5px;border-radius:50%;background:var(--w);opacity:.6}
 .ph-title{font-family:var(--display);font-size:clamp(30px,5vw,46px);font-weight:700;color:var(--n);line-height:1.05;letter-spacing:-.02em}
 .ph-title em{font-style:normal;color:var(--w)}
-.ph-sub{margin-top:10px;font-size:14px;color:var(--w);opacity:.85;line-height:1.55;max-width:520px}
-.ph-formula{margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--w);opacity:.9}
-.ph-formula b{background:var(--n);padding:3px 7px;border-radius:4px;font-weight:600;letter-spacing:.05em;margin:0 2px}
+.ph-sub{margin-top:10px;font-size:14px;color:var(--w);opacity:.85;line-height:1.55;max-width:540px}
+.ph-formula{margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.05em;color:var(--w);opacity:.9;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ph-formula b{background:var(--n);padding:3px 7px;border-radius:4px;font-weight:600;letter-spacing:.05em}
+.ph-formula .unit{opacity:.6;font-size:10px;margin-left:6px}
 .ph-badge{position:absolute;top:18px;right:5%;font-family:var(--mono);font-size:10px;letter-spacing:.1em;color:var(--w);opacity:.45;text-transform:uppercase}
 .ph-keyhint{position:absolute;bottom:14px;right:5%;font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--w);opacity:.55}
 .ph-keyhint kbd{background:rgba(20,13,138,.4);border:1px solid rgba(255,255,255,.2);border-radius:4px;padding:1px 5px;font-family:var(--mono);font-size:9px;margin:0 1px}
 
-/* MAIN */
 .main{max-width:1300px;margin:0 auto;padding:28px 5% 80px}
-
-/* GRID */
-.grid{display:grid;grid-template-columns:440px 1fr;gap:20px;align-items:start}
+.grid{display:grid;grid-template-columns:460px 1fr;gap:20px;align-items:start}
 @media(max-width:980px){.grid{grid-template-columns:1fr}}
 
-/* CARDS */
 .card{background:var(--w);border-radius:16px;border:1px solid rgba(20,13,138,.1);overflow:hidden;box-shadow:0 2px 8px rgba(20,13,138,.04);box-sizing:border-box;width:100%;transition:border-color .25s, box-shadow .25s}
 .card.edit-mode{border-color:var(--peach);box-shadow:0 4px 24px rgba(255,136,103,.2)}
 .card-hdr{padding:18px 22px 14px;border-bottom:1px solid rgba(20,13,138,.07);display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -58,15 +54,26 @@ body{min-height:100svh;overflow-x:hidden;max-width:100vw}
 .card.edit-mode .card-counter{background:var(--peach);color:#fff}
 .card-body{padding:18px 22px 22px}
 
-/* FIELD GROUP */
 .field-group{margin-bottom:18px}
 .field-group:last-child{margin-bottom:0}
 .field-label{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
 .field-name{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--n)}
 .field-letter{font-family:var(--mono);font-size:9px;font-weight:700;background:var(--n);color:#fff;border-radius:4px;padding:2px 6px;letter-spacing:.05em}
 .field-val{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--g);background:rgba(0,171,97,.1);border-radius:99px;padding:3px 9px;letter-spacing:.02em}
+.field-hint{font-family:var(--mono);font-size:9px;color:var(--n);opacity:.45;margin-top:6px;letter-spacing:.04em;line-height:1.5}
 
-/* MULTIPLIER BUTTONS */
+.numeric-wrap{position:relative;display:flex;align-items:center}
+.numeric-wrap input[type="number"]{width:100%;padding:12px 100px 12px 14px;border:1.5px solid rgba(20,13,138,.12);background:var(--w);border-radius:10px;font-family:var(--mono);font-size:15px;color:var(--n);font-weight:700;transition:border-color .15s;letter-spacing:.01em}
+.numeric-wrap input[type="number"]::-webkit-outer-spin-button,
+.numeric-wrap input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.numeric-wrap input[type="number"]{-moz-appearance:textfield}
+.numeric-wrap input[type="number"]:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,171,97,.12)}
+.numeric-suffix{position:absolute;right:14px;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--n);opacity:.4;letter-spacing:.05em;text-transform:uppercase;pointer-events:none}
+.quick-pick{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+.qp-btn{padding:6px 11px;background:transparent;border:1px solid rgba(20,13,138,.15);border-radius:99px;font-family:var(--mono);font-size:11px;font-weight:700;color:rgba(20,13,138,.6);cursor:pointer;transition:all .12s;-webkit-tap-highlight-color:transparent;letter-spacing:.02em}
+.qp-btn:hover{border-color:var(--n);color:var(--n)}
+.qp-btn.active{background:var(--n);border-color:var(--n);color:#fff}
+
 .mult-row{display:grid;grid-template-columns:repeat(5,1fr);gap:5px;position:relative}
 .mult-row.kb-focus::before{content:'';position:absolute;inset:-4px;border:1.5px dashed var(--g);border-radius:12px;pointer-events:none}
 .mult-btn{padding:10px 4px;background:var(--w);border:1.5px solid rgba(20,13,138,.12);border-radius:10px;font-family:var(--mono);font-size:12px;font-weight:700;color:rgba(20,13,138,.5);cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:2px;-webkit-tap-highlight-color:transparent;position:relative}
@@ -76,14 +83,14 @@ body{min-height:100svh;overflow-x:hidden;max-width:100vw}
 .mult-btn.active .lbl{opacity:.85}
 .mult-btn .kb-num{position:absolute;top:2px;right:4px;font-size:8px;opacity:0;transition:opacity .15s;color:var(--g);font-weight:700}
 .mult-row.kb-focus .mult-btn .kb-num{opacity:.7}
+.mult-row.conf-row .mult-btn.active{background:var(--pink);border-color:var(--pink)}
+.mult-row.effort-row .mult-btn.active{background:var(--blue);border-color:var(--blue)}
 
-/* INPUT */
-.input-text,.input-textarea,.input-select{width:100%;padding:12px 14px;border:1.5px solid rgba(20,13,138,.12);background:var(--w);border-radius:10px;font-family:var(--sans);font-size:14px;color:var(--n);font-weight:500;transition:border-color .15s}
-.input-text:focus,.input-textarea:focus,.input-select:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,171,97,.12)}
+.input-text,.input-textarea{width:100%;padding:12px 14px;border:1.5px solid rgba(20,13,138,.12);background:var(--w);border-radius:10px;font-family:var(--sans);font-size:14px;color:var(--n);font-weight:500;transition:border-color .15s}
+.input-text:focus,.input-textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,171,97,.12)}
 .input-text::placeholder,.input-textarea::placeholder{color:rgba(20,13,138,.3)}
 .input-textarea{resize:vertical;min-height:60px;line-height:1.5;font-size:13px}
 
-/* CATEGORY PICKER */
 .cat-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
 .cat-chip{padding:6px 11px;border-radius:99px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid;font-family:var(--sans);transition:all .12s;-webkit-tap-highlight-color:transparent;letter-spacing:.01em;display:inline-flex;align-items:center;gap:5px}
 .cat-chip:hover{transform:translateY(-1px)}
@@ -91,7 +98,6 @@ body{min-height:100svh;overflow-x:hidden;max-width:100vw}
 .cat-chip-add:hover{color:var(--n);border-color:var(--n)}
 .cat-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
 
-/* IMPACT BLOCK */
 .impact-block{background:var(--champ);border-radius:14px;padding:16px;border:1px solid rgba(255,136,103,.18)}
 .impact-block-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid rgba(20,13,138,.08)}
 .impact-block-hdr-l{display:flex;align-items:center;gap:8px}
@@ -127,7 +133,6 @@ body{min-height:100svh;overflow-x:hidden;max-width:100vw}
 .w-sum{font-family:var(--mono);font-size:10px;color:var(--n);opacity:.5;letter-spacing:.05em}
 .w-sum.warn{color:var(--pink);opacity:1;font-weight:700}
 
-/* NOTES */
 .notes-toggle{margin-top:14px;border-top:1px dashed rgba(20,13,138,.15);padding-top:12px}
 .notes-toggle summary{cursor:pointer;font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--n);opacity:.55;list-style:none;display:flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent}
 .notes-toggle summary::-webkit-details-marker{display:none}
@@ -138,21 +143,20 @@ body{min-height:100svh;overflow-x:hidden;max-width:100vw}
 .notes-inner{margin-top:10px}
 .notes-hint{font-family:var(--mono);font-size:9px;color:var(--n);opacity:.4;margin-top:6px;letter-spacing:.04em}
 
-/* SCORE PREVIEW */
 .score-preview{background:var(--n);border-radius:14px;padding:20px;margin-top:18px;text-align:center;position:relative;overflow:hidden}
 .score-preview::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;background:radial-gradient(circle,rgba(0,171,97,.25),transparent 70%)}
 .sp-label{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:8px;position:relative}
-.sp-value{font-family:var(--display);font-size:48px;font-weight:800;color:var(--g);letter-spacing:-.02em;line-height:1;position:relative;transition:color .2s}
+.sp-value{font-family:var(--display);font-size:46px;font-weight:800;color:var(--g);letter-spacing:-.02em;line-height:1;position:relative;transition:color .2s}
 .sp-value.tier-high{color:var(--g)}
 .sp-value.tier-mid{color:var(--peach)}
 .sp-value.tier-low{color:var(--pink)}
+.sp-unit{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.55);margin-top:6px;letter-spacing:.05em;position:relative}
 .sp-formula{margin-top:8px;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.02em;position:relative}
-.sp-tier{display:inline-block;margin-top:6px;font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:99px;position:relative}
+.sp-tier{display:inline-block;margin-top:8px;font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:99px;position:relative}
 .sp-tier.tier-high{background:rgba(0,171,97,.2);color:var(--g)}
 .sp-tier.tier-mid{background:rgba(255,136,103,.2);color:var(--peach)}
 .sp-tier.tier-low{background:rgba(226,0,118,.2);color:var(--pink)}
 
-/* ACTION BUTTONS */
 .action-row{display:flex;gap:8px;margin-top:14px}
 .btn{flex:1;padding:13px 18px;border-radius:99px;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;border:none;letter-spacing:.01em;-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;justify-content:center;gap:6px}
 .btn-primary{background:var(--g);color:#fff;box-shadow:0 4px 14px rgba(0,171,97,.3)}
@@ -164,7 +168,6 @@ body{min-height:100svh;overflow-x:hidden;max-width:100vw}
 .btn-update:hover{background:#ff7050;box-shadow:0 6px 18px rgba(255,136,103,.4)}
 .btn-update:active{transform:scale(.97)}
 
-/* TABLE TOOLBAR */
 .toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
 .tb-count{font-family:var(--mono);font-size:11px;color:var(--n);opacity:.5;letter-spacing:.05em;text-transform:uppercase;font-weight:600;margin-right:auto}
 .tb-btn{background:var(--w);border:1.5px solid rgba(20,13,138,.12);padding:9px 16px;border-radius:99px;font-family:var(--sans);font-size:12px;font-weight:700;color:var(--n);cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;letter-spacing:.01em}
@@ -175,7 +178,6 @@ body{min-height:100svh;overflow-x:hidden;max-width:100vw}
 .tb-btn-export:hover{background:#1d14a8;border-color:#1d14a8;box-shadow:0 6px 18px rgba(20,13,138,.3)}
 .tb-btn-settings{background:transparent;border-color:rgba(20,13,138,.12);font-family:var(--mono);font-size:11px;letter-spacing:.05em;text-transform:uppercase;padding:9px 14px}
 
-/* FILTER CHIPS */
 .filter-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding:8px 12px;background:var(--w);border-radius:99px;border:1px solid rgba(20,13,138,.08)}
 .filter-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--n);opacity:.5;margin-right:4px}
 .filter-chip{padding:5px 11px;border-radius:99px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid rgba(20,13,138,.12);color:rgba(20,13,138,.6);background:transparent;font-family:var(--sans);transition:all .12s;-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;gap:5px}
@@ -183,7 +185,6 @@ body{min-height:100svh;overflow-x:hidden;max-width:100vw}
 .filter-chip.active{background:var(--n);border-color:var(--n);color:#fff}
 .filter-chip .count{font-family:var(--mono);font-size:9px;opacity:.6}
 
-/* TABLE */
 .table-wrap{background:var(--w);border-radius:16px;border:1px solid rgba(20,13,138,.1);overflow:hidden;box-shadow:0 2px 8px rgba(20,13,138,.04)}
 table{width:100%;border-collapse:collapse;font-size:13px}
 thead{background:var(--n)}
@@ -202,9 +203,10 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
 
 .t-rank{font-family:var(--display);font-size:14px;font-weight:700;color:var(--n);text-align:center;width:38px}
 .t-rank-1{color:var(--g);font-size:16px}
-.t-name{font-weight:600;max-width:240px;font-size:13px;display:flex;align-items:center;gap:6px}
+.t-name{font-weight:600;max-width:240px;font-size:13px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .t-cat{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:99px;font-size:10px;font-weight:700;letter-spacing:.02em;white-space:nowrap}
 .t-mono{font-family:var(--mono);font-size:12px;color:var(--n);opacity:.7}
+.t-mono-strong{font-family:var(--mono);font-size:12px;color:var(--n);opacity:.9;font-weight:600}
 .t-score-cell{font-family:var(--display);font-size:16px;font-weight:700;letter-spacing:-.01em;padding-left:14px !important;border-left:3px solid transparent}
 .t-score-cell.tier-high{color:var(--g);border-left-color:var(--g)}
 .t-score-cell.tier-mid{color:var(--peach);border-left-color:var(--peach)}
@@ -215,13 +217,11 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
 .t-action-btn.t-del:hover{border-color:var(--pink);color:var(--pink);background:rgba(226,0,118,.05)}
 .t-note-icon{display:inline-flex;width:14px;height:14px;align-items:center;justify-content:center;color:var(--g);font-size:11px;cursor:help}
 
-/* EMPTY STATE */
 .empty-state{background:var(--w);border-radius:16px;border:1px solid rgba(20,13,138,.08);padding:60px 24px;text-align:center;box-shadow:0 2px 8px rgba(20,13,138,.04)}
 .es-icon{width:56px;height:56px;border-radius:14px;background:var(--g);display:inline-flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:14px;color:#fff;font-family:var(--display);font-weight:700}
 .es-title{font-family:var(--display);font-size:16px;font-weight:700;color:var(--n);margin-bottom:6px;letter-spacing:-.01em}
 .es-sub{font-size:13px;color:var(--n);opacity:.5;line-height:1.5}
 
-/* SETTINGS MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(20,13,138,.4);backdrop-filter:blur(6px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s}
 .modal-overlay.open{display:flex}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -241,7 +241,7 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
 .modal-radio{flex:1;padding:10px 12px;border-radius:10px;border:1.5px solid rgba(20,13,138,.12);background:var(--w);cursor:pointer;font-size:12px;font-weight:600;text-align:center;transition:all .15s;-webkit-tap-highlight-color:transparent}
 .modal-radio:hover{border-color:rgba(20,13,138,.25);background:var(--champ)}
 .modal-radio.active{background:var(--n);border-color:var(--n);color:#fff}
-.threshold-row{display:grid;grid-template-columns:90px 1fr 70px;gap:10px;align-items:center;margin-bottom:8px;padding:10px 12px;background:var(--champ);border-radius:10px}
+.threshold-row{display:grid;grid-template-columns:90px 1fr 80px;gap:10px;align-items:center;margin-bottom:8px;padding:10px 12px;background:var(--champ);border-radius:10px}
 .threshold-label{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;display:inline-flex;align-items:center;gap:6px}
 .threshold-label.tier-high{color:var(--g)}
 .threshold-label.tier-mid{color:var(--peach)}
@@ -256,7 +256,6 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
 .auto-info{padding:14px;background:var(--champ);border-radius:10px;font-size:12px;color:var(--n);line-height:1.5}
 .auto-info b{color:var(--n)}
 
-/* CATEGORIES MANAGER */
 .cat-mgr-row{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--champ);border-radius:10px;margin-bottom:6px}
 .cat-mgr-row .swatch{width:14px;height:14px;border-radius:50%;flex-shrink:0;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px rgba(20,13,138,.15)}
 .cat-mgr-row .name{flex:1;font-size:13px;font-weight:600;color:var(--n)}
@@ -268,28 +267,24 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
 .cat-mgr-add button{padding:9px 14px;background:var(--g);color:#fff;border:none;border-radius:10px;font-family:var(--sans);font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.02em}
 .cat-mgr-add button:hover{background:var(--g-dark)}
 
-/* COLOR PICKER POPOVER */
 .color-pop{position:absolute;background:#fff;border-radius:10px;box-shadow:0 8px 24px rgba(20,13,138,.2);padding:8px;display:none;grid-template-columns:repeat(6,1fr);gap:5px;z-index:1100}
 .color-pop.open{display:grid}
 .color-pop .swatch-opt{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid #fff;box-shadow:0 0 0 1px rgba(20,13,138,.15);transition:transform .1s}
 .color-pop .swatch-opt:hover{transform:scale(1.2)}
 
-/* RICE LETTER ACCENTS */
 .acc-r{background:var(--n)}
 .acc-i{background:var(--peach)}
 .acc-c{background:var(--pink)}
 .acc-e{background:var(--blue)}
 
-/* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--n);color:#fff;border-radius:99px;padding:10px 22px;font-size:13px;font-weight:600;box-shadow:0 8px 32px rgba(20,13,138,.25);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s cubic-bezier(.34,1.56,.64,1);z-index:9000;font-family:var(--sans)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
 </style>
 </head>
 <body>
 
 <div class="page-head">
-  <div class="ph-badge">v1.3 · weighted impact</div>
+  <div class="ph-badge">v2.0 · realistic scales</div>
   <div class="ph-inner">
     <div class="ph-text">
       <div class="ph-kicker">
@@ -298,19 +293,23 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
         <span>Prioritization Tool</span>
       </div>
       <div class="ph-title">Score every<br><em>backlog item.</em></div>
-      <div class="ph-sub">Weighted RICE prioritization across six operational impact dimensions — built for ground ops decision-making.</div>
-      <div class="ph-formula">prio = ( <b>R</b> × <b>I</b> × <b>C</b> ) ÷ <b>E</b></div>
+      <div class="ph-sub">Weighted RICE prioritization with realistic scales — Reach in cases/year, Confidence as %, Effort in person-weeks.</div>
+      <div class="ph-formula">
+        <b>R</b><span class="unit">cases/yr</span>
+        × <b>I</b><span class="unit">weighted</span>
+        × <b>C</b><span class="unit">%</span>
+        ÷ <b>E</b><span class="unit">weeks</span>
+      </div>
     </div>
   </div>
   <div class="ph-keyhint">
-    <kbd>1</kbd>–<kbd>5</kbd> multipliers · <kbd>↵</kbd> add · <kbd>esc</kbd> cancel
+    <kbd>1</kbd>–<kbd>5</kbd> set bucket · <kbd>↵</kbd> add · <kbd>esc</kbd> cancel
   </div>
 </div>
 
 <div class="main">
 <div class="grid">
 
-  <!-- INPUT CARD -->
   <div>
     <div class="card" id="inputCard">
       <div class="card-hdr">
@@ -324,38 +323,38 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
       <div class="card-body">
 
         <div class="field-group">
-          <div class="field-label">
-            <div class="field-name">Item name</div>
-          </div>
+          <div class="field-label"><div class="field-name">Item name</div></div>
           <input type="text" class="input-text" id="itemName" placeholder="e.g. Auto-rebook on cancellation">
         </div>
 
         <div class="field-group">
-          <div class="field-label">
-            <div class="field-name">Category</div>
-          </div>
+          <div class="field-label"><div class="field-name">Category</div></div>
           <div class="cat-row" id="catRow"></div>
         </div>
 
-        <!-- REACH -->
         <div class="field-group">
           <div class="field-label">
             <div class="field-name">
               <span class="field-letter acc-r">R</span>
               <span>Reach</span>
             </div>
-            <div class="field-val" id="reachVal">1×</div>
+            <div class="field-val" id="reachVal">1,000</div>
           </div>
-          <div class="mult-row" data-input="reach" data-kbidx="0">
-            <button class="mult-btn" data-val="0.25">0.25<span class="lbl">minimal</span><span class="kb-num">1</span></button>
-            <button class="mult-btn" data-val="0.5">0.5<span class="lbl">low</span><span class="kb-num">2</span></button>
-            <button class="mult-btn active" data-val="1">1<span class="lbl">medium</span><span class="kb-num">3</span></button>
-            <button class="mult-btn" data-val="2">2<span class="lbl">high</span><span class="kb-num">4</span></button>
-            <button class="mult-btn" data-val="3">3<span class="lbl">massive</span><span class="kb-num">5</span></button>
+          <div class="numeric-wrap">
+            <input type="number" id="reachInput" min="0" step="100" value="1000">
+            <span class="numeric-suffix">cases / year</span>
           </div>
+          <div class="quick-pick" data-input="reach">
+            <button class="qp-btn" data-val="100">100</button>
+            <button class="qp-btn" data-val="500">500</button>
+            <button class="qp-btn active" data-val="1000">1k</button>
+            <button class="qp-btn" data-val="5000">5k</button>
+            <button class="qp-btn" data-val="10000">10k</button>
+            <button class="qp-btn" data-val="50000">50k</button>
+          </div>
+          <div class="field-hint">How many cases per year does this affect? Use real data when possible.</div>
         </div>
 
-        <!-- IMPACT BLOCK -->
         <div class="field-group">
           <div class="impact-block">
             <div class="impact-block-hdr">
@@ -365,9 +364,7 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
               </div>
               <span class="ib-result" id="impactComputed">1.00×</span>
             </div>
-
             <div id="impactInputs"></div>
-
             <details class="weights-toggle">
               <summary>Configure weights</summary>
               <div class="weights-inner" id="weightInputs"></div>
@@ -379,43 +376,42 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
           </div>
         </div>
 
-        <!-- CONFIDENCE -->
         <div class="field-group">
           <div class="field-label">
             <div class="field-name">
               <span class="field-letter acc-c">C</span>
               <span>Confidence</span>
             </div>
-            <div class="field-val" id="confidenceVal">1×</div>
+            <div class="field-val" id="confidenceVal" style="color:var(--pink);background:rgba(226,0,118,.1)">80%</div>
           </div>
-          <div class="mult-row" data-input="confidence" data-kbidx="1">
-            <button class="mult-btn" data-val="0.25">0.25<span class="lbl">guess</span><span class="kb-num">1</span></button>
-            <button class="mult-btn" data-val="0.5">0.5<span class="lbl">low</span><span class="kb-num">2</span></button>
-            <button class="mult-btn active" data-val="1">1<span class="lbl">medium</span><span class="kb-num">3</span></button>
-            <button class="mult-btn" data-val="2">2<span class="lbl">high</span><span class="kb-num">4</span></button>
-            <button class="mult-btn" data-val="3">3<span class="lbl">certain</span><span class="kb-num">5</span></button>
+          <div class="mult-row conf-row" data-input="confidence" data-kbidx="0">
+            <button class="mult-btn" data-val="0.5">50%<span class="lbl">guess</span><span class="kb-num">1</span></button>
+            <button class="mult-btn" data-val="0.7">70%<span class="lbl">moderate</span><span class="kb-num">2</span></button>
+            <button class="mult-btn active" data-val="0.8">80%<span class="lbl">solid</span><span class="kb-num">3</span></button>
+            <button class="mult-btn" data-val="0.9">90%<span class="lbl">high</span><span class="kb-num">4</span></button>
+            <button class="mult-btn" data-val="1.0">100%<span class="lbl">certain</span><span class="kb-num">5</span></button>
           </div>
+          <div class="field-hint">Probability the impact estimate is accurate. Below 50% means you should investigate first.</div>
         </div>
 
-        <!-- EFFORT -->
         <div class="field-group">
           <div class="field-label">
             <div class="field-name">
               <span class="field-letter acc-e">E</span>
               <span>Effort</span>
             </div>
-            <div class="field-val" id="effortVal">1×</div>
+            <div class="field-val" id="effortVal" style="color:var(--blue);background:rgba(0,83,255,.1)">1 wk</div>
           </div>
-          <div class="mult-row" data-input="effort" data-kbidx="2">
-            <button class="mult-btn" data-val="0.25">0.25<span class="lbl">trivial</span><span class="kb-num">1</span></button>
-            <button class="mult-btn" data-val="0.5">0.5<span class="lbl">small</span><span class="kb-num">2</span></button>
-            <button class="mult-btn active" data-val="1">1<span class="lbl">medium</span><span class="kb-num">3</span></button>
-            <button class="mult-btn" data-val="2">2<span class="lbl">large</span><span class="kb-num">4</span></button>
-            <button class="mult-btn" data-val="3">3<span class="lbl">huge</span><span class="kb-num">5</span></button>
+          <div class="mult-row effort-row" data-input="effort" data-kbidx="1">
+            <button class="mult-btn" data-val="0.5">0.5<span class="lbl">half wk</span><span class="kb-num">1</span></button>
+            <button class="mult-btn active" data-val="1">1<span class="lbl">1 wk</span><span class="kb-num">2</span></button>
+            <button class="mult-btn" data-val="2">2<span class="lbl">2 wks</span><span class="kb-num">3</span></button>
+            <button class="mult-btn" data-val="4">4<span class="lbl">1 month</span><span class="kb-num">4</span></button>
+            <button class="mult-btn" data-val="8">8<span class="lbl">2 months</span><span class="kb-num">5</span></button>
           </div>
+          <div class="field-hint">Person-weeks of work. One developer or analyst, full-time equivalent.</div>
         </div>
 
-        <!-- NOTES -->
         <details class="notes-toggle" id="notesToggle">
           <summary>Notes &amp; rationale</summary>
           <div class="notes-inner">
@@ -424,11 +420,11 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
           </div>
         </details>
 
-        <!-- SCORE PREVIEW -->
         <div class="score-preview">
           <div class="sp-label">Prio Score</div>
-          <div class="sp-value" id="previewScore">1.00</div>
-          <div class="sp-formula" id="previewFormula">1.00 × 1.00 × 1.00 ÷ 1.00</div>
+          <div class="sp-value" id="previewScore">800</div>
+          <div class="sp-unit">impact-weighted cases / person-week</div>
+          <div class="sp-formula" id="previewFormula">1,000 × 1.00 × 0.80 ÷ 1</div>
           <span class="sp-tier" id="previewTier" style="display:none">—</span>
         </div>
 
@@ -441,7 +437,6 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
     </div>
   </div>
 
-  <!-- TABLE -->
   <div>
     <div class="toolbar">
       <span class="tb-count" id="itemCount">0 items</span>
@@ -449,7 +444,6 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
       <button class="tb-btn tb-btn-danger" id="btnClear">Clear all</button>
       <button class="tb-btn tb-btn-export" id="btnExport">↓ Export Excel</button>
     </div>
-
     <div id="filterRow" style="display:none"></div>
     <div id="tableWrap"></div>
   </div>
@@ -457,7 +451,6 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
 </div>
 </div>
 
-<!-- SETTINGS MODAL -->
 <div class="modal-overlay" id="settingsModal">
   <div class="modal">
     <div class="modal-hdr">
@@ -468,25 +461,22 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
       <button class="modal-close" id="closeSettings">×</button>
     </div>
     <div class="modal-body">
-
-      <!-- Threshold mode -->
       <div class="modal-section">
         <div class="modal-section-title">Score thresholds</div>
         <div class="modal-radio-row">
           <button class="modal-radio" data-thresh-mode="manual">Manual</button>
           <button class="modal-radio" data-thresh-mode="auto">Auto (quartiles)</button>
         </div>
-
         <div id="manualThresh">
           <div class="threshold-row">
             <span class="threshold-label tier-high"><span class="dot"></span>HIGH</span>
             <span class="desc">Score ≥</span>
-            <input type="number" step="0.1" id="thHigh" value="3">
+            <input type="number" step="100" id="thHigh" value="1000">
           </div>
           <div class="threshold-row">
             <span class="threshold-label tier-mid"><span class="dot"></span>MID</span>
             <span class="desc">Score ≥</span>
-            <input type="number" step="0.1" id="thMid" value="1">
+            <input type="number" step="100" id="thMid" value="200">
           </div>
           <div class="threshold-row">
             <span class="threshold-label tier-low"><span class="dot"></span>LOW</span>
@@ -494,15 +484,12 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
             <span style="font-family:var(--mono);font-size:11px;color:var(--n);opacity:.4;text-align:right">auto</span>
           </div>
         </div>
-
         <div id="autoThresh" style="display:none">
           <div class="auto-info">
-            Thresholds are calculated from your current items: <b>top 25%</b> = high, <b>middle 50%</b> = mid, <b>bottom 25%</b> = low. Updates automatically as you add items.
+            Thresholds are calculated from your current items: <b>top 25%</b> = high, <b>middle 50%</b> = mid, <b>bottom 25%</b> = low.
           </div>
         </div>
       </div>
-
-      <!-- Categories -->
       <div class="modal-section">
         <div class="modal-section-title">Categories</div>
         <div id="catMgrList"></div>
@@ -511,19 +498,14 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
           <button id="addCatBtn">+ Add</button>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- COLOR PICKER -->
 <div class="color-pop" id="colorPop"></div>
-
-<!-- TOAST -->
 <div class="toast" id="toast">Saved</div>
 
 <script>
-// ── Config ────────────────────────────────────────────────
 const IMPACT_KEYS = [
   { id:'otp',   name:'Impact on OTP' },
   { id:'nps',   name:'NPS' },
@@ -535,11 +517,11 @@ const IMPACT_KEYS = [
 
 const MULTS = [0.25, 0.5, 1, 2, 3];
 
-const STORAGE_KEY  = 'backlogPrioCalcV3';
-const WEIGHTS_KEY  = 'backlogPrioWeightsV3';
-const CATS_KEY     = 'backlogPrioCatsV3';
-const SETTINGS_KEY = 'backlogPrioSettingsV3';
-const FILTER_KEY   = 'backlogPrioFilterV3';
+const STORAGE_KEY  = 'backlogPrioCalcV4';
+const WEIGHTS_KEY  = 'backlogPrioWeightsV4';
+const CATS_KEY     = 'backlogPrioCatsV4';
+const SETTINGS_KEY = 'backlogPrioSettingsV4';
+const FILTER_KEY   = 'backlogPrioFilterV4';
 
 const COLOR_PALETTE = [
   '#00AB61','#FF8867','#E20076','#0053FF','#140D8A','#F9A826',
@@ -556,12 +538,12 @@ const DEFAULT_CATS = [
   { id:'other',     name:'Other',     color:'#666'    },
 ];
 
-// ── State ─────────────────────────────────────────────────
 let state = {
-  reach:1, confidence:1, effort:1,
+  reach: 1000,
+  confidence: 0.8,
+  effort: 1,
   impact: Object.fromEntries(IMPACT_KEYS.map(k => [k.id, 1])),
   category: null,
-  notes: '',
 };
 
 let weights = JSON.parse(localStorage.getItem(WEIGHTS_KEY)) ||
@@ -570,7 +552,6 @@ let weights = JSON.parse(localStorage.getItem(WEIGHTS_KEY)) ||
 let cats = JSON.parse(localStorage.getItem(CATS_KEY)) || DEFAULT_CATS;
 
 let items = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-// migrate older items: ensure all fields exist
 items.forEach(it => {
   if(it.category === undefined) it.category = null;
   if(it.notes === undefined) it.notes = '';
@@ -578,8 +559,8 @@ items.forEach(it => {
 
 let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {
   threshMode: 'manual',
-  thHigh: 3,
-  thMid: 1,
+  thHigh: 1000,
+  thMid: 200,
 };
 
 let currentFilter = JSON.parse(localStorage.getItem(FILTER_KEY)) || null;
@@ -588,7 +569,17 @@ let sort = { col:'score', dir:'desc' };
 let editingId = null;
 let kbFocusRowIdx = null;
 
-// ── Toast ─────────────────────────────────────────────────
+function fmt(n){
+  if(n === null || n === undefined || isNaN(n)) return '0';
+  if(Math.abs(n) >= 10000) return (n/1000).toFixed(n>=100000?0:1).replace(/\.0$/,'') + 'k';
+  if(Math.abs(n) >= 100) return Math.round(n).toLocaleString('en-US');
+  return n.toFixed(n%1===0 ? 0 : 1);
+}
+function fmtFull(n){
+  if(n === null || n === undefined || isNaN(n)) return '0';
+  return Math.round(n).toLocaleString('en-US');
+}
+
 let toastTimer;
 function toast(msg){
   const el = document.getElementById('toast');
@@ -598,7 +589,6 @@ function toast(msg){
   toastTimer = setTimeout(()=>el.classList.remove('show'), 1800);
 }
 
-// ── Categories ────────────────────────────────────────────
 function buildCatRow(){
   const wrap = document.getElementById('catRow');
   wrap.innerHTML = cats.map(c => `
@@ -606,9 +596,7 @@ function buildCatRow(){
       <span class="cat-dot" style="background:${state.category===c.id?'#fff':c.color}"></span>
       ${escapeHtml(c.name)}
     </button>
-  `).join('') + `
-    <button class="cat-chip cat-chip-add" id="openCatMgr">+ Manage</button>
-  `;
+  `).join('') + `<button class="cat-chip cat-chip-add" id="openCatMgr">+ Manage</button>`;
 
   wrap.querySelectorAll('[data-cat]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -621,7 +609,6 @@ function buildCatRow(){
 
 function getCat(id){ return cats.find(c => c.id === id); }
 
-// ── Impact inputs ─────────────────────────────────────────
 function buildImpactInputs(){
   const wrap = document.getElementById('impactInputs');
   wrap.innerHTML = IMPACT_KEYS.map((k,i) => `
@@ -630,7 +617,7 @@ function buildImpactInputs(){
         <span>${k.name}</span>
         <span class="impact-field-val" id="${k.id}Val">1×</span>
       </div>
-      <div class="mult-row impact-mult-row" data-impact="${k.id}" data-kbidx="${i+3}">
+      <div class="mult-row impact-mult-row" data-impact="${k.id}" data-kbidx="${i+2}">
         ${MULTS.map((m,mi) => `<button class="mult-btn ${m===1?'active':''}" data-val="${m}">${m}<span class="kb-num">${mi+1}</span></button>`).join('')}
       </div>
     </div>
@@ -649,7 +636,6 @@ function buildImpactInputs(){
   });
 }
 
-// ── Weights ───────────────────────────────────────────────
 function buildWeightInputs(){
   const wrap = document.getElementById('weightInputs');
   wrap.innerHTML = IMPACT_KEYS.map(k => `
@@ -689,20 +675,43 @@ document.getElementById('btnResetWeights').addEventListener('click', () => {
   toast('Weights reset');
 });
 
-// ── Multiplier buttons ────────────────────────────────────
-document.querySelectorAll('.mult-row[data-input]').forEach(row => {
+document.getElementById('reachInput').addEventListener('input', e => {
+  const v = parseFloat(e.target.value) || 0;
+  state.reach = Math.max(0, v);
+  document.getElementById('reachVal').textContent = fmtFull(state.reach);
+  document.querySelectorAll('[data-input="reach"] .qp-btn').forEach(b => {
+    b.classList.toggle('active', parseFloat(b.dataset.val) === state.reach);
+  });
+  recalc();
+});
+
+document.querySelectorAll('[data-input="reach"] .qp-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    const val = parseFloat(b.dataset.val);
+    state.reach = val;
+    document.getElementById('reachInput').value = val;
+    document.getElementById('reachVal').textContent = fmtFull(val);
+    document.querySelectorAll('[data-input="reach"] .qp-btn').forEach(x => x.classList.toggle('active', x===b));
+    recalc();
+  });
+});
+
+document.querySelectorAll('.mult-row[data-input="confidence"], .mult-row[data-input="effort"]').forEach(row => {
   row.addEventListener('click', e => {
     const btn = e.target.closest('.mult-btn'); if(!btn) return;
     const key = row.dataset.input;
     const val = parseFloat(btn.dataset.val);
     row.querySelectorAll('.mult-btn').forEach(b => b.classList.toggle('active', b===btn));
     state[key] = val;
-    document.getElementById(key+'Val').textContent = val+'×';
+    if(key === 'confidence'){
+      document.getElementById('confidenceVal').textContent = (val*100).toFixed(0)+'%';
+    } else {
+      document.getElementById('effortVal').textContent = val + (val===1 ? ' wk' : ' wks');
+    }
     recalc();
   });
 });
 
-// ── Compute ───────────────────────────────────────────────
 function computeImpact(impactVals, w){
   const totalW = Object.values(w).reduce((a,b)=>a+b,0);
   if(totalW===0) return 0;
@@ -720,8 +729,7 @@ function getThresholds(){
   if(settings.threshMode === 'manual'){
     return { high: settings.thHigh, mid: settings.thMid };
   }
-  // auto: quartiles
-  if(items.length < 3) return { high: 3, mid: 1 };
+  if(items.length < 3) return { high: 1000, mid: 200 };
   const scores = items.map(i => i.score).sort((a,b) => a-b);
   const p25 = scores[Math.floor(scores.length * 0.25)];
   const p75 = scores[Math.floor(scores.length * 0.75)];
@@ -739,11 +747,10 @@ function recalc(){
   const impact = computeImpact(state.impact, weights);
   document.getElementById('impactComputed').textContent = impact.toFixed(2)+'×';
   const score = computeScore(state.reach, impact, state.confidence, state.effort);
-  document.getElementById('previewScore').textContent = score.toFixed(2);
+  document.getElementById('previewScore').textContent = fmt(score);
   document.getElementById('previewFormula').textContent =
-    `${state.reach} × ${impact.toFixed(2)} × ${state.confidence} ÷ ${state.effort}`;
+    `${fmtFull(state.reach)} × ${impact.toFixed(2)} × ${state.confidence.toFixed(2)} ÷ ${state.effort}`;
 
-  // tier indicator
   const tier = tierOf(score);
   const tierEl = document.getElementById('previewTier');
   const valEl = document.getElementById('previewScore');
@@ -755,7 +762,6 @@ function recalc(){
   tierEl.style.display = 'inline-block';
 }
 
-// ── Add / Update ──────────────────────────────────────────
 function getFormPayload(){
   const impact = computeImpact(state.impact, weights);
   const score = computeScore(state.reach, impact, state.confidence, state.effort);
@@ -800,14 +806,25 @@ function resetForm(clearName){
     state.category = null;
     buildCatRow();
   }
-  state.reach = 1; state.confidence = 1; state.effort = 1;
+  state.reach = 1000;
+  state.confidence = 0.8;
+  state.effort = 1;
   state.impact = Object.fromEntries(IMPACT_KEYS.map(k => [k.id, 1]));
 
-  ['reach','confidence','effort'].forEach(k => {
-    document.getElementById(k+'Val').textContent = '1×';
-    document.querySelectorAll(`.mult-row[data-input="${k}"] .mult-btn`).forEach(b => {
-      b.classList.toggle('active', parseFloat(b.dataset.val)===1);
-    });
+  document.getElementById('reachInput').value = 1000;
+  document.getElementById('reachVal').textContent = '1,000';
+  document.querySelectorAll('[data-input="reach"] .qp-btn').forEach(b => {
+    b.classList.toggle('active', parseFloat(b.dataset.val) === 1000);
+  });
+
+  document.getElementById('confidenceVal').textContent = '80%';
+  document.querySelectorAll('.mult-row[data-input="confidence"] .mult-btn').forEach(b => {
+    b.classList.toggle('active', parseFloat(b.dataset.val) === 0.8);
+  });
+
+  document.getElementById('effortVal').textContent = '1 wk';
+  document.querySelectorAll('.mult-row[data-input="effort"] .mult-btn').forEach(b => {
+    b.classList.toggle('active', parseFloat(b.dataset.val) === 1);
   });
 
   IMPACT_KEYS.forEach(k => {
@@ -834,7 +851,6 @@ function persist(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
 }
 
-// ── Edit / Duplicate ──────────────────────────────────────
 function enterEditMode(item){
   editingId = item.id;
   document.getElementById('inputCard').classList.add('edit-mode');
@@ -847,9 +863,7 @@ function enterEditMode(item){
 
   document.getElementById('itemName').value = item.name;
   document.getElementById('itemNotes').value = item.notes || '';
-  if(item.notes){
-    document.getElementById('notesToggle').open = true;
-  }
+  if(item.notes) document.getElementById('notesToggle').open = true;
 
   state.reach = item.reach;
   state.confidence = item.confidence;
@@ -857,11 +871,20 @@ function enterEditMode(item){
   state.impact = { ...item.impactBreakdown };
   state.category = item.category;
 
-  ['reach','confidence','effort'].forEach(k => {
-    document.getElementById(k+'Val').textContent = state[k]+'×';
-    document.querySelectorAll(`.mult-row[data-input="${k}"] .mult-btn`).forEach(b => {
-      b.classList.toggle('active', parseFloat(b.dataset.val)===state[k]);
-    });
+  document.getElementById('reachInput').value = item.reach;
+  document.getElementById('reachVal').textContent = fmtFull(item.reach);
+  document.querySelectorAll('[data-input="reach"] .qp-btn').forEach(b => {
+    b.classList.toggle('active', parseFloat(b.dataset.val) === item.reach);
+  });
+
+  document.getElementById('confidenceVal').textContent = (item.confidence*100).toFixed(0)+'%';
+  document.querySelectorAll('.mult-row[data-input="confidence"] .mult-btn').forEach(b => {
+    b.classList.toggle('active', parseFloat(b.dataset.val) === item.confidence);
+  });
+
+  document.getElementById('effortVal').textContent = item.effort + (item.effort===1?' wk':' wks');
+  document.querySelectorAll('.mult-row[data-input="effort"] .mult-btn').forEach(b => {
+    b.classList.toggle('active', parseFloat(b.dataset.val) === item.effort);
   });
 
   IMPACT_KEYS.forEach(k => {
@@ -875,7 +898,6 @@ function enterEditMode(item){
   recalc();
   updateCounter();
 
-  // scroll to form on small screens
   if(window.innerWidth < 980){
     document.getElementById('inputCard').scrollIntoView({behavior:'smooth', block:'start'});
   }
@@ -895,32 +917,21 @@ function exitEditMode(){
 }
 
 function duplicateItem(item){
-  const copy = {
-    ...JSON.parse(JSON.stringify(item)),
-    id: Date.now(),
-    name: item.name + ' (copy)',
-  };
+  const copy = { ...JSON.parse(JSON.stringify(item)), id: Date.now(), name: item.name + ' (copy)' };
   items.push(copy);
   persist();
   renderTable();
   toast('Item duplicated');
 }
 
-// ── Table render ──────────────────────────────────────────
 function renderFilterRow(){
   const wrap = document.getElementById('filterRow');
   if(!items.length){ wrap.style.display = 'none'; return; }
-
   const counts = {};
-  items.forEach(i => {
-    const k = i.category || '__none';
-    counts[k] = (counts[k]||0) + 1;
-  });
+  items.forEach(i => { const k = i.category || '__none'; counts[k] = (counts[k]||0) + 1; });
   const activeCats = cats.filter(c => counts[c.id]);
   const hasNone = counts['__none'] > 0;
-
   if(activeCats.length === 0 && !hasNone){ wrap.style.display = 'none'; return; }
-
   wrap.style.display = 'flex';
   wrap.className = 'filter-row';
   wrap.innerHTML = `
@@ -932,11 +943,8 @@ function renderFilterRow(){
         ${escapeHtml(c.name)} <span class="count">${counts[c.id]}</span>
       </button>
     `).join('')}
-    ${hasNone ? `
-      <button class="filter-chip ${currentFilter==='__none'?'active':''}" data-f="__none">Uncategorized <span class="count">${counts['__none']}</span></button>
-    ` : ''}
+    ${hasNone ? `<button class="filter-chip ${currentFilter==='__none'?'active':''}" data-f="__none">Uncategorized <span class="count">${counts['__none']}</span></button>` : ''}
   `;
-
   wrap.querySelectorAll('[data-f]').forEach(b => {
     b.addEventListener('click', () => {
       const v = b.dataset.f;
@@ -950,8 +958,7 @@ function renderFilterRow(){
 
 function renderTable(){
   const wrap = document.getElementById('tableWrap');
-  document.getElementById('itemCount').textContent =
-    `${items.length} item${items.length===1?'':'s'}`;
+  document.getElementById('itemCount').textContent = `${items.length} item${items.length===1?'':'s'}`;
   updateCounter();
   renderFilterRow();
 
@@ -965,13 +972,9 @@ function renderTable(){
     return;
   }
 
-  // filter
   let view = items;
-  if(currentFilter === '__none'){
-    view = items.filter(i => !i.category);
-  } else if(currentFilter){
-    view = items.filter(i => i.category === currentFilter);
-  }
+  if(currentFilter === '__none') view = items.filter(i => !i.category);
+  else if(currentFilter) view = items.filter(i => i.category === currentFilter);
 
   if(!view.length){
     wrap.innerHTML = `
@@ -982,7 +985,6 @@ function renderTable(){
     return;
   }
 
-  // sort
   const sorted = [...view].sort((a,b) => {
     const av = a[sort.col], bv = b[sort.col];
     if(typeof av === 'string') return sort.dir==='asc' ? av.localeCompare(bv) : bv.localeCompare(av);
@@ -999,10 +1001,10 @@ function renderTable(){
           <tr>
             <th class="no-sort">#</th>
             <th data-col="name"       class="${cls('name')}"       data-arrow="${arrow('name')}">Item</th>
-            <th data-col="reach"      class="${cls('reach')}"      data-arrow="${arrow('reach')}">R</th>
+            <th data-col="reach"      class="${cls('reach')}"      data-arrow="${arrow('reach')}">Reach /yr</th>
             <th data-col="impact"     class="${cls('impact')}"     data-arrow="${arrow('impact')}">Impact</th>
-            <th data-col="confidence" class="${cls('confidence')}" data-arrow="${arrow('confidence')}">C</th>
-            <th data-col="effort"     class="${cls('effort')}"     data-arrow="${arrow('effort')}">E</th>
+            <th data-col="confidence" class="${cls('confidence')}" data-arrow="${arrow('confidence')}">Conf.</th>
+            <th data-col="effort"     class="${cls('effort')}"     data-arrow="${arrow('effort')}">Effort</th>
             <th data-col="score"      class="${cls('score')}"      data-arrow="${arrow('score')}">Score</th>
             <th class="no-sort" style="text-align:right">Actions</th>
           </tr>
@@ -1020,11 +1022,11 @@ function renderTable(){
                   ${it.notes ? `<span class="t-note-icon" title="${escapeHtml(it.notes)}">📝</span>` : ''}
                   ${cat ? `<span class="t-cat" style="background:${cat.color}1a;color:${cat.color}"><span class="cat-dot" style="background:${cat.color}"></span>${escapeHtml(cat.name)}</span>` : ''}
                 </td>
-                <td class="t-mono">${it.reach}</td>
-                <td class="t-mono">${it.impact.toFixed(2)}</td>
-                <td class="t-mono">${it.confidence}</td>
-                <td class="t-mono">${it.effort}</td>
-                <td class="t-score-cell tier-${tier}">${it.score.toFixed(2)}</td>
+                <td class="t-mono-strong">${fmt(it.reach)}</td>
+                <td class="t-mono">${it.impact.toFixed(2)}×</td>
+                <td class="t-mono">${(it.confidence*100).toFixed(0)}%</td>
+                <td class="t-mono">${it.effort}${it.effort===1?'wk':'wks'}</td>
+                <td class="t-score-cell tier-${tier}">${fmt(it.score)}</td>
                 <td>
                   <div class="t-actions">
                     <button class="t-action-btn" data-act="edit"  data-id="${it.id}" title="Edit">✎</button>
@@ -1040,7 +1042,6 @@ function renderTable(){
     </div>
   `;
 
-  // sort handlers
   wrap.querySelectorAll('thead th[data-col]').forEach(th => {
     th.addEventListener('click', () => {
       const col = th.dataset.col;
@@ -1050,7 +1051,6 @@ function renderTable(){
     });
   });
 
-  // row click (anywhere except actions) → edit
   wrap.querySelectorAll('tbody tr').forEach(tr => {
     tr.addEventListener('click', e => {
       if(e.target.closest('.t-action-btn')) return;
@@ -1060,7 +1060,6 @@ function renderTable(){
     });
   });
 
-  // action buttons
   wrap.querySelectorAll('.t-action-btn').forEach(b => {
     b.addEventListener('click', e => {
       e.stopPropagation();
@@ -1086,7 +1085,6 @@ function escapeHtml(s){
   return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 
-// ── Clear all ─────────────────────────────────────────────
 document.getElementById('btnClear').addEventListener('click', () => {
   if(!items.length) return;
   if(confirm(`Remove all ${items.length} items?`)){
@@ -1098,11 +1096,9 @@ document.getElementById('btnClear').addEventListener('click', () => {
   }
 });
 
-// ── Excel export ──────────────────────────────────────────
 document.getElementById('btnExport').addEventListener('click', () => {
   if(!items.length){ alert('No items to export.'); return; }
   const sorted = [...items].sort((a,b) => b.score - a.score);
-
   const rows = sorted.map((it,idx) => {
     const cat = getCat(it.category);
     return {
@@ -1110,7 +1106,7 @@ document.getElementById('btnExport').addEventListener('click', () => {
       Item: it.name,
       Category: cat ? cat.name : '',
       Tier: tierOf(it.score).toUpperCase(),
-      Reach: it.reach,
+      'Reach (cases/year)': it.reach,
       'Impact (weighted)': parseFloat(it.impact.toFixed(3)),
       'Impact: OTP': it.impactBreakdown.otp,
       'Impact: NPS': it.impactBreakdown.nps,
@@ -1118,57 +1114,46 @@ document.getElementById('btnExport').addEventListener('click', () => {
       'Impact: Revenue': it.impactBreakdown.rev,
       'Impact: Sustainability': it.impactBreakdown.sust,
       'Impact: TimeCriticality': it.impactBreakdown.tc,
-      Confidence: it.confidence,
-      Effort: it.effort,
-      'Prio Score': parseFloat(it.score.toFixed(3)),
+      'Confidence (%)': (it.confidence*100).toFixed(0)+'%',
+      'Effort (person-weeks)': it.effort,
+      'Prio Score': Math.round(it.score),
       Notes: it.notes || '',
     };
   });
-
   const weightsRow = IMPACT_KEYS.map(k => ({
     Category: k.name,
     Weight: weights[k.id].toFixed(1)+'%',
   }));
-
   const th = getThresholds();
   const settingsRows = [
+    { Setting:'Score formula', Value:'(Reach × Impact × Confidence) ÷ Effort' },
+    { Setting:'Score unit', Value:'impact-weighted cases per person-week' },
     { Setting:'Threshold mode', Value: settings.threshMode },
-    { Setting:'High tier (score ≥)', Value: th.high.toFixed(2) },
-    { Setting:'Mid tier (score ≥)',  Value: th.mid.toFixed(2) },
+    { Setting:'High tier (score ≥)', Value: Math.round(th.high) },
+    { Setting:'Mid tier (score ≥)',  Value: Math.round(th.mid) },
   ];
-
   const wb = XLSX.utils.book_new();
   const ws1 = XLSX.utils.json_to_sheet(rows);
   ws1['!cols'] = [
     { wch:5 },{ wch:32 },{ wch:14 },{ wch:8 },
-    { wch:7 },{ wch:18 },{ wch:12 },{ wch:12 },{ wch:12 },{ wch:14 },{ wch:18 },{ wch:18 },
-    { wch:11 },{ wch:8 },{ wch:12 },{ wch:40 }
+    { wch:16 },{ wch:18 },{ wch:12 },{ wch:12 },{ wch:12 },{ wch:14 },{ wch:18 },{ wch:18 },
+    { wch:14 },{ wch:18 },{ wch:12 },{ wch:40 }
   ];
   XLSX.utils.book_append_sheet(wb, ws1, 'Backlog');
-
   const ws2 = XLSX.utils.json_to_sheet(weightsRow);
   ws2['!cols'] = [{ wch:22 },{ wch:10 }];
   XLSX.utils.book_append_sheet(wb, ws2, 'Impact weights');
-
   const ws3 = XLSX.utils.json_to_sheet(settingsRows);
-  ws3['!cols'] = [{ wch:24 },{ wch:14 }];
+  ws3['!cols'] = [{ wch:24 },{ wch:48 }];
   XLSX.utils.book_append_sheet(wb, ws3, 'Settings');
-
   const date = new Date().toISOString().slice(0,10);
   XLSX.writeFile(wb, `backlog_prio_${date}.xlsx`);
   toast('Excel exported');
 });
 
-// ── Settings modal ────────────────────────────────────────
 const settingsModal = document.getElementById('settingsModal');
-
-function openSettings(){
-  settingsModal.classList.add('open');
-  syncSettingsUI();
-  buildCatMgr();
-}
+function openSettings(){ settingsModal.classList.add('open'); syncSettingsUI(); buildCatMgr(); }
 function closeSettings(){ settingsModal.classList.remove('open'); }
-
 document.getElementById('btnSettings').addEventListener('click', openSettings);
 document.getElementById('closeSettings').addEventListener('click', closeSettings);
 settingsModal.addEventListener('click', e => { if(e.target === settingsModal) closeSettings(); });
@@ -1202,11 +1187,8 @@ document.querySelectorAll('[data-thresh-mode]').forEach(b => {
   });
 });
 
-function saveSettings(){
-  localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
-}
+function saveSettings(){ localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
 
-// ── Category manager ──────────────────────────────────────
 function buildCatMgr(){
   const wrap = document.getElementById('catMgrList');
   wrap.innerHTML = cats.map(c => `
@@ -1216,18 +1198,15 @@ function buildCatMgr(){
       <button class="del" data-delcat="${c.id}" title="Remove">×</button>
     </div>
   `).join('');
-
   wrap.querySelectorAll('[data-swatch]').forEach(s => {
     s.addEventListener('click', e => {
       e.stopPropagation();
       openColorPop(s, s.dataset.swatch);
     });
   });
-
   wrap.querySelectorAll('[data-delcat]').forEach(b => {
     b.addEventListener('click', () => {
       const id = b.dataset.delcat;
-      // unset on items
       items.forEach(i => { if(i.category === id) i.category = null; });
       cats = cats.filter(c => c.id !== id);
       if(currentFilter === id){ currentFilter = null; localStorage.setItem(FILTER_KEY, JSON.stringify(currentFilter)); }
@@ -1259,18 +1238,13 @@ document.getElementById('newCatName').addEventListener('keydown', e => {
   if(e.key === 'Enter') document.getElementById('addCatBtn').click();
 });
 
-function persistCats(){
-  localStorage.setItem(CATS_KEY, JSON.stringify(cats));
-}
+function persistCats(){ localStorage.setItem(CATS_KEY, JSON.stringify(cats)); }
 
-// ── Color picker popover ──────────────────────────────────
 const colorPop = document.getElementById('colorPop');
 let activeSwatchId = null;
 function openColorPop(anchor, catId){
   activeSwatchId = catId;
-  colorPop.innerHTML = COLOR_PALETTE.map(c => `
-    <div class="swatch-opt" data-color="${c}" style="background:${c}"></div>
-  `).join('');
+  colorPop.innerHTML = COLOR_PALETTE.map(c => `<div class="swatch-opt" data-color="${c}" style="background:${c}"></div>`).join('');
   colorPop.querySelectorAll('[data-color]').forEach(s => {
     s.addEventListener('click', () => {
       const cat = cats.find(c => c.id === activeSwatchId);
@@ -1289,27 +1263,23 @@ document.addEventListener('click', e => {
   }
 });
 
-// ── Keyboard shortcuts ────────────────────────────────────
-const KB_ROWS = ['reach','confidence','effort'].concat(IMPACT_KEYS.map(k => k.id));
+// Keyboard shortcuts (Reach is now numeric input, not in KB rows)
+const KB_ROWS = ['confidence','effort'].concat(IMPACT_KEYS.map(k => k.id));
 
 function setKbFocus(idx){
   document.querySelectorAll('.mult-row').forEach(r => r.classList.remove('kb-focus'));
   kbFocusRowIdx = idx;
   if(idx === null) return;
-  const target = idx < 3 ? KB_ROWS[idx] : KB_ROWS[idx];
-  let sel;
-  if(idx < 3) sel = `.mult-row[data-input="${target}"]`;
-  else sel = `.mult-row[data-impact="${target}"]`;
+  const target = KB_ROWS[idx];
+  let sel = idx < 2 ? `.mult-row[data-input="${target}"]` : `.mult-row[data-impact="${target}"]`;
   const row = document.querySelector(sel);
   if(row) row.classList.add('kb-focus');
 }
 
 document.addEventListener('keydown', e => {
-  // ignore if typing in input/textarea
   const tag = e.target.tagName;
   const inField = tag === 'INPUT' || tag === 'TEXTAREA';
 
-  // Esc → exit edit mode / close modal / clear kb focus
   if(e.key === 'Escape'){
     if(settingsModal.classList.contains('open')){ closeSettings(); return; }
     if(colorPop.classList.contains('open')){ colorPop.classList.remove('open'); return; }
@@ -1317,7 +1287,6 @@ document.addEventListener('keydown', e => {
     if(kbFocusRowIdx !== null){ setKbFocus(null); return; }
   }
 
-  // Enter on form (outside textarea) → add/update
   if(e.key === 'Enter' && !inField && !settingsModal.classList.contains('open')){
     e.preventDefault();
     document.getElementById('btnAdd').click();
@@ -1327,14 +1296,13 @@ document.addEventListener('keydown', e => {
   if(inField) return;
   if(settingsModal.classList.contains('open')) return;
 
-  // 1-5 → set multiplier of focused row
   if(['1','2','3','4','5'].includes(e.key)){
     if(kbFocusRowIdx === null) setKbFocus(0);
     const idx = parseInt(e.key)-1;
     const rowName = KB_ROWS[kbFocusRowIdx];
-    let row;
-    if(kbFocusRowIdx < 3) row = document.querySelector(`.mult-row[data-input="${rowName}"]`);
-    else row = document.querySelector(`.mult-row[data-impact="${rowName}"]`);
+    let row = kbFocusRowIdx < 2
+      ? document.querySelector(`.mult-row[data-input="${rowName}"]`)
+      : document.querySelector(`.mult-row[data-impact="${rowName}"]`);
     if(row){
       const btn = row.querySelectorAll('.mult-btn')[idx];
       if(btn) btn.click();
@@ -1342,7 +1310,6 @@ document.addEventListener('keydown', e => {
     return;
   }
 
-  // Tab in form area handled natively; arrows move kb focus
   if(e.key === 'ArrowDown'){
     e.preventDefault();
     setKbFocus(kbFocusRowIdx === null ? 0 : Math.min(KB_ROWS.length-1, kbFocusRowIdx+1));
@@ -1353,7 +1320,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// click on a mult-row also sets kb focus
 document.addEventListener('click', e => {
   const row = e.target.closest('.mult-row[data-input], .mult-row[data-impact]');
   if(!row) return;
@@ -1362,12 +1328,10 @@ document.addEventListener('click', e => {
   if(idx !== -1) setKbFocus(idx);
 });
 
-// ── Notes indicator ───────────────────────────────────────
 document.getElementById('itemNotes').addEventListener('input', e => {
   document.getElementById('notesToggle').setAttribute('data-has-content', e.target.value.trim() ? 'true':'false');
 });
 
-// ── Init ──────────────────────────────────────────────────
 buildImpactInputs();
 buildWeightInputs();
 buildCatRow();
