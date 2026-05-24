@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="theme-color" content="#00AB61">
+<meta name="theme-color" content="#05CE77">
 <title>Backlog Prio Calculator</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>
 @font-face {
   font-family:'Sohne';font-weight:400;font-style:normal;
@@ -24,20 +25,45 @@
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --g:#00AB61;--g-dark:#009953;
-  --n:#140D8A;
+  /* Transavia 2025 brand palette */
+  --g:#05CE77;--g-dark:#04b568;--g-light:#e6faf2;
+  --n:#140D89;
   --w:#fff;
-  --pink:#E20076;
-  --peach:#FF8867;
-  --blue:#0053FF;
+  --pink:#E30076;
+  --peach:#FF8767;
+  --blue:#0153FF;
+  --magenta:#F285FF;
   --champ:#F9F0E9;
-  --bg:#F7F6F2;
+  --bg:#F5F5F0;
   --sans:'Sohne','DM Sans',system-ui,sans-serif;
   --display:'SohneBreit','Syne',sans-serif;
   --mono:'DM Mono','JetBrains Mono',monospace;
 }
 html{font-family:var(--sans);background:var(--bg);color:var(--n);-webkit-tap-highlight-color:transparent;overflow-x:hidden;max-width:100vw}
 body{min-height:100svh;overflow-x:hidden;max-width:100vw}
+
+/* LUCIDE ICONS */
+.icon{width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.icon svg{width:100%;height:100%;stroke-width:2}
+.icon-reach{color:var(--n);opacity:.7}
+.icon-impact{color:var(--peach);opacity:.8}
+.icon-confidence{color:var(--pink);opacity:.8}
+.icon-effort{color:var(--blue);opacity:.8}
+.icon-btn{color:inherit;opacity:.65;transition:opacity .2s}
+button .icon-btn{opacity:.6}
+button:hover .icon-btn{opacity:1}
+
+/* Animated icons - pulse and spin */
+.icon-pulse svg{animation:iconPulse 2s ease-in-out infinite}
+.icon-spin svg{animation:iconSpin 1.2s linear infinite}
+@keyframes iconPulse{
+  0%,100%{opacity:.6;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.1)}
+}
+@keyframes iconSpin{
+  from{transform:rotate(0deg)}
+  to{transform:rotate(360deg)}
+}
 
 /* PAGE HEADER */
 .page-head{background:var(--g);padding:44px 5% 40px;position:relative}
@@ -59,51 +85,83 @@ body{min-height:100svh;overflow-x:hidden;max-width:100vw}
 @media(max-width:980px){.grid{grid-template-columns:1fr}}
 
 /* CARDS */
-.card{background:var(--w);border-radius:16px;border:1px solid rgba(20,13,138,.1);overflow:hidden;box-shadow:0 2px 8px rgba(20,13,138,.04);box-sizing:border-box;width:100%;transition:border-color .25s, box-shadow .25s}
-.card.edit-mode{border-color:var(--peach);box-shadow:0 4px 24px rgba(255,136,103,.2)}
-.card-hdr{padding:18px 22px 14px;border-bottom:1px solid rgba(20,13,138,.07);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.card{background:var(--w);border-radius:16px;border:1px solid rgba(20,13,138,.08);overflow:hidden;box-shadow:0 1px 3px rgba(20,13,138,.04);box-sizing:border-box;width:100%;max-width:100%;transition:border-color .25s, box-shadow .25s;display:flex;flex-direction:column}
+.card.edit-mode{border-color:var(--peach);box-shadow:0 2px 8px rgba(255,136,103,.15)}
+.card-hdr{padding:16px 20px 12px;border-bottom:1px solid rgba(20,13,138,.06);display:flex;align-items:center;justify-content:space-between;gap:10px}
 .card-hdr-l{display:flex;flex-direction:column;gap:3px}
 .card-eyebrow{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--n);opacity:.5;transition:color .2s}
 .card.edit-mode .card-eyebrow{color:var(--peach);opacity:1}
 .card-title{font-family:var(--display);font-size:18px;font-weight:700;color:var(--n);letter-spacing:-.01em}
-.card-counter{font-family:var(--mono);font-size:10px;background:rgba(20,13,138,.06);color:var(--n);border-radius:99px;padding:4px 10px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;transition:all .2s}
+.card-counter{font-family:var(--mono);font-size:10px;background:rgba(20,13,138,.05);color:var(--n);border-radius:99px;padding:4px 10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;transition:all .2s}
 .card.edit-mode .card-counter{background:var(--peach);color:#fff}
-.card-body{padding:18px 22px 22px}
+.card-body{padding:16px 20px 20px;width:100%;box-sizing:border-box;overflow-x:hidden}
 
-/* RICE SECTION BLOCKS — accent stripe per section */
-.rice-section{position:relative;padding:14px 16px 14px 18px;margin-bottom:14px;background:var(--w);border-radius:12px;border:1px solid rgba(20,13,138,.08)}
-.rice-section::before{content:'';position:absolute;left:0;top:14px;bottom:14px;width:4px;border-radius:0 4px 4px 0}
-.rice-section.sec-reach::before{background:var(--n)}
-.rice-section.sec-impact{padding:0;border:none;background:transparent}
-.rice-section.sec-impact::before{display:none}
-.rice-section.sec-confidence::before{background:var(--pink)}
-.rice-section.sec-effort::before{background:var(--blue)}
+/* RICE Layout Grid */
+.rice-layout{display:flex;flex-direction:column;gap:18px}
+.rice-item{position:relative;padding:16px;background:var(--w);border-radius:12px;border-left:4px solid;transition:all .2s}
+.rice-item.reach{border-left-color:var(--n);background:rgba(20,13,138,.02)}
+.rice-item.impact{border-left-color:var(--peach);background:rgba(255,136,103,.03)}
+.rice-item.confidence{border-left-color:var(--pink);background:rgba(226,0,118,.02)}
+.rice-item.effort{border-left-color:var(--blue);background:rgba(0,83,255,.02)}
+.rice-item:hover{border-left-width:5px;box-shadow:0 2px 8px rgba(20,13,138,.08)}
+
+.rice-row-2col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){
+  .rice-row-2col{grid-template-columns:1fr}
+}
+
+/* 2-column wrapper for Confidence + Effort */
+.rice-2col-wrapper{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px;width:100%}
+
+/* Stack on tablet and mobile */
+@media(max-width:900px){
+  .rice-2col-wrapper{grid-template-columns:1fr}
+}
+
+/* RICE sections as compact cards */
+.rice-section{position:relative;padding:14px 16px;background:var(--w);border-radius:11px;border-left:4px solid;margin:0 0 12px 0;box-shadow:0 1px 2px rgba(20,13,138,.03);transition:all .2s}
+.rice-section:hover{border-left-width:5px;box-shadow:0 2px 6px rgba(20,13,138,.07)}
+.rice-section.sec-reach{border-left-color:var(--n);background:rgba(20,13,138,.01)}
+.rice-section.sec-confidence{border-left-color:var(--pink);background:rgba(226,0,118,.01)}
+.rice-section.sec-effort{border-left-color:var(--blue);background:rgba(0,83,255,.01)}
+
+/* Impact block compact */
+.field-group:has(.impact-block){margin-top:0}
+.impact-block{position:relative !important;background:var(--w) !important;border-radius:11px;padding:14px 16px;border-left:4px solid var(--peach) !important;background:rgba(255,136,103,.02) !important;box-shadow:0 1px 2px rgba(20,13,138,.03);transition:all .2s;margin:0 0 12px 0 !important;border:none !important}
+.impact-block:hover{border-left-width:5px;box-shadow:0 2px 6px rgba(20,13,138,.07)}
+
+/* Score preview bigger and more prominent */
+.score-preview{background:var(--n);border-radius:14px;padding:26px 24px;margin-top:24px;text-align:center;position:relative;overflow:hidden;border:1px solid rgba(5,206,119,.15);box-shadow:0 4px 16px rgba(20,13,138,.08)}
+.sp-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px;position:relative;font-weight:700}
+.sp-value{font-family:var(--display);font-size:56px;font-weight:700;color:var(--g);letter-spacing:-.02em;line-height:1;position:relative;margin-bottom:8px}
+.sp-unit{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.55);margin-bottom:10px;letter-spacing:.04em;position:relative;font-weight:500}
+.sp-formula{margin-top:14px;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.02em;position:relative;font-weight:400}
 
 .field-group{margin-bottom:14px}
 .field-group:last-child{margin-bottom:0}
-.field-label{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
+.field-label{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:8px}
 .field-name{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--n);font-family:var(--display);letter-spacing:.01em}
 .field-letter{font-family:var(--mono);font-size:9px;font-weight:700;background:var(--n);color:#fff;border-radius:4px;padding:2px 6px;letter-spacing:.05em}
 .field-letter.acc-r{background:var(--n)}
 .field-letter.acc-i{background:var(--peach)}
 .field-letter.acc-c{background:var(--pink)}
 .field-letter.acc-e{background:var(--blue)}
-.field-val{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--g);background:rgba(0,171,97,.1);border-radius:99px;padding:3px 9px;letter-spacing:.02em}
+.field-val{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--g);background:rgba(5,206,119,.1);border-radius:99px;padding:3px 9px;letter-spacing:.02em}
 .field-val.val-r{color:var(--n);background:rgba(20,13,138,.08)}
 .field-val.val-c{color:var(--pink);background:rgba(226,0,118,.1)}
 .field-val.val-e{color:var(--blue);background:rgba(0,83,255,.1)}
 .field-hint{font-family:var(--mono);font-size:9px;color:var(--n);opacity:.45;margin-top:6px;letter-spacing:.04em;line-height:1.5}
 
 /* NUMERIC INPUT */
-.numeric-wrap{position:relative;display:flex;align-items:center}
-.numeric-wrap input[type="number"]{width:100%;padding:12px 110px 12px 14px;border:1.5px solid rgba(20,13,138,.12);background:var(--w);border-radius:10px;font-family:var(--mono);font-size:15px;color:var(--n);font-weight:700;transition:border-color .15s;letter-spacing:.01em}
+.numeric-wrap{position:relative;display:flex;align-items:center;width:100%;box-sizing:border-box}
+.numeric-wrap input[type="number"]{width:100%;max-width:100%;padding:12px 110px 12px 14px;border:1.5px solid rgba(20,13,138,.12);background:var(--w);border-radius:10px;font-family:var(--mono);font-size:15px;color:var(--n);font-weight:700;transition:border-color .15s;letter-spacing:.01em;box-sizing:border-box}
 .numeric-wrap input[type="number"]::-webkit-outer-spin-button,
 .numeric-wrap input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .numeric-wrap input[type="number"]{-moz-appearance:textfield}
-.numeric-wrap input[type="number"]:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,171,97,.12)}
+.numeric-wrap input[type="number"]:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(5,206,119,.12)}
 .numeric-suffix{position:absolute;right:14px;font-family:var(--mono);font-size:10px;font-weight:700;color:var(--n);opacity:.4;letter-spacing:.05em;text-transform:uppercase;pointer-events:none}
-.quick-pick{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
-.qp-btn{padding:6px 11px;background:transparent;border:1px solid rgba(20,13,138,.15);border-radius:99px;font-family:var(--mono);font-size:11px;font-weight:700;color:rgba(20,13,138,.6);cursor:pointer;transition:all .12s;-webkit-tap-highlight-color:transparent;letter-spacing:.02em}
+.quick-pick{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.qp-btn{padding:5px 10px;background:transparent;border:1px solid rgba(20,13,138,.12);border-radius:99px;font-family:var(--mono);font-size:10px;font-weight:700;color:rgba(20,13,138,.55);cursor:pointer;transition:all .12s;-webkit-tap-highlight-color:transparent;letter-spacing:.01em}
 .qp-btn:hover{border-color:var(--n);color:var(--n)}
 .qp-btn.active{background:var(--n);border-color:var(--n);color:#fff}
 
@@ -120,10 +178,22 @@ body{min-height:100svh;overflow-x:hidden;max-width:100vw}
 .mult-row.conf-row .mult-btn.active{background:var(--pink);border-color:var(--pink)}
 
 /* INPUT */
-.input-text,.input-textarea{width:100%;padding:12px 14px;border:1.5px solid rgba(20,13,138,.12);background:var(--w);border-radius:10px;font-family:var(--sans);font-size:14px;color:var(--n);font-weight:500;transition:border-color .15s}
-.input-text:focus,.input-textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,171,97,.12)}
+.input-text,.input-textarea{width:100%;max-width:100%;padding:12px 14px;border:1.5px solid rgba(20,13,138,.12);background:var(--w);border-radius:10px;font-family:var(--sans);font-size:14px;color:var(--n);font-weight:500;transition:border-color .15s;box-sizing:border-box}
+.input-text:focus,.input-textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(5,206,119,.12)}
 .input-text::placeholder,.input-textarea::placeholder{color:rgba(20,13,138,.3)}
 .input-textarea{resize:vertical;min-height:60px;line-height:1.5;font-size:13px}
+
+/* Strong focus for key inputs (Reach, Effort, Confidence) */
+.key-input:focus{border-color:var(--g) !important;box-shadow:0 0 0 4px rgba(5,206,119,.18) !important}
+
+/* Input border flash on value change */
+.numeric-wrap input.flash-border,
+.input-text.flash-border,
+.input-textarea.flash-border{animation:borderFlash .4s ease-out}
+@keyframes borderFlash{
+  0%{border-color:var(--g);box-shadow:0 0 0 2px rgba(5,206,119,.25)}
+  100%{border-color:rgba(20,13,138,.12);box-shadow:0 0 0 0 rgba(5,206,119,0)}
+}
 
 /* IMPACT BLOCK — with peach accent */
 .impact-block{position:relative;background:var(--champ);border-radius:12px;padding:14px 16px 14px 18px;border:1px solid rgba(255,136,103,.18)}
@@ -174,18 +244,17 @@ body{min-height:100svh;overflow-x:hidden;max-width:100vw}
 .notes-hint{font-family:var(--mono);font-size:9px;color:var(--n);opacity:.4;margin-top:6px;letter-spacing:.04em}
 
 /* SCORE PREVIEW */
-.score-preview{background:var(--n);border-radius:14px;padding:20px;margin-top:18px;text-align:center;position:relative;overflow:hidden}
-.score-preview::before{content:'';position:absolute;top:-40px;right:-40px;width:120px;height:120px;background:radial-gradient(circle,rgba(0,171,97,.25),transparent 70%)}
-.sp-label{font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-bottom:8px;position:relative}
-.sp-value{font-family:var(--display);font-size:46px;font-weight:700;color:var(--g);letter-spacing:-.02em;line-height:1;position:relative}
-.sp-unit{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.55);margin-top:6px;letter-spacing:.05em;position:relative}
-.sp-formula{margin-top:8px;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.02em;position:relative}
+.score-preview{background:var(--n);border-radius:14px;padding:22px;margin-top:18px;text-align:center;position:relative;overflow:hidden;border:1px solid rgba(5,206,119,.12)}
+.sp-label{font-family:var(--mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:10px;position:relative;font-weight:700}
+.sp-value{font-family:var(--display);font-size:52px;font-weight:700;color:var(--g);letter-spacing:-.02em;line-height:1;position:relative;margin-bottom:8px}
+.sp-unit{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.5);margin-bottom:8px;letter-spacing:.04em;position:relative;font-weight:500}
+.sp-formula{margin-top:12px;font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.02em;position:relative;font-weight:400}
 
 /* ACTION BUTTONS */
 .action-row{display:flex;gap:8px;margin-top:14px}
 .btn{flex:1;padding:13px 18px;border-radius:99px;font-family:var(--sans);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;border:none;letter-spacing:.01em;-webkit-tap-highlight-color:transparent;display:inline-flex;align-items:center;justify-content:center;gap:6px}
-.btn-primary{background:var(--g);color:#fff;box-shadow:0 4px 14px rgba(0,171,97,.3)}
-.btn-primary:hover{background:var(--g-dark);box-shadow:0 6px 18px rgba(0,171,97,.4)}
+.btn-primary{background:var(--g);color:#fff;box-shadow:0 4px 14px rgba(5,206,119,.3)}
+.btn-primary:hover{background:var(--g-dark);box-shadow:0 6px 18px rgba(5,206,119,.4)}
 .btn-primary:active{transform:scale(.97)}
 .btn-ghost{background:var(--w);color:var(--n);border:1.5px solid rgba(20,13,138,.15)}
 .btn-ghost:hover{background:var(--champ);border-color:rgba(20,13,138,.25)}
@@ -207,7 +276,7 @@ body{min-height:100svh;overflow-x:hidden;max-width:100vw}
 .table-wrap{background:var(--w);border-radius:16px;border:1px solid rgba(20,13,138,.1);overflow:hidden;box-shadow:0 2px 8px rgba(20,13,138,.04)}
 table{width:100%;border-collapse:collapse;font-size:13px}
 thead{background:var(--n)}
-thead th{padding:13px 12px;text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:rgba(255,255,255,.75);cursor:pointer;user-select:none;white-space:nowrap;transition:color .15s;-webkit-tap-highlight-color:transparent}
+thead th{padding:13px 12px;text-align:left;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.7);cursor:pointer;user-select:none;white-space:nowrap;transition:color .15s;-webkit-tap-highlight-color:transparent}
 thead th:hover{color:#fff}
 thead th.sort-active{color:var(--g)}
 thead th.sort-active::after{content:attr(data-arrow);margin-left:5px;font-size:9px}
@@ -217,8 +286,8 @@ tbody tr{transition:background .12s;cursor:pointer}
 tbody tr:hover{background:var(--champ)}
 tbody tr:last-child td{border-bottom:none}
 tbody tr.editing{background:rgba(255,136,103,.1) !important;box-shadow:inset 3px 0 0 var(--peach)}
-tbody tr.top-row{background:rgba(0,171,97,.04)}
-tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
+tbody tr.top-row{background:rgba(5,206,119,.04)}
+tbody tr.top-row:hover{background:rgba(5,206,119,.08)}
 
 .t-rank{font-family:var(--display);font-size:14px;font-weight:700;color:var(--n);text-align:center;width:38px}
 .t-rank-1{color:var(--g);font-size:16px}
@@ -240,6 +309,32 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
 /* TOAST */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--n);color:#fff;border-radius:99px;padding:10px 22px;font-size:13px;font-weight:600;box-shadow:0 8px 32px rgba(20,13,138,.25);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s cubic-bezier(.34,1.56,.64,1);z-index:9000;font-family:var(--sans)}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* INTRO MODAL */
+.intro-modal{max-width:520px}
+.modal-body{padding:32px 28px}
+.intro-header{margin-bottom:28px;text-align:center}
+.intro-lang-buttons{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+.intro-lang-btn{padding:6px 12px;border:1.5px solid rgba(20,13,138,.15);background:var(--w);border-radius:99px;font-family:var(--mono);font-size:11px;font-weight:700;color:rgba(20,13,138,.5);cursor:pointer;transition:all .15s;letter-spacing:.05em;-webkit-tap-highlight-color:transparent}
+.intro-lang-btn:hover{border-color:rgba(20,13,138,.3);color:var(--n)}
+.intro-lang-btn.active{background:var(--n);border-color:var(--n);color:#fff}
+.intro-title{font-family:var(--display);font-size:24px;font-weight:700;color:var(--n);letter-spacing:-.01em;margin-bottom:6px}
+.intro-sub{font-size:13px;color:var(--n);opacity:.6;line-height:1.5}
+
+.intro-sections{margin-bottom:28px;display:flex;flex-direction:column;gap:18px}
+.intro-section{display:flex;gap:14px;align-items:flex-start}
+.intro-step{flex-shrink:0;width:32px;height:32px;border-radius:50%;background:var(--g);color:#fff;font-family:var(--display);font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
+.intro-text{flex:1}
+.intro-label{font-family:var(--display);font-size:13px;font-weight:700;color:var(--n);margin-bottom:4px;letter-spacing:.01em}
+.intro-desc{font-size:12px;color:var(--n);opacity:.65;line-height:1.55}
+
+.intro-warning{background:rgba(255,136,103,.08);border:1px solid rgba(255,136,103,.2);border-radius:12px;padding:16px;margin-bottom:20px}
+.intro-warning-title{font-family:var(--display);font-size:12px;font-weight:700;color:#cc5a3a;letter-spacing:.01em;margin-bottom:8px;text-transform:uppercase}
+.intro-warning-text{font-size:12px;color:var(--n);opacity:.75;line-height:1.6}
+.intro-warning-text strong{color:var(--n);font-weight:700}
+
+.intro-actions{display:flex;gap:8px}
+.intro-actions .btn{flex:1}
 
 /* IMPORT MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(20,13,138,.45);backdrop-filter:blur(6px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;animation:fadeIn .2s}
@@ -264,11 +359,11 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
 .imp-section.active{display:block}
 
 .imp-textarea{width:100%;min-height:180px;padding:12px 14px;border:1.5px solid rgba(20,13,138,.12);border-radius:10px;font-family:var(--mono);font-size:11px;color:var(--n);resize:vertical;line-height:1.5}
-.imp-textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(0,171,97,.12)}
+.imp-textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 0 3px rgba(5,206,119,.12)}
 .imp-textarea::placeholder{color:rgba(20,13,138,.3);font-family:var(--mono)}
 
 .imp-drop{border:2px dashed rgba(20,13,138,.2);border-radius:12px;padding:36px 20px;text-align:center;background:var(--champ);cursor:pointer;transition:all .15s}
-.imp-drop:hover,.imp-drop.dragover{border-color:var(--g);background:rgba(0,171,97,.04)}
+.imp-drop:hover,.imp-drop.dragover{border-color:var(--g);background:rgba(5,206,119,.04)}
 .imp-drop-icon{font-family:var(--display);font-size:28px;color:var(--n);opacity:.4;margin-bottom:8px}
 .imp-drop-title{font-family:var(--display);font-size:14px;font-weight:700;color:var(--n);margin-bottom:4px}
 .imp-drop-sub{font-size:12px;color:var(--n);opacity:.55;line-height:1.5}
@@ -286,7 +381,7 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
 
 .imp-msg{padding:10px 14px;border-radius:10px;font-size:12px;margin-top:12px;line-height:1.5;display:none}
 .imp-msg.show{display:block}
-.imp-msg.success{background:rgba(0,171,97,.08);color:var(--g-dark);border:1px solid rgba(0,171,97,.2)}
+.imp-msg.success{background:rgba(5,206,119,.08);color:var(--g-dark);border:1px solid rgba(5,206,119,.2)}
 .imp-msg.error{background:rgba(226,0,118,.06);color:var(--pink);border:1px solid rgba(226,0,118,.2)}
 .imp-msg.warn{background:rgba(255,136,103,.08);color:#cc5a3a;border:1px solid rgba(255,136,103,.25)}
 
@@ -315,21 +410,16 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
 .btn:active{transform:scale(.95)}
 .qp-btn:active,.mult-btn:active,.tb-btn:active,.t-action-btn:active{transform:scale(.92)}
 
-/* Multiplier active state — gradient sweep effect */
-.mult-btn{position:relative;overflow:hidden}
-.mult-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,.18) 50%, transparent 70%);transform:translateX(-100%);transition:transform .5s ease;pointer-events:none}
-.mult-btn.active::after{transform:translateX(100%)}
-
 /* RICE section accent stripe — pulse when section is focused */
 .rice-section{transition:border-color .25s}
-.rice-section:focus-within{border-color:rgba(20,13,138,.18)}
-.rice-section.sec-reach:focus-within::before{animation:stripePulse 1.8s ease-in-out infinite}
-.rice-section.sec-confidence:focus-within::before{animation:stripePulse 1.8s ease-in-out infinite}
-.rice-section.sec-effort:focus-within::before{animation:stripePulse 1.8s ease-in-out infinite}
-.impact-block:focus-within::before{animation:stripePulse 1.8s ease-in-out infinite}
+.rice-section:focus-within{border-color:rgba(20,13,138,.14)}
+.rice-section.sec-reach:focus-within::before{animation:stripePulse 2.4s ease-in-out infinite}
+.rice-section.sec-confidence:focus-within::before{animation:stripePulse 2.4s ease-in-out infinite}
+.rice-section.sec-effort:focus-within::before{animation:stripePulse 2.4s ease-in-out infinite}
+.impact-block:focus-within::before{animation:stripePulse 2.4s ease-in-out infinite}
 @keyframes stripePulse{
-  0%,100%{opacity:1;transform:scaleY(1)}
-  50%{opacity:.5;transform:scaleY(.85)}
+  0%,100%{opacity:.85;transform:scaleY(1)}
+  50%{opacity:.65;transform:scaleY(.92)}
 }
 .rice-section::before,.impact-block::before{transform-origin:center;transition:opacity .3s}
 
@@ -338,9 +428,9 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
 .sp-value.flash-up{animation:flashUp .55s ease-out}
 .sp-value.flash-down{animation:flashDown .55s ease-out}
 @keyframes flashUp{
-  0%{color:var(--g);text-shadow:0 0 0 rgba(0,171,97,0)}
-  30%{color:#0EE48E;text-shadow:0 0 24px rgba(0,171,97,.6)}
-  100%{color:var(--g);text-shadow:0 0 0 rgba(0,171,97,0)}
+  0%{color:var(--g);text-shadow:0 0 0 rgba(5,206,119,0)}
+  30%{color:#0EE48E;text-shadow:0 0 24px rgba(5,206,119,.6)}
+  100%{color:var(--g);text-shadow:0 0 0 rgba(5,206,119,0)}
 }
 @keyframes flashDown{
   0%{color:var(--g);text-shadow:0 0 0 rgba(255,136,103,0)}
@@ -352,8 +442,8 @@ tbody tr.top-row:hover{background:rgba(0,171,97,.08)}
 tbody tr.row-enter{animation:rowEnter .45s cubic-bezier(.22,1,.36,1) both}
 tbody tr.row-exit{animation:rowExit .35s cubic-bezier(.55,0,.68,.05) both;pointer-events:none}
 @keyframes rowEnter{
-  from{opacity:0;transform:scale(.94);background:rgba(0,171,97,.12)}
-  60%{background:rgba(0,171,97,.08)}
+  from{opacity:0;transform:scale(.94);background:rgba(5,206,119,.12)}
+  60%{background:rgba(5,206,119,.08)}
   to{opacity:1;transform:scale(1)}
 }
 @keyframes rowExit{
@@ -361,16 +451,24 @@ tbody tr.row-exit{animation:rowExit .35s cubic-bezier(.55,0,.68,.05) both;pointe
   to{opacity:0;transform:scale(.92);background:rgba(226,0,118,.06)}
 }
 
+/* Reminder slide-in and out */
+@keyframes reminderSlideIn{
+  from{opacity:0;transform:translateX(20px)}
+  to{opacity:1;transform:translateX(0)}
+}
+@keyframes reminderSlideOut{
+  from{opacity:1;transform:translateX(0)}
+  to{opacity:0;transform:translateX(20px)}
+}
+
+/* Input border flash on change */
+.numeric-wrap input[type="number"].flash-border,
+.input-text.flash-border,
+.input-textarea.flash-border{animation:borderFlash .4s ease-out}
+
 /* Sort arrows — rotate on dir change */
 thead th.sort-active::after{display:inline-block;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
 thead th.sort-active.sort-asc::after{transform:rotate(180deg)}
-
-/* Score preview — subtle glow ring that breathes */
-.score-preview::after{content:'';position:absolute;inset:0;border-radius:14px;box-shadow:inset 0 0 0 1px rgba(0,171,97,.15);pointer-events:none;animation:scoreBreathe 4s ease-in-out infinite}
-@keyframes scoreBreathe{
-  0%,100%{box-shadow:inset 0 0 0 1px rgba(0,171,97,.15)}
-  50%{box-shadow:inset 0 0 0 1px rgba(0,171,97,.35)}
-}
 
 /* Toast already has good animation; nudge it slightly */
 .toast{transition:opacity .3s, transform .35s cubic-bezier(.34,1.56,.64,1)}
@@ -384,8 +482,774 @@ thead th.sort-active.sort-asc::after{transform:rotate(180deg)}
   }
 }
 </style>
-</head>
-<body>
+<style>
+#splash{position:fixed;inset:0;z-index:99999;background:linear-gradient(135deg, var(--n) 0%, #1a1599 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .6s cubic-bezier(.4,0,.2,1), visibility .6s;opacity:1;visibility:visible}
+#splash.out{opacity:0;visibility:hidden;pointer-events:none}
+
+.splash-logo{font-family:var(--display);font-size:28px;font-weight:700;color:var(--g);letter-spacing:-.02em}
+.splash-subtext{font-family:var(--sans);font-size:13px;color:rgba(255,255,255,.6);letter-spacing:.05em}
+
+.splash-loader{width:120px;height:3px;background:rgba(255,255,255,.15);border-radius:99px;overflow:hidden;position:relative}
+.splash-bar{height:100%;background:linear-gradient(90deg, var(--g), var(--peach));border-radius:99px;animation:splashLoad 2.2s cubic-bezier(.4,.0,.2,1) infinite;width:30%;position:absolute}
+@keyframes splashLoad{
+  0%{width:30%;left:0}
+  50%{width:70%;left:0}
+  100%{width:100%;left:0}
+}
+</style>
+
+<style>
+/* ═══════════════════════════════════════════════════════
+   UI REFRESH v3 — Transavia 2025 · liquid glass · a11y · responsive
+   ═══════════════════════════════════════════════════════ */
+
+/* ── Richer background canvas for glass to reflect ── */
+html {
+  background:
+    radial-gradient(ellipse 55% 45% at 8% 92%, rgba(5,206,119,.1) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 35% at 92% 8%, rgba(20,13,137,.07) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 55% 60%, rgba(1,83,255,.04) 0%, transparent 60%),
+    var(--bg);
+}
+
+/* ══════════════════════════════════════════════════════
+   PAGE HEADER — green, readable, polished
+   ══════════════════════════════════════════════════════ */
+
+.page-head {
+  background: linear-gradient(140deg, #04a85f 0%, #05b86b 35%, var(--g) 65%, #18e88a 100%);
+  padding: 52px 5% 46px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Light radial shimmer top-right */
+.page-head::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 80% at 85% -10%, rgba(255,255,255,.18) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 10% 110%, rgba(0,0,0,.1) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+/* Subtle bottom fade into page */
+.page-head::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(0,0,0,.08);
+}
+
+/* Title: navy on green passes WCAG AA (5.3:1) — keep original color */
+.ph-title {
+  font-size: clamp(30px, 5vw, 50px);
+  position: relative;
+}
+
+/* Subtitle: was opacity .85 — bump to full for legibility */
+.ph-sub {
+  opacity: .95;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Formula pills: liquid glass on green */
+.ph-formula b {
+  background: rgba(255,255,255,.22);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-weight: 700;
+}
+
+/* Version badge: glass pill */
+.ph-badge {
+  background: rgba(255,255,255,.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,.28);
+  border-radius: 99px;
+  padding: 4px 11px;
+  color: var(--n);
+  font-weight: 700;
+  opacity: 1;
+  font-size: 10px;
+}
+
+/* Keyboard hints: was opacity .55 white — darken bg for readability */
+.ph-keyhint {
+  opacity: 1;
+  color: var(--n);
+  background: rgba(255,255,255,.15);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 10px;
+  bottom: 12px;
+}
+
+.ph-keyhint kbd {
+  background: rgba(255,255,255,.3);
+  border: 1px solid rgba(255,255,255,.4);
+  color: var(--n);
+  font-weight: 700;
+}
+
+/* ══════════════════════════════════════════════════════
+   CARDS — liquid glass elevated surface
+   ══════════════════════════════════════════════════════ */
+
+.card {
+  background: rgba(255,255,255,.82);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.7);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 6px 32px rgba(20,13,138,.09),
+    0 1px 4px rgba(20,13,138,.06),
+    0 0 0 1px rgba(20,13,138,.05);
+}
+
+.card.edit-mode {
+  border-color: rgba(255,136,103,.45);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 8px 36px rgba(255,136,103,.18),
+    0 0 0 1.5px rgba(255,136,103,.4);
+}
+
+/* Card header: subtly tinted separator */
+.card-hdr {
+  background: rgba(20,13,138,.02);
+  border-bottom: 1px solid rgba(20,13,138,.06);
+}
+
+/* Eyebrow text: was opacity .5 — improve to .65 */
+.card-eyebrow { opacity: .65; }
+
+/* ══════════════════════════════════════════════════════
+   RICE SECTIONS — glass panels with left accent
+   ══════════════════════════════════════════════════════ */
+
+.rice-section {
+  border-radius: 14px;
+  border-left-width: 3px;
+  margin-bottom: 10px;
+  background: rgba(255,255,255,.6) !important;
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border-top: 1px solid rgba(255,255,255,.7);
+  transition: box-shadow .2s, background .2s;
+}
+
+.rice-section:focus-within {
+  background: rgba(255,255,255,.8) !important;
+  box-shadow: 0 4px 18px rgba(20,13,138,.1);
+}
+
+/* Field hints: was opacity .45 — raise to .6, add slight size bump */
+.field-hint {
+  font-size: 10px;
+  opacity: .62;
+  color: var(--n);
+}
+
+/* Field name text: ensure full opacity */
+.field-name { opacity: 1; }
+
+/* Field value badges: clearer labels */
+.field-val { font-weight: 700; }
+
+/* ══════════════════════════════════════════════════════
+   IMPACT BLOCK — warm glass
+   ══════════════════════════════════════════════════════ */
+
+.impact-block {
+  border-radius: 14px;
+  background: rgba(249,240,233,.75) !important;
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border-top: 1px solid rgba(255,255,255,.8) !important;
+}
+
+/* Impact field labels: was opacity mixed — ensure readable */
+.impact-field-label { opacity: 1; color: var(--n); font-weight: 600; }
+
+/* ══════════════════════════════════════════════════════
+   SCORE PREVIEW — cinematic dark glass
+   ══════════════════════════════════════════════════════ */
+
+.score-preview {
+  background: linear-gradient(155deg, #080551 0%, #0e0b72 50%, #140D8A 100%);
+  border-radius: 18px;
+  padding: 32px 24px 26px;
+  border: 1px solid rgba(5,206,119,.2);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.06) inset,
+    0 16px 48px rgba(20,13,138,.22),
+    0 4px 12px rgba(20,13,138,.12);
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+/* Green ambient halo behind the number */
+.score-preview::before {
+  content: '';
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  left: 50%;
+  top: 10px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(5,206,119,.25) 0%, transparent 68%);
+  pointer-events: none;
+}
+
+/* Score number: glowing green, large */
+.sp-value {
+  font-size: 64px;
+  color: var(--g);
+  text-shadow: 0 0 32px rgba(5,206,119,.6), 0 0 64px rgba(5,206,119,.25);
+  margin-bottom: 4px;
+  line-height: 1;
+}
+
+/* Labels: full opacity for readability on dark bg */
+.sp-label {
+  color: rgba(255,255,255,.65);
+  font-size: 9px;
+  letter-spacing: .2em;
+  margin-bottom: 12px;
+}
+
+.sp-unit {
+  color: rgba(255,255,255,.55);
+  font-size: 10px;
+}
+
+.sp-formula {
+  color: rgba(255,255,255,.4);
+  font-size: 10px;
+  margin-top: 14px;
+  border-top: 1px solid rgba(255,255,255,.07);
+  padding-top: 12px;
+}
+
+/* ══════════════════════════════════════════════════════
+   INTERACTIVE CONTROLS
+   ══════════════════════════════════════════════════════ */
+
+/* Quick-pick pills */
+.qp-btn {
+  padding: 6px 12px;
+  font-size: 10px;
+  border-radius: 99px;
+  transition: all .14s cubic-bezier(.34,1.56,.64,1);
+}
+
+.qp-btn:hover { transform: translateY(-1px); }
+
+.qp-btn.active {
+  box-shadow: 0 2px 10px rgba(20,13,138,.28);
+  transform: scale(1.04) translateY(-1px);
+}
+
+/* Multiplier buttons: min 44px touch target height */
+.mult-btn {
+  min-height: 44px;
+  border-radius: 12px;
+  transition: all .14s cubic-bezier(.34,1.56,.64,1);
+  font-size: 12px;
+}
+
+.mult-btn:hover { transform: translateY(-1px); }
+
+.mult-btn.active {
+  transform: scale(1.03);
+  box-shadow: 0 3px 12px rgba(20,13,138,.22);
+}
+
+.mult-row.conf-row .mult-btn.active {
+  box-shadow: 0 3px 12px rgba(226,0,118,.3);
+}
+
+.impact-mult-row .mult-btn { min-height: 40px; }
+.impact-mult-row .mult-btn.active {
+  box-shadow: 0 3px 12px rgba(255,136,103,.3);
+}
+
+/* Number inputs: cleaner */
+.numeric-wrap input[type="number"] {
+  font-size: 16px; /* prevent iOS zoom on focus */
+  border-radius: 11px;
+}
+
+/* Focus states: clear green ring */
+.input-text:focus,
+.input-textarea:focus,
+.numeric-wrap input[type="number"]:focus,
+.key-input:focus {
+  border-color: var(--g) !important;
+  box-shadow: 0 0 0 3px rgba(5,206,119,.18) !important;
+  outline: none;
+}
+
+/* ══════════════════════════════════════════════════════
+   BUTTONS
+   ══════════════════════════════════════════════════════ */
+
+/* Minimum 44px touch target on all buttons */
+.btn { min-height: 44px; }
+
+.btn-primary {
+  background: linear-gradient(135deg, #05CE77 0%, var(--g) 60%, #04a85f 100%);
+  box-shadow: 0 4px 18px rgba(5,206,119,.38);
+  letter-spacing: .02em;
+  font-size: 13px;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #18e88a 0%, #05b870 100%);
+  box-shadow: 0 6px 24px rgba(5,206,119,.48);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: rgba(255,255,255,.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.btn-update {
+  background: linear-gradient(135deg, #ffb090 0%, var(--peach) 60%, #ff6840 100%);
+  box-shadow: 0 4px 16px rgba(255,136,103,.38);
+}
+
+.btn-update:hover {
+  box-shadow: 0 6px 22px rgba(255,136,103,.5);
+  transform: translateY(-1px);
+}
+
+/* ══════════════════════════════════════════════════════
+   TOOLBAR & TABLE
+   ══════════════════════════════════════════════════════ */
+
+.toolbar { gap: 8px; }
+
+.tb-btn {
+  min-height: 38px;
+  border-radius: 10px;
+  font-size: 12px;
+  transition: all .14s cubic-bezier(.34,1.56,.64,1);
+}
+
+.tb-btn:hover { transform: translateY(-1px); }
+
+/* Count label: was opacity .5 — boost legibility */
+.tb-count {
+  font-size: 12px;
+  opacity: .7;
+  font-weight: 700;
+}
+
+.tb-btn-export {
+  background: linear-gradient(135deg, #0d0a6e 0%, var(--n) 100%);
+  box-shadow: 0 4px 14px rgba(20,13,138,.3);
+  border-color: transparent;
+}
+
+.tb-btn-export:hover {
+  box-shadow: 0 6px 20px rgba(20,13,138,.42);
+}
+
+/* Table wrap: glass card */
+.table-wrap {
+  background: rgba(255,255,255,.82);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.7);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.95) inset,
+    0 6px 32px rgba(20,13,138,.09),
+    0 0 0 1px rgba(20,13,138,.05);
+  overflow: hidden;
+}
+
+/* Table header: deep navy, clear white labels */
+thead {
+  background: linear-gradient(135deg, #0a0760 0%, var(--n) 100%);
+}
+
+thead th {
+  padding: 14px 12px;
+  font-size: 9.5px;
+  letter-spacing: .15em;
+  color: rgba(255,255,255,.82); /* was .7 */
+}
+
+thead th:hover { color: #fff; }
+thead th.sort-active { color: var(--g); }
+
+/* Body rows */
+tbody td {
+  font-size: 13px;
+  color: var(--n);
+}
+
+tbody tr:nth-child(even) { background: rgba(20,13,138,.014); }
+
+tbody tr.top-row { background: rgba(5,206,119,.04); }
+tbody tr.top-row:hover { background: rgba(5,206,119,.08); }
+
+/* Score column: prominent */
+.t-score-cell { font-size: 16px; }
+
+/* Rank #1: glowing */
+.t-rank-1 {
+  font-size: 17px;
+  text-shadow: 0 0 14px rgba(5,206,119,.45);
+}
+
+/* Mono text in table: improve contrast from opacity .7 */
+.t-mono { opacity: .82; }
+.t-mono-strong { opacity: .95; }
+
+/* ══════════════════════════════════════════════════════
+   MODALS
+   ══════════════════════════════════════════════════════ */
+
+.modal-overlay {
+  background: rgba(6,4,48,.52);
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+}
+
+.modal {
+  background: rgba(255,255,255,.88);
+  backdrop-filter: blur(28px) saturate(160%);
+  -webkit-backdrop-filter: blur(28px) saturate(160%);
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,.75);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.9) inset,
+    0 32px 80px rgba(6,4,48,.38),
+    0 0 0 1px rgba(20,13,138,.06);
+}
+
+.modal-eyebrow { opacity: .62; }
+
+/* Import tabs: glass style */
+.imp-tabs {
+  background: rgba(20,13,138,.04);
+  border: 1px solid rgba(20,13,138,.07);
+  border-radius: 12px;
+  padding: 3px;
+}
+
+.imp-tab.active {
+  box-shadow: 0 2px 8px rgba(20,13,138,.1);
+}
+
+/* ══════════════════════════════════════════════════════
+   TOAST — frosted glass pill
+   ══════════════════════════════════════════════════════ */
+
+.toast {
+  border-radius: 16px;
+  background: rgba(14,11,100,.9);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255,255,255,.12);
+  box-shadow:
+    0 8px 40px rgba(20,13,138,.35),
+    0 2px 8px rgba(20,13,138,.2);
+  padding: 11px 24px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .01em;
+}
+
+/* ══════════════════════════════════════════════════════
+   EMPTY STATE
+   ══════════════════════════════════════════════════════ */
+
+.empty-state {
+  background: rgba(255,255,255,.72);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.7);
+  padding: 72px 24px;
+}
+
+.es-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  font-size: 28px;
+  background: linear-gradient(135deg, #05CE77 0%, var(--g) 100%);
+  box-shadow: 0 8px 28px rgba(5,206,119,.35);
+  margin-bottom: 18px;
+}
+
+.es-title { font-size: 17px; }
+.es-sub { font-size: 13px; opacity: .6; }
+
+/* ══════════════════════════════════════════════════════
+   INTRO MODAL
+   ══════════════════════════════════════════════════════ */
+
+.intro-step {
+  background: linear-gradient(135deg, #05CE77 0%, var(--g) 100%);
+  box-shadow: 0 4px 14px rgba(5,206,119,.32);
+  width: 34px;
+  height: 34px;
+  font-size: 15px;
+}
+
+.intro-warning {
+  border-radius: 14px;
+}
+
+/* Warning title: was small + hard to see — boost */
+.intro-warning-title {
+  font-size: 11px;
+  letter-spacing: .06em;
+  font-weight: 800;
+}
+
+.intro-warning-text { opacity: .85; }
+
+/* Lang buttons: glass pills */
+.intro-lang-btn.active {
+  box-shadow: 0 2px 8px rgba(20,13,138,.2);
+}
+
+/* ══════════════════════════════════════════════════════
+   SPLASH
+   ══════════════════════════════════════════════════════ */
+
+#splash {
+  background: linear-gradient(140deg, #060449 0%, var(--n) 55%, #1e2dbd 100%);
+}
+
+/* ══════════════════════════════════════════════════════
+   WEIGHTS TOGGLE (impact config)
+   ══════════════════════════════════════════════════════ */
+
+/* Was opacity .55 — boost toggle label */
+.weights-toggle summary { opacity: .7; font-size: 10.5px; }
+.notes-toggle summary   { opacity: .7; font-size: 10.5px; }
+
+/* Weight % labels: improve from .6 */
+.w-pct { opacity: .75; }
+.w-sum { opacity: .65; }
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE — handheld to widescreen
+   ══════════════════════════════════════════════════════ */
+
+/* Large screens: slightly wider left column */
+@media (min-width: 1100px) {
+  .grid { grid-template-columns: 480px 1fr; gap: 24px; }
+  .main { padding: 32px 5% 80px; }
+}
+
+/* Tablet: collapse grid, keep side padding */
+@media (max-width: 820px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .page-head { padding: 38px 5% 34px; }
+  .main { padding: 18px 4% 60px; }
+
+  .sp-value { font-size: 54px; }
+
+  /* Full-width toolbar buttons on tablet */
+  .toolbar { flex-wrap: wrap; }
+  .tb-btn  { min-height: 42px; }
+}
+
+/* Phone: tighter, touch-optimised */
+@media (max-width: 500px) {
+  .page-head { padding: 28px 4% 26px; }
+  .main { padding: 12px 4% 48px; }
+
+  .card { border-radius: 16px; }
+  .card-body { padding: 12px 14px 16px; }
+
+  /* Stacked action buttons */
+  .action-row { flex-direction: column; gap: 8px; }
+  .btn { width: 100%; }
+
+  /* Multiplier grid: tighten */
+  .mult-row { gap: 3px; }
+  .mult-btn {
+    min-height: 46px; /* bigger touch target on phone */
+    padding: 6px 2px;
+    font-size: 11.5px;
+    border-radius: 10px;
+  }
+
+  .sp-value { font-size: 46px; }
+  .score-preview { padding: 24px 18px 20px; }
+
+  /* Table: allow horizontal scroll on phone */
+  .table-wrap { overflow-x: auto; }
+  table { min-width: 540px; }
+
+  /* Toolbar: stack below count */
+  .toolbar { gap: 6px; }
+  .tb-count { width: 100%; margin-right: 0; margin-bottom: 2px; }
+
+  /* Toast: full-width on phone */
+  .toast {
+    left: 12px;
+    right: 12px;
+    transform: translateY(20px);
+    width: auto;
+    text-align: center;
+  }
+
+  .toast.show { transform: translateY(0); }
+}
+
+/* ══════════════════════════════════════════════════════
+   TRANSAVIA 2025 — brand-specific finishing touches
+   ══════════════════════════════════════════════════════ */
+
+/* Magenta: use as a subtle accent on the top-ranked row badge */
+.t-rank-1 {
+  color: var(--g);
+  font-size: 17px;
+  text-shadow: 0 0 14px rgba(5,206,119,.45);
+}
+
+/* Score flash-up peak colour: Transavia bright green */
+@keyframes flashUp {
+  0%   { color: var(--g); text-shadow: 0 0 0 rgba(5,206,119,0); }
+  30%  { color: #18e88a;  text-shadow: 0 0 28px rgba(5,206,119,.65); }
+  100% { color: var(--g); text-shadow: 0 0 0  rgba(5,206,119,0); }
+}
+
+/* Splash: Transavia navy gradient + magenta micro-shimmer */
+#splash {
+  background:
+    radial-gradient(ellipse 40% 50% at 75% 30%, rgba(242,133,255,.08) 0%, transparent 55%),
+    linear-gradient(140deg, #060449 0%, var(--n) 60%, #1a18bb 100%);
+}
+
+.splash-logo { color: var(--g); }
+
+/* Active quick-pick: vivid Transavia green ring */
+.qp-btn.active {
+  background: var(--n);
+  border-color: var(--n);
+  box-shadow: 0 2px 10px rgba(20,13,137,.28), 0 0 0 1px var(--n);
+}
+
+/* Confidence row active: pink stays, but add green tint to active glow */
+.mult-row:not(.conf-row) .mult-btn.active {
+  background: var(--n);
+  border-color: var(--n);
+}
+
+/* Sort-active column header: Transavia green tick */
+thead th.sort-active { color: var(--g); }
+
+/* Top-1 table row: very subtle green wash */
+tbody tr.top-row td { background: rgba(5,206,119,.03); }
+tbody tr.top-row:hover td { background: rgba(5,206,119,.07); }
+
+/* Score value in table: brighter green */
+.t-score-cell { color: var(--g); }
+
+/* ph-formula accent letters: crisp glass pill on green header */
+.ph-formula .unit {
+  color: var(--n);
+  opacity: .75;
+  font-size: 10px;
+}
+
+/* Field value badges aligned to new green */
+.field-val { background: rgba(5,206,119,.12); color: var(--g); }
+
+/* Progress bar in splash: Transavia green */
+.splash-bar {
+  background: linear-gradient(90deg, var(--g), #18e88a);
+}
+
+/* Intro step numbers: new green */
+.intro-step {
+  background: linear-gradient(135deg, #05b870 0%, var(--g) 100%);
+}
+
+/* Green glow on primary CTA */
+.btn-primary {
+  background: linear-gradient(135deg, #05b870 0%, var(--g) 55%, #04a85f 100%);
+  box-shadow: 0 4px 18px rgba(5,206,119,.4);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--g) 0%, #18e88a 100%);
+  box-shadow: 0 6px 24px rgba(5,206,119,.52);
+}
+
+/* Empty state icon: Transavia green gradient */
+.es-icon {
+  background: linear-gradient(135deg, #05b870 0%, var(--g) 100%);
+  box-shadow: 0 8px 28px rgba(5,206,119,.38);
+}
+
+/* Magenta as a brand-moment accent on the weight range thumb */
+.w-row input[type="range"]::-webkit-slider-thumb {
+  background: var(--magenta);
+  box-shadow: 0 1px 4px rgba(242,133,255,.5);
+}
+.w-row input[type="range"]::-moz-range-thumb {
+  background: var(--magenta);
+  box-shadow: 0 1px 4px rgba(242,133,255,.5);
+}
+
+/* Keyboard hint keys: style matches header glass */
+.ph-keyhint kbd {
+  background: rgba(255,255,255,.25);
+  border: 1px solid rgba(255,255,255,.38);
+  border-radius: 5px;
+  padding: 2px 6px;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--n);
+}
+
+/* Version badge: refined pill */
+.ph-badge {
+  font-size: 9.5px;
+  letter-spacing: .1em;
+}
+</style>
+
+<div id="splash">
+  <div class="splash-logo">Backlog Prio</div>
+  <div class="splash-subtext">INITIALIZING</div>
+  <div class="splash-loader">
+    <div class="splash-bar"></div>
+  </div>
+</div>
 
 <div class="page-head">
   <div class="ph-badge">v3.0 · free effort</div>
@@ -436,7 +1300,7 @@ thead th.sort-active.sort-asc::after{transform:rotate(180deg)}
             <div class="field-val val-r" id="reachVal">1,000</div>
           </div>
           <div class="numeric-wrap">
-            <input type="number" id="reachInput" min="0" step="100" value="1000">
+            <input type="number" id="reachInput" class="key-input" min="0" step="100" value="1000">
             <span class="numeric-suffix">flights / year</span>
           </div>
           <div class="quick-pick" data-input="reach">
@@ -456,6 +1320,7 @@ thead th.sort-active.sort-asc::after{transform:rotate(180deg)}
             <div class="impact-block-hdr">
               <div class="impact-block-hdr-l">
                 <span class="ib-letter">I</span>
+                <i class="icon icon-impact" data-lucide="zap"></i>
                 <span class="ib-title">Impact · weighted</span>
               </div>
               <span class="ib-result" id="impactComputed">1.00×</span>
@@ -471,6 +1336,7 @@ thead th.sort-active.sort-asc::after{transform:rotate(180deg)}
             </details>
           </div>
         </div>
+
 
         <!-- CONFIDENCE SECTION (pink accent) -->
         <div class="rice-section sec-confidence">
@@ -488,10 +1354,9 @@ thead th.sort-active.sort-asc::after{transform:rotate(180deg)}
             <button class="mult-btn" data-val="0.9">90%<span class="lbl">high</span><span class="kb-num">4</span></button>
             <button class="mult-btn" data-val="1.0">100%<span class="lbl">certain</span><span class="kb-num">5</span></button>
           </div>
-          <div class="field-hint">Probability the impact estimate is accurate. Below 50% means you should investigate first.</div>
         </div>
 
-        <!-- EFFORT SECTION (blue accent) — FREE NUMERIC INPUT -->
+        <!-- EFFORT SECTION (blue accent) -->
         <div class="rice-section sec-effort">
           <div class="field-label">
             <div class="field-name">
@@ -501,7 +1366,7 @@ thead th.sort-active.sort-asc::after{transform:rotate(180deg)}
             <div class="field-val val-e" id="effortVal">1 wk</div>
           </div>
           <div class="numeric-wrap">
-            <input type="number" id="effortInput" min="0.1" step="0.5" value="1">
+            <input type="number" id="effortInput" class="key-input" min="0.1" step="0.5" value="1">
             <span class="numeric-suffix">person-weeks</span>
           </div>
           <div class="quick-pick" data-input="effort">
@@ -512,7 +1377,6 @@ thead th.sort-active.sort-asc::after{transform:rotate(180deg)}
             <button class="qp-btn" data-val="8">8</button>
             <button class="qp-btn" data-val="12">12</button>
           </div>
-          <div class="field-hint">Person-weeks of work, full-time equivalent. Free input — enter any value.</div>
         </div>
 
         <details class="notes-toggle" id="notesToggle">
@@ -531,8 +1395,8 @@ thead th.sort-active.sort-asc::after{transform:rotate(180deg)}
         </div>
 
         <div class="action-row">
-          <button class="btn btn-ghost" id="btnReset">Reset</button>
-          <button class="btn btn-primary" id="btnAdd">+ Add to backlog</button>
+          <button class="btn btn-ghost" id="btnReset"><i class="icon icon-btn" data-lucide="rotate-ccw"></i> Reset</button>
+          <button class="btn btn-primary" id="btnAdd"><i class="icon icon-btn icon-pulse" data-lucide="plus"></i> Add to backlog</button>
         </div>
 
       </div>
@@ -542,14 +1406,73 @@ thead th.sort-active.sort-asc::after{transform:rotate(180deg)}
   <div>
     <div class="toolbar">
       <span class="tb-count" id="itemCount">0 items</span>
-      <button class="tb-btn" id="btnImport">↑ Import</button>
-      <button class="tb-btn tb-btn-danger" id="btnClear">Clear all</button>
-      <button class="tb-btn tb-btn-export" id="btnExport">↓ Export Excel</button>
+      <button class="tb-btn" id="btnImport"><i class="icon icon-btn icon-spin" data-lucide="upload"></i> Import</button>
+      <button class="tb-btn tb-btn-danger" id="btnClear"><i class="icon icon-btn" data-lucide="trash-2"></i> Clear all</button>
+      <button class="tb-btn tb-btn-export" id="btnExport"><i class="icon icon-btn icon-spin" data-lucide="download"></i> Export Excel</button>
     </div>
     <div id="tableWrap"></div>
   </div>
 
 </div>
+</div>
+
+<!-- INTRO MODAL -->
+<div class="modal-overlay" id="introModal">
+  <div class="modal intro-modal">
+    <div class="modal-body">
+
+      <div class="intro-header">
+        <div class="intro-lang-buttons">
+          <button class="intro-lang-btn active" data-lang="nl">NL</button>
+          <button class="intro-lang-btn" data-lang="en">EN</button>
+          <button class="intro-lang-btn" data-lang="fr">FR</button>
+        </div>
+        <div class="intro-title">Backlog Prioritizer</div>
+        <div class="intro-sub">Score, rank, and export your backlog</div>
+      </div>
+
+      <div class="intro-sections">
+
+        <div class="intro-section">
+          <div class="intro-step">1</div>
+          <div class="intro-text">
+            <div class="intro-label">Add items</div>
+            <div class="intro-desc">Fill in Title, Reach (flights/year), Impact (across 6 dimensions), Confidence (%), and Effort (person-weeks). Score calculates instantly.</div>
+          </div>
+        </div>
+
+        <div class="intro-section">
+          <div class="intro-step">2</div>
+          <div class="intro-text">
+            <div class="intro-label">Adjust weights</div>
+            <div class="intro-desc">Impact is a weighted average of OTP, NPS, Costs, Revenue, Sustainability, and Time Criticality. Configure the mix in the Impact section.</div>
+          </div>
+        </div>
+
+        <div class="intro-section">
+          <div class="intro-step">3</div>
+          <div class="intro-text">
+            <div class="intro-label">Sort and export</div>
+            <div class="intro-desc">Click any column header to sort. Use the Export button to save your backlog as Excel — this is the only way to keep your data.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="intro-warning">
+        <div class="intro-warning-title">No persistent storage</div>
+        <div class="intro-warning-text">
+          <strong>All data lives in your browser only.</strong> If you refresh the page, close the tab, or clear your browser cache, everything is lost. 
+          <strong>Export to Excel regularly to keep your work.</strong> Import via paste or file upload to bring data back.
+        </div>
+      </div>
+
+      <div class="intro-actions">
+        <button class="btn btn-primary" id="introClose">Got it, let's go</button>
+      </div>
+
+    </div>
+  </div>
 </div>
 
 <!-- IMPORT MODAL -->
@@ -603,12 +1526,12 @@ thead th.sort-active.sort-asc::after{transform:rotate(180deg)}
 
 <script>
 const IMPACT_KEYS = [
-  { id:'otp',   name:'Impact on OTP' },
-  { id:'nps',   name:'NPS' },
-  { id:'costs', name:'Costs' },
-  { id:'rev',   name:'Revenue' },
-  { id:'sust',  name:'Sustainability' },
-  { id:'tc',    name:'Time Criticality' },
+  { id:'otp',   name:'Impact on OTP', icon:'clock' },
+  { id:'nps',   name:'NPS', icon:'smile' },
+  { id:'costs', name:'Costs', icon:'dollar-sign' },
+  { id:'rev',   name:'Revenue', icon:'trending-up' },
+  { id:'sust',  name:'Sustainability', icon:'leaf' },
+  { id:'tc',    name:'Time Criticality', icon:'alert-circle' },
 ];
 
 const MULTS = [0.25, 0.5, 1, 2, 3];
@@ -661,11 +1584,19 @@ function toast(msg){
   toastTimer = setTimeout(()=>el.classList.remove('show'), 1800);
 }
 
+function triggerFlash(el){
+  el.classList.remove('flash-border');
+  void el.offsetWidth; // reflow
+  el.classList.add('flash-border');
+  setTimeout(() => el.classList.remove('flash-border'), 400);
+}
+
 function buildImpactInputs(){
   const wrap = document.getElementById('impactInputs');
   wrap.innerHTML = IMPACT_KEYS.map((k,i) => `
     <div class="impact-field">
       <div class="impact-field-label">
+        <i class="icon icon-impact" data-lucide="${k.icon}"></i>
         <span>${k.name}</span>
         <span class="impact-field-val" id="${k.id}Val">1×</span>
       </div>
@@ -675,6 +1606,11 @@ function buildImpactInputs(){
     </div>
   `).join('');
 
+  // Refresh icons after DOM update
+  if(typeof lucide !== 'undefined' && lucide.createIcons){
+    lucide.createIcons();
+  }
+
   wrap.querySelectorAll('.mult-row').forEach(row => {
     row.addEventListener('click', e => {
       const btn = e.target.closest('.mult-btn'); if(!btn) return;
@@ -682,7 +1618,7 @@ function buildImpactInputs(){
       const val = parseFloat(btn.dataset.val);
       row.querySelectorAll('.mult-btn').forEach(b => b.classList.toggle('active', b===btn));
       state.impact[key] = val;
-      document.getElementById(key+'Val').textContent = val+'×';
+      animateImpactTo(key, val);
       recalc();
     });
   });
@@ -732,6 +1668,7 @@ document.getElementById('reachInput').addEventListener('input', e => {
   const v = parseFloat(e.target.value) || 0;
   state.reach = Math.max(0, v);
   document.getElementById('reachVal').textContent = fmtFull(state.reach);
+  triggerFlash(e.target);
   document.querySelectorAll('[data-input="reach"] .qp-btn').forEach(b => {
     b.classList.toggle('active', parseFloat(b.dataset.val) === state.reach);
   });
@@ -754,6 +1691,7 @@ document.getElementById('effortInput').addEventListener('input', e => {
   const v = parseFloat(e.target.value) || 0;
   state.effort = Math.max(0.1, v);
   document.getElementById('effortVal').textContent = fmtEffort(state.effort);
+  triggerFlash(e.target);
   document.querySelectorAll('[data-input="effort"] .qp-btn').forEach(b => {
     b.classList.toggle('active', parseFloat(b.dataset.val) === state.effort);
   });
@@ -796,7 +1734,42 @@ function computeScore(r,i,c,e){
   return (r*i*c)/e;
 }
 
-// Animated score count-up
+// Animated impact multiplier count-up
+let prevImpacts = Object.fromEntries(IMPACT_KEYS.map(k => [k.id, 1]));
+let impactRafIds = {};
+
+function animateImpactTo(key, target){
+  const el = document.getElementById(key+'Val');
+  if(!el) return;
+  const from = prevImpacts[key];
+  const to = target;
+  
+  // Only animate if difference > 0.5
+  if(Math.abs(to - from) <= 0.5){
+    el.textContent = to+'×';
+    prevImpacts[key] = to;
+    return;
+  }
+
+  if(impactRafIds[key]) cancelAnimationFrame(impactRafIds[key]);
+  const duration = 350;
+  const start = performance.now();
+  
+  function tick(now){
+    const t = Math.min(1, (now - start) / duration);
+    const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+    const cur = from + (to - from) * eased;
+    el.textContent = cur.toFixed(2)+'×';
+    if(t < 1){
+      impactRafIds[key] = requestAnimationFrame(tick);
+    } else {
+      el.textContent = to+'×';
+      impactRafIds[key] = null;
+    }
+  }
+  impactRafIds[key] = requestAnimationFrame(tick);
+  prevImpacts[key] = to;
+}
 let prevScore = 0;
 let scoreRafId = null;
 function animateScoreTo(target){
@@ -855,6 +1828,7 @@ function getFormPayload(){
 
 document.getElementById('btnAdd').addEventListener('click', () => {
   const payload = getFormPayload();
+  saveState(); // Save state before change
   if(editingId !== null){
     const idx = items.findIndex(i => i.id === editingId);
     if(idx !== -1) items[idx] = { ...items[idx], ...payload };
@@ -932,7 +1906,7 @@ function enterEditMode(item){
   document.getElementById('inputCard').classList.add('edit-mode');
   document.getElementById('cardEyebrow').textContent = 'Editing';
   document.getElementById('cardTitle').textContent = item.name;
-  document.getElementById('btnAdd').textContent = '✓ Update item';
+  document.getElementById('btnAdd').textContent = 'Update item';
   document.getElementById('btnAdd').classList.remove('btn-primary');
   document.getElementById('btnAdd').classList.add('btn-update');
 
@@ -991,6 +1965,7 @@ function exitEditMode(){
 }
 
 function duplicateItem(item){
+  saveState();
   const newId = Date.now();
   const copy = { ...JSON.parse(JSON.stringify(item)), id: newId, name: item.name + ' (copy)' };
   items.push(copy);
@@ -1008,7 +1983,7 @@ function renderTable(){
   if(!items.length){
     wrap.innerHTML = `
       <div class="empty-state">
-        <div class="es-icon">✓</div>
+        <div class="es-icon">+</div>
         <div class="es-title">No backlog items yet</div>
         <div class="es-sub">Score your first item on the left to start building the priority list.</div>
       </div>`;
@@ -1099,6 +2074,7 @@ function renderTable(){
         duplicateItem(item);
       }
       else if(act === 'del'){
+        saveState();
         if(editingId === id) exitEditMode();
         // Animate out, then remove
         const row = b.closest('tr');
@@ -1124,6 +2100,11 @@ function renderTable(){
   if(pendingNewItemId !== null){
     setTimeout(() => { pendingNewItemId = null; }, 500);
   }
+
+  // Refresh icons after DOM update
+  if(typeof lucide !== 'undefined' && lucide.createIcons){
+    lucide.createIcons();
+  }
 }
 
 function escapeHtml(s){
@@ -1134,6 +2115,7 @@ function escapeHtml(s){
 document.getElementById('btnClear').addEventListener('click', () => {
   if(!items.length) return;
   if(confirm(`Remove all ${items.length} items?`)){
+    saveState();
     items = [];
     if(editingId !== null) exitEditMode();
     persist();
@@ -1187,7 +2169,7 @@ document.getElementById('btnExport').addEventListener('click', () => {
   XLSX.utils.book_append_sheet(wb, ws3, 'Settings');
   const date = new Date().toISOString().slice(0,10);
   XLSX.writeFile(wb, `backlog_prio_${date}.xlsx`);
-  toast('Excel exported');
+  markSaved();
 });
 
 // Keyboard shortcuts
@@ -1256,7 +2238,181 @@ document.getElementById('itemNotes').addEventListener('input', e => {
   document.getElementById('notesToggle').setAttribute('data-has-content', e.target.value.trim() ? 'true':'false');
 });
 
-// ── IMPORT LOGIC ──────────────────────────────────────────
+// ── UNDO/REDO SYSTEM ──────────────────────────────────────
+class UndoRedoStack {
+  constructor(){
+    this.undoStack = [];
+    this.redoStack = [];
+    this.maxSize = 50; // Keep last 50 states
+  }
+
+  push(state){
+    this.undoStack.push(JSON.parse(JSON.stringify(state)));
+    this.redoStack = []; // Clear redo on new action
+    if(this.undoStack.length > this.maxSize){
+      this.undoStack.shift();
+    }
+  }
+
+  canUndo(){
+    return this.undoStack.length > 0;
+  }
+
+  canRedo(){
+    return this.redoStack.length > 0;
+  }
+
+  undo(current){
+    if(!this.canUndo()) return null;
+    this.redoStack.push(JSON.parse(JSON.stringify(current)));
+    return this.undoStack.pop();
+  }
+
+  redo(current){
+    if(!this.canRedo()) return null;
+    this.undoStack.push(JSON.parse(JSON.stringify(current)));
+    return this.redoStack.pop();
+  }
+
+  clear(){
+    this.undoStack = [];
+    this.redoStack = [];
+  }
+}
+
+const undoRedo = new UndoRedoStack();
+
+function saveState(){
+  undoRedo.push(items);
+}
+
+function performUndo(){
+  const state = undoRedo.undo(items);
+  if(state){
+    items = state;
+    if(editingId !== null) exitEditMode();
+    persist();
+    renderTable();
+    toast('Undo');
+  }
+}
+
+function performRedo(){
+  const state = undoRedo.redo(items);
+  if(state){
+    items = state;
+    if(editingId !== null) exitEditMode();
+    persist();
+    renderTable();
+    toast('Redo');
+  }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  // Ctrl+Z or Cmd+Z = Undo
+  if((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey){
+    e.preventDefault();
+    performUndo();
+  }
+  // Ctrl+Y or Cmd+Shift+Z = Redo
+  if((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))){
+    e.preventDefault();
+    performRedo();
+  }
+});
+let hasUnsavedChanges = false;
+let lastSaveTime = Date.now();
+const REMINDER_INTERVAL = 15 * 60 * 1000; // 15 minutes
+let reminderTimer = null;
+
+function markUnsaved(){
+  hasUnsavedChanges = true;
+}
+
+function markSaved(){
+  hasUnsavedChanges = false;
+  lastSaveTime = Date.now();
+  clearReminder();
+  startReminder();
+  toast('Saved to Excel!');
+}
+
+function startReminder(){
+  if(reminderTimer) clearTimeout(reminderTimer);
+  reminderTimer = setTimeout(() => {
+    if(hasUnsavedChanges && items.length > 0){
+      showSaveReminder();
+    }
+  }, REMINDER_INTERVAL);
+}
+
+function clearReminder(){
+  if(reminderTimer) clearTimeout(reminderTimer);
+  reminderTimer = null;
+}
+
+function showSaveReminder(){
+  // Small subtle reminder pop-up
+  const reminder = document.createElement('div');
+  reminder.style.cssText = `
+    position: fixed;
+    bottom: 100px;
+    right: 24px;
+    background: var(--peach);
+    color: #fff;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(255,136,103,.25);
+    z-index: 9100;
+    white-space: nowrap;
+    animation: reminderSlideIn .25s cubic-bezier(.34,1.56,.64,1);
+  `;
+  
+  reminder.textContent = 'Save your work to Excel';
+  document.body.appendChild(reminder);
+  
+  // Auto-dismiss after 2 seconds with fade-out
+  setTimeout(() => {
+    reminder.style.animation = 'reminderSlideOut .25s cubic-bezier(.55,0,.68,.05) forwards';
+    setTimeout(() => {
+      if(reminder.parentNode) reminder.remove();
+    }, 250);
+  }, 2000);
+  
+  // Restart reminder for next 15 min
+  setTimeout(() => startReminder(), 2500);
+}
+
+// Warn on page leave if unsaved
+window.addEventListener('beforeunload', e => {
+  if(hasUnsavedChanges && items.length > 0){
+    const msg = 'You have unsaved changes in your backlog. If you leave without exporting to Excel, your data will be lost.';
+    e.preventDefault();
+    e.returnValue = msg;
+    return msg;
+  }
+});
+
+// Mark changes whenever items are added/modified
+const originalRecalc = recalc;
+recalc = function(){
+  markUnsaved();
+  return originalRecalc.apply(this, arguments);
+};
+
+const originalAddClick = () => {
+  markUnsaved();
+};
+
+// Start reminder timer on load if there are items
+if(items.length > 0){
+  markUnsaved();
+  startReminder();
+}
 const importModal = document.getElementById('importModal');
 let parsedImport = []; // {name, effort, notes}[]
 
@@ -1514,6 +2670,8 @@ document.getElementById('impConfirm').addEventListener('click', () => {
 
   if(!confirm(confirmMsg)) return;
 
+  saveState();
+
   // Build items with defaults
   const newItems = parsedImport.map((p, i) => {
     const reach = 1000;
@@ -1550,10 +2708,155 @@ document.addEventListener('keydown', e => {
   }
 });
 
+// ── INTRO MODAL ───────────────────────────────────────────
+const introModal = document.getElementById('introModal');
+const hasSeenIntro = localStorage.getItem('backlogPrioSawIntro');
+
+const translations = {
+  nl: {
+    title: 'Backlog Prioritizer',
+    sub: 'Score, rank en exporteer je backlog',
+    step1_label: 'Items toevoegen',
+    step1_desc: 'Vul Titel, Reach (vluchten/jaar), Impact (over 6 dimensies), Confidence (%) en Effort (persoons-weken) in. Score berekent meteen.',
+    step2_label: 'Gewichten aanpassen',
+    step2_desc: 'Impact is een gewogen gemiddelde van OTP, NPS, Kosten, Revenue, Duurzaamheid en Tijdkriticaliteit. Stel de mix in in de Impact-sectie.',
+    step3_label: 'Sorteren en exporteren',
+    step3_desc: 'Klik op een kolom-header om te sorteren. Gebruik de Export-knop om je backlog als Excel op te slaan — dit is de enige manier om je data te behouden.',
+    warning_title: 'Geen persistente opslag',
+    warning_text: '<strong>Alle data leeft alleen in je browser.</strong> Als je de pagina refreshed, het tabblad sluit of je browsercache wist, is alles weg. <strong>Exporteer regelmatig naar Excel om je werk te behouden.</strong> Importeer via plakken of bestand om data terug te halen.',
+    button_got_it: 'Prima, laten we gaan',
+  },
+  en: {
+    title: 'Backlog Prioritizer',
+    sub: 'Score, rank, and export your backlog',
+    step1_label: 'Add items',
+    step1_desc: 'Fill in Title, Reach (flights/year), Impact (across 6 dimensions), Confidence (%), and Effort (person-weeks). Score calculates instantly.',
+    step2_label: 'Adjust weights',
+    step2_desc: 'Impact is a weighted average of OTP, NPS, Costs, Revenue, Sustainability, and Time Criticality. Configure the mix in the Impact section.',
+    step3_label: 'Sort and export',
+    step3_desc: 'Click any column header to sort. Use the Export button to save your backlog as Excel — this is the only way to keep your data.',
+    warning_title: 'No persistent storage',
+    warning_text: '<strong>All data lives in your browser only.</strong> If you refresh the page, close the tab, or clear your browser cache, everything is lost. <strong>Export to Excel regularly to keep your work.</strong> Import via paste or file upload to bring data back.',
+    button_got_it: 'Got it, let\'s go',
+  },
+  fr: {
+    title: 'Backlog Prioritizer',
+    sub: 'Notez, classez et exportez votre backlog',
+    step1_label: 'Ajouter des éléments',
+    step1_desc: 'Remplissez Titre, Portée (vols/an), Impact (sur 6 dimensions), Confiance (%) et Effort (semaines-personne). Le score se calcule instantanément.',
+    step2_label: 'Ajuster les poids',
+    step2_desc: 'L\'Impact est une moyenne pondérée de OTP, NPS, Coûts, Chiffre d\'affaires, Durabilité et Criticité temporelle. Configurez le mélange dans la section Impact.',
+    step3_label: 'Trier et exporter',
+    step3_desc: 'Cliquez sur n\'importe quel en-tête de colonne pour trier. Utilisez le bouton Exporter pour enregistrer votre backlog en Excel — c\'est le seul moyen de conserver vos données.',
+    warning_title: 'Pas de stockage persistant',
+    warning_text: '<strong>Toutes les données vivent uniquement dans votre navigateur.</strong> Si vous actualisez la page, fermez l\'onglet ou videz le cache de votre navigateur, tout est perdu. <strong>Exportez régulièrement vers Excel pour conserver votre travail.</strong> Importez en collant ou en téléchargeant un fichier pour récupérer vos données.',
+    button_got_it: 'Compris, allons-y',
+  }
+};
+
+let currentLang = localStorage.getItem('backlogPrioLang') || 'nl';
+
+function setLang(lang){
+  currentLang = lang;
+  localStorage.setItem('backlogPrioLang', lang);
+  renderIntroModal();
+}
+
+function t(key){
+  return translations[currentLang][key] || translations.en[key] || key;
+}
+
+function renderIntroModal(){
+  const titleEl = document.querySelector('.intro-title');
+  const subEl = document.querySelector('.intro-sub');
+  const sections = document.querySelectorAll('.intro-section');
+  const warningTitle = document.querySelector('.intro-warning-title');
+  const warningText = document.querySelector('.intro-warning-text');
+  const button = document.getElementById('introClose');
+
+  if(titleEl) titleEl.textContent = t('title');
+  if(subEl) subEl.textContent = t('sub');
+  
+  const labels = ['step1_label', 'step2_label', 'step3_label'];
+  const descs = ['step1_desc', 'step2_desc', 'step3_desc'];
+  
+  sections.forEach((sec, i) => {
+    const label = sec.querySelector('.intro-label');
+    const desc = sec.querySelector('.intro-desc');
+    if(label) label.textContent = t(labels[i]);
+    if(desc) desc.textContent = t(descs[i]);
+  });
+
+  if(warningTitle) warningTitle.textContent = t('warning_title');
+  if(warningText) warningText.innerHTML = t('warning_text');
+  if(button) button.textContent = t('button_got_it');
+}
+
+function closeIntro(){
+  introModal.classList.remove('open');
+  localStorage.setItem('backlogPrioSawIntro', 'true');
+}
+
+// Click anywhere on overlay to close
+introModal.addEventListener('click', e => {
+  if(e.target === introModal) closeIntro();
+});
+
+document.getElementById('introClose').addEventListener('click', closeIntro);
+
+// Language buttons
+const langButtons = document.querySelectorAll('[data-lang]');
+langButtons.forEach(btn => {
+  btn.classList.toggle('active', btn.dataset.lang === currentLang);
+  btn.addEventListener('click', () => {
+    langButtons.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    setLang(btn.dataset.lang);
+  });
+});
+
+// Show on load if first time
+if(!hasSeenIntro){
+  introModal.classList.add('open');
+}
+
+// Also allow Esc to close
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && introModal.classList.contains('open')){
+    closeIntro();
+  }
+});
+
+renderIntroModal();
 buildImpactInputs();
 buildWeightInputs();
 recalc();
 renderTable();
+
+// Initialize Lucide icons the official way
+// Wait for lucide to be available, then create icons
+if(typeof lucide !== 'undefined' && lucide.createIcons){
+  lucide.createIcons();
+  dismissSplash();
+} else {
+  // Fallback: wait a bit longer if not loaded yet
+  setTimeout(() => {
+    if(typeof lucide !== 'undefined' && lucide.createIcons){
+      lucide.createIcons();
+    }
+    dismissSplash();
+  }, 100);
+}
+
+// Dismiss splash loader
+function dismissSplash(){
+  const splash = document.getElementById('splash');
+  if(splash){
+    setTimeout(() => {
+      splash.classList.add('out');
+    }, 500);
+  }
+}
 </script>
 
 </body>
