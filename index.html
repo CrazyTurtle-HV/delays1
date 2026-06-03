@@ -992,21 +992,12 @@ function App(){
     },
     {
       num:'03 · RICE',
-      title:'Backlog Prio Calculator',
-      desc:'Score backlog ideas on Reach, Impact, Confidence and Effort — with weighted impact across six operational dimensions.',
+      title:'Teamdag Demo · Backlog Prio Calculator',
+      desc:'Teamdag demo — score backlog ideas on Reach, Impact, Confidence and Effort — with weighted impact across six operational dimensions.',
       meta:'Calculator',
       icon:<IconRice/>,
       mini: <div className="mini orbit"><svg viewBox="0 0 36 36"><rect x="6" y="8" width="24" height="3" rx="1.5" fill="currentColor" opacity=".55"/><rect x="6" y="16" width="24" height="3" rx="1.5" fill="currentColor" opacity=".75"/><rect x="6" y="24" width="24" height="3" rx="1.5" fill="currentColor"/></svg></div>,
-      href:'backlog_prio_calc_v3.html'
-    },
-    {
-      num:'04 · BC Beta',
-      title:'Backlog Prio Calculator',
-      desc:'Test version — score items on Safety, Performance, Cost, Revenue and Time Criticality with the updated strategy-driver model.',
-      meta:'Beta',
-      icon:<IconRice/>,
-      mini: <div className="mini orbit"><svg viewBox="0 0 36 36"><rect x="6" y="8" width="24" height="3" rx="1.5" fill="currentColor" opacity=".4"/><rect x="6" y="16" width="18" height="3" rx="1.5" fill="currentColor" opacity=".65"/><rect x="6" y="24" width="24" height="3" rx="1.5" fill="currentColor"/><circle cx="28" cy="10" r="5" fill="currentColor" opacity=".9"/><text x="28" y="13.5" textAnchor="middle" fontSize="6" fontWeight="700" fill="white" style={{fontFamily:'monospace'}}>β</text></svg></div>,
-      href:'BCBETA.html'
+      href:'backlog_prio_calc_vt.html'
     },
 
   ];
@@ -1029,7 +1020,7 @@ function App(){
           </h1>
 
           <p className="lede">
-            Four tools for the same job: picking the right code, spotting patterns, and prioritizing what to build next. Pick one to get started.
+            Three tools for the same job: picking the right code, spotting patterns, and prioritizing what to build next. Pick one to get started.
           </p>
 
           <div className="section-rule"/>
@@ -1038,8 +1029,7 @@ function App(){
               <a key={i} href={c.href} className="gate-row"
                  onClick={(e)=>handleNav(e, c.href, i===2 ? 'clouds' : 'green')}
                  style={{'--tint': scheme[i].tint, '--tintShadow': scheme[i].shadow}}>
-                {i===3 && <span className="gate-beta-badge">test version</span>}
-                <span className="gate-num">G0{i+1}</span>
+<span className="gate-num">G0{i+1}</span>
                 <span className="gate-icon">{c.icon}</span>
                 <span className="gate-title">{c.title}</span>
                 <span className="gate-meta">{c.meta}</span>
@@ -1055,7 +1045,6 @@ function App(){
           <span className="kbd"><span className="key">1</span>Delay Advisor</span>
           <span className="kbd"><span className="key">2</span>Insights</span>
           <span className="kbd"><span className="key">3</span>Prio Calc</span>
-          <span className="kbd"><span className="key">4</span>BC Beta</span>
         </div>
         <span>Transavia · Internal</span>
       </footer>
